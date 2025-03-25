@@ -29,16 +29,16 @@ target_include_directories(vamcore PUBLIC src)
 # Python bindings
 pybind11_add_module(vambindings bindings/py_vam.cpp)
 target_sources(vambindings PRIVATE
-        bindings/py_frenet_helicity.cpp
-        bindings/py_potential_timefield.cpp
-        bindings/py_gravity_timefield.cpp
-        bindings/py_biot_savart.cpp
-        bindings/py_knot_dynamics.cpp
-        bindings/py_time_evolution.cpp
-        bindings/py_pressure_field.cpp
-        bindings/py_fluid_dynamics.cpp
-        bindings/py_vortex_knot_system.cpp
-        bindings/py_kinetic_energy.cpp
+        src_bindings/py_frenet_helicity.cpp
+        src_bindings/py_potential_timefield.cpp
+        src_bindings/py_gravity_timefield.cpp
+        src_bindings/py_biot_savart.cpp
+        src_bindings/py_knot_dynamics.cpp
+        src_bindings/py_time_evolution.cpp
+        src_bindings/py_pressure_field.cpp
+        src_bindings/py_fluid_dynamics.cpp
+        src_bindings/py_vortex_knot_system.cpp
+        src_bindings/py_kinetic_energy.cpp
 )
 
 target_link_libraries(vambindings PRIVATE vamcore)
