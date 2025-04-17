@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_22" default="true" project-jdk-name="temurin-22" project-jdk-type="JavaSDK">
-    <output url="file://$PROJECT_DIR$/out" />
+  <component name="Black">
+    <option name="sdkName" value="C:\Users\mr\anaconda3\envs\chat-gpt-catagorizer" />
+  </component>
+  <component name="CMakePythonSetting">
+    <option name="pythonIntegrationState" value="YES" />
+  </component>
+  <component name="CMakeWorkspace" PROJECT_DIR="$PROJECT_DIR$" />
+  <component name="CidrRootsConfiguration">
+    <sourceRoots>
+      <file path="$PROJECT_DIR$/bindings" />
+      <file path="$PROJECT_DIR$/include" />
+      <file path="$PROJECT_DIR$/src" />
+    </sourceRoots>
+    <excludeRoots>
+      <file path="$PROJECT_DIR$/cmake-build-debug-system" />
+      <file path="$PROJECT_DIR$/cmake-build-debug-visual-studio" />
+      <file path="$PROJECT_DIR$/extern" />
+    </excludeRoots>
   </component>
 </project>
