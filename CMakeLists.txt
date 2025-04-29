@@ -27,7 +27,7 @@ add_library(vamcore STATIC
 target_include_directories(vamcore PUBLIC src)
 
 # Python bindings
-pybind11_add_module(vambindings bindings/py_vam.cpp)
+pybind11_add_module(vambindings src_bindings/py_vam.cpp)
 target_sources(vambindings PRIVATE
         src_bindings/py_frenet_helicity.cpp
         src_bindings/py_potential_timefield.cpp
