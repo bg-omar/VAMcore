@@ -1,6 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from vambindings import VortexKnotSystem, biot_savart_velocity
+# ✅ Get the script filename dynamically
+import os
+script_name = os.path.splitext(os.path.basename(__file__))[0]
 
 # Initialize knot system
 knot = VortexKnotSystem()
@@ -42,6 +45,10 @@ axs[1].set_xlabel('x')
 axs[1].set_ylabel('y')
 fig.colorbar(c2, ax=axs[1])
 
+
+
+filename = f"{script_name}.png"
+plt.savefig(filename, dpi=150)  # Save image with high resolution
 plt.tight_layout()
 
 
@@ -76,7 +83,7 @@ for z_val in z_slices_focus:
     slice_data_focus.append({"z": z_val, "velocity": velocity_slice, "pressure": pressure_slice})
 
 # Plot each z-slice
-fig, axs = plt.subplots(len(z_slices_focus), 2, figsize=(12, 4 * len(z_slices_focus)))
+fig, axs = plt.subplots(len(z_slices_focus), 2, figsize=(8, 4 * len(z_slices_focus)))
 
 for idx, slice_info in enumerate(slice_data_focus):
     z = slice_info["z"]
@@ -99,8 +106,10 @@ for idx, slice_info in enumerate(slice_data_focus):
     ax_p.set_xlabel('x')
     ax_p.set_ylabel('y')
 
-plt.tight_layout()
 plotGridsize = 4
+filename = f"{script_name}2.png"
+plt.savefig(filename, dpi=150)  # Save image with high resolution
+plt.tight_layout()
 
 def compute_tangent(X):
     dX = np.gradient(X, axis=0)
@@ -138,7 +147,9 @@ ax.set_xlabel('x (m)')
 ax.set_ylabel('y (m)')
 ax.set_zlabel('z (m)')
 ax.legend()
+
+
+filename = f"{script_name}3.png"
+plt.savefig(filename, dpi=150)  # Save image with high resolution
 plt.tight_layout()
 plt.show()
-
-

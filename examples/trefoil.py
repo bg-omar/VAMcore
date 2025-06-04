@@ -2,6 +2,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+
+import os
+script_name = os.path.splitext(os.path.basename(__file__))[0]
 from matplotlib.colors import TwoSlopeNorm
 from vambindings import VortexKnotSystem, biot_savart_velocity, compute_kinetic_energy
 

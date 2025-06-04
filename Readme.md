@@ -1,7 +1,8 @@
 # ⚙️ VAMcore: Hybrid Benchmark Engine for the Vortex Æther Model
 
 Welcome to **VAMcore**, the computational backbone for the Vortex Æther Model (VAM).  
-This hybrid C++/Python engine is designed to benchmark field-based gravity, time dilation, and EM swirl-field dynamics using modern numerical methods and a large helping of theoretical audacity.
+This hybrid C++/Python engine is designed to benchmark field-based gravity, time dilation, and EM swirl-field dynamics using modern numerical methods and a large helping of theoretical audacity. This repository contains the core engine, simulation scripts, and visualizations to explore the swirling depths of æther dynamics.
+We build the C++ VAM-Bindings first, and then we can import it into benchmark Python code. When using the C++  VAM-bindings to do hard calculations we can run / render Python simulations 10-100x faster.
 
 ---
 
@@ -32,7 +33,7 @@ This hybrid C++/Python engine is designed to benchmark field-based gravity, time
 ---
 
 ## 📦 Build & Run
-
+I advise to make use of IDE like CLion, PyCharm or Visual Studio for building and running the project. When using CLion, you can follow these steps:
 ### ⚙️ Set Python environmet variables first
 ```bash
 set PYTHONPATH=build\Debug
@@ -40,10 +41,24 @@ set PYTHONPATH=build\Debug
 
 ### 🔨 Build C++ Core
 ```bash
-cmake --build build --target vambindings
+"C:\Program Files\JetBrains\CLion\bin\cmake\win\x64\bin\cmake.exe" --build C:\workspace\projects\vamcore\cmake-build-debug --target vambindings -j 18
 ```
 
-### 🐍 Simulate VAM
+### 🐍 Install Python Dependencies
+```bash
+python -c "import vambindings; print(vambindings)"
+````
+This should return `<module 'vambindings' from 'C:\\workspace\\projects\\vamcore\\build\\Debug\\vambindings.cp311-win_amd64.pyd'>`
+This indicates that the Python bindings for VAMcore have been successfully built and installed.
+
+### 🔨 Load the C++ module dynamically from the compiled path
+```python
+import os
+module_path = os.path.abspath("build/Debug/vambindings.cp311-win_amd64.pyd")
+module_name = "vambindings"
+```
+
+### 📊 Run Benchmarks
 ```bash
 python tests/test_potential_timefield.py
 ```

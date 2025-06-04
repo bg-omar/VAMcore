@@ -1,4 +1,4 @@
-import vambindings  # your pybind11 module
+import vambindings
 import numpy as np
 
 # Example closed curve (circle in XY-plane)
