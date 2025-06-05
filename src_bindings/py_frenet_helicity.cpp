@@ -11,7 +11,7 @@ namespace py = pybind11;
 void bind_frenet_helicity(py::module_& m) {
 	m.def("compute_frenet_frames", [](const std::vector<vam::Vec3>& X) {
 		std::vector<vam::Vec3> T, N, B;
-		vam::compute_frenet_frames(X, T, N, B);
+                vam::FrenetHelicity::compute_frenet_frames(X, T, N, B);
 		return std::make_tuple(T, N, B);
 	}, R"pbdoc(
         Compute Frenet frames (T, N, B) from 3D filament points.
@@ -21,7 +21,7 @@ void bind_frenet_helicity(py::module_& m) {
 	m.def("compute_curvature_torsion", [](const std::vector<vam::Vec3>& T,
 										  const std::vector<vam::Vec3>& N) {
 		std::vector<double> curvature, torsion;
-		vam::compute_curvature_torsion(T, N, curvature, torsion);
+                vam::FrenetHelicity::compute_curvature_torsion(T, N, curvature, torsion);
 		return std::make_tuple(curvature, torsion);
 	}, R"pbdoc(
 		Compute curvature and torsion from tangent and normal vectors.
@@ -30,16 +30,16 @@ void bind_frenet_helicity(py::module_& m) {
 
 	m.def("compute_helicity", [](const std::vector<vam::Vec3>& velocity,
 								 const std::vector<vam::Vec3>& vorticity) {
-		return vam::compute_helicity(velocity, vorticity);
+                return vam::FrenetHelicity::compute_helicity(velocity, vorticity);
 	}, R"pbdoc(
         Compute helicity H = ∫ v · ω dV.
     )pbdoc");
 
-	m.def("evolve_vortex_knot", &vam::evolve_vortex_knot, R"pbdoc(
+        m.def("evolve_vortex_knot", &vam::FrenetHelicity::evolve_vortex_knot, R"pbdoc(
         Evolve vortex knot filaments using Biot–Savart dynamics.
     )pbdoc");
 
-	m.def("rk4_integrate", &vam::rk4_integrate, R"pbdoc(
+        m.def("rk4_integrate", &vam::FrenetHelicity::rk4_integrate, R"pbdoc(
         Runge-Kutta 4th order time integrator for vortex elements.
     )pbdoc");
 }
