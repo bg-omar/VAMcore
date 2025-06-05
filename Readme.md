@@ -34,6 +34,14 @@ We build the C++ VAM-Bindings first, and then we can import it into benchmark Py
 
 ## 📦 Build & Run
 I advise to make use of IDE like CLion, PyCharm or Visual Studio for building and running the project. When using CLion, you can follow these steps:
+
+### 🛠️ Get pyBind11 inside the project
+```bash
+mkdir extern
+mkdir extern/pybind11
+git clone https://github.com/pybind/pybind11.git extern/pybind11
+````
+
 ### ⚙️ Set Python environmet variables first
 ```bash
 set PYTHONPATH=build\Debug
@@ -42,6 +50,10 @@ set PYTHONPATH=build\Debug
 ### 🔨 Build C++ Core
 ```bash
 "C:\Program Files\JetBrains\CLion\bin\cmake\win\x64\bin\cmake.exe" --build C:\workspace\projects\vamcore\cmake-build-debug --target vambindings -j 18
+```
+
+```bash
+cmake -S . -B cmake-build-debug -Dpybind11_DIR=extern/pybind11/share/cmake/pybind11
 ```
 
 ### 🐍 Install Python Dependencies
