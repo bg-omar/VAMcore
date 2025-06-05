@@ -9,10 +9,12 @@ namespace vam {
 
         class PressureField {
         public:
+                // Compute Bernoulli pressure field given velocity magnitude and fluid density
                 static std::vector<double> compute_bernoulli_pressure(const std::vector<double>& velocity_magnitude,
                                                                         double rho = 7.0e-7,
                                                                         double p_inf = 0.0);
 
+                // Compute pressure gradient from 2D pressure grid (assumes square grid)
                 static std::vector<std::vector<Vec3>> pressure_gradient(const std::vector<std::vector<double>>& pressure_field,
                                                                         double dx = 1.0);
         };

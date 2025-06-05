@@ -11,24 +11,30 @@ namespace vam {
 
         class FrenetHelicity {
         public:
+                // Compute normalized tangent, normal, binormal vectors
                 static void compute_frenet_frames(const std::vector<Vec3>& X,
                                                            std::vector<Vec3>& T,
                                                            std::vector<Vec3>& N,
                                                            std::vector<Vec3>& B);
 
+                // Compute local curvature and torsion
                 static void compute_curvature_torsion(const std::vector<Vec3>& T,
                                                                    const std::vector<Vec3>& N,
                                                                    std::vector<double>& curvature,
                                                                    std::vector<double>& torsion);
 
+                // Compute helicity H = ∫ v · ω dV for filament
+                // Takes induced velocity and tangent vectors
                 static float compute_helicity(const std::vector<Vec3>& velocity,
                                                    const std::vector<Vec3>& vorticity);
 
+                // RK4 integrator for centerline evolution
                 static std::vector<Vec3> rk4_integrate(const std::vector<Vec3>& positions,
                                                                         const std::vector<Vec3>& tangents,
                                                                         double dt,
                                                                         double gamma = 1.0);
 
+                // Direct evolution step using Biot–Savart
                 static std::vector<Vec3> evolve_vortex_knot(const std::vector<Vec3>& positions,
                                                                         const std::vector<Vec3>& tangents,
                                                                         double dt,

@@ -17,6 +17,7 @@ namespace vam {
 
         class KineticEnergy {
         public:
+                // Compute kinetic energy: E = (1/2) ρ ∑ |v|^2
                 static double compute(const std::vector<Vec3>& velocity, double rho_ae);
         };
 

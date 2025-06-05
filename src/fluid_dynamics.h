@@ -17,14 +17,17 @@ namespace vam {
 
         class FluidDynamics {
         public:
+                // Compute Bernoulli pressure field from velocity magnitude
                 static std::vector<double> compute_pressure_field(
                                 const std::vector<double>& velocity_magnitude,
                                 double rho_ae,
                                 double P_infinity);
 
+                // Compute velocity magnitude from vector field
                 static std::vector<double> compute_velocity_magnitude(
                                 const std::vector<Vec3>& velocity);
 
+                // Simple Euler step for particle advection
                 static void evolve_positions_euler(
                                 std::vector<Vec3>& positions,
                                 const std::vector<Vec3>& velocity,
