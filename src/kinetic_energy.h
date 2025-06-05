@@ -15,8 +15,15 @@ namespace vam {
 
 	using Vec3 = std::array<double, 3>;
 
-// Compute kinetic energy: E = (1/2) ρ ∑ |v|^2
-	double compute_kinetic_energy(const std::vector<Vec3>& velocity, double rho_ae);
+        class KineticEnergy {
+        public:
+                // Compute kinetic energy: E = (1/2) ρ ∑ |v|^2
+                static double compute(const std::vector<Vec3>& velocity, double rho_ae);
+        };
+
+        inline double compute_kinetic_energy(const std::vector<Vec3>& velocity, double rho_ae) {
+                return KineticEnergy::compute(velocity, rho_ae);
+        }
 
 } // namespace vam
 
