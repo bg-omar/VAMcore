@@ -9,7 +9,7 @@
 namespace py = pybind11;
 
 void bind_fluid_dynamics(py::module_& m) {
-        m.def("compute_pressure_field", &vam::FluidDynamics::compute_pressure_field,
+	m.def("compute_pressure_field", &vam::compute_pressure_field,
 		  py::arg("velocity_magnitude"),
 		  py::arg("rho_ae"),
 		  py::arg("P_infinity"),
@@ -18,13 +18,13 @@ void bind_fluid_dynamics(py::module_& m) {
             P = P_infinity - 0.5 * rho_ae * |v|^2
     )pbdoc");
 
-        m.def("compute_velocity_magnitude", &vam::FluidDynamics::compute_velocity_magnitude,
+	m.def("compute_velocity_magnitude", &vam::compute_velocity_magnitude,
 		  py::arg("velocity"),
 		  R"pbdoc(
         Compute magnitude |v| from vector velocity field.
     )pbdoc");
 
-        m.def("evolve_positions_euler", &vam::FluidDynamics::evolve_positions_euler,
+	m.def("evolve_positions_euler", &vam::evolve_positions_euler,
 		  py::arg("positions"),
 		  py::arg("velocity"),
 		  py::arg("dt"),

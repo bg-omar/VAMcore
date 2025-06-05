@@ -4,11 +4,11 @@
 
 namespace vam {
 
-        Vec3 BiotSavart::velocity(const Vec3& r,
-                                                          const std::vector<Vec3>& X,
-                                                          const std::vector<Vec3>& T,
-                                                          double Gamma)
-        {
+	Vec3 biot_savart_velocity(const Vec3& r,
+							  const std::vector<Vec3>& X,
+							  const std::vector<Vec3>& T,
+							  double Gamma)
+	{
 		Vec3 v{0.0, 0.0, 0.0};
 		constexpr double coeff = 1.0 / (4.0 * M_PI);
 

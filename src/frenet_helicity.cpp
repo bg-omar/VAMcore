@@ -20,10 +20,10 @@ namespace vam {
 	}
 
 // 1. Compute TNB Frenet frame vectors
-        void FrenetHelicity::compute_frenet_frames(const std::vector<Vec3>& X,
-                                                           std::vector<Vec3>& T,
-                                                           std::vector<Vec3>& N,
-                                                           std::vector<Vec3>& B) {
+	void compute_frenet_frames(const std::vector<Vec3>& X,
+							   std::vector<Vec3>& T,
+							   std::vector<Vec3>& N,
+							   std::vector<Vec3>& B) {
 		size_t n = X.size();
 		T.resize(n);
 		N.resize(n);
@@ -45,10 +45,10 @@ namespace vam {
 	}
 
 // 2. Compute curvature and torsion
-        void FrenetHelicity::compute_curvature_torsion(const std::vector<Vec3>& T,
-                                                                   const std::vector<Vec3>& N,
-                                                                   std::vector<double>& curvature,
-                                                                   std::vector<double>& torsion) {
+	void compute_curvature_torsion(const std::vector<Vec3>& T,
+								   const std::vector<Vec3>& N,
+								   std::vector<double>& curvature,
+								   std::vector<double>& torsion) {
 		size_t n = T.size();
 		curvature.resize(n);
 		torsion.resize(n);
@@ -66,8 +66,8 @@ namespace vam {
 	}
 
 // 3. Compute helicity
-        float FrenetHelicity::compute_helicity(const std::vector<Vec3>& velocity,
-                                                   const std::vector<Vec3>& vorticity) {
+	float compute_helicity(const std::vector<Vec3>& velocity,
+						   const std::vector<Vec3>& vorticity) {
 		size_t n = velocity.size();
 		float sum = 0.0f;
 		for (size_t i = 0; i < n; ++i) {
@@ -78,7 +78,7 @@ namespace vam {
 		return sum / static_cast<float>(n);
 	}
 // RK4 integration of position updates
-        std::vector<Vec3> FrenetHelicity::rk4_integrate(const std::vector<Vec3>& positions,
+	std::vector<Vec3> rk4_integrate(const std::vector<Vec3>& positions,
 									const std::vector<Vec3>& tangents,
 									double dt,
 									double gamma) {
@@ -92,7 +92,7 @@ namespace vam {
 		return result;
 	}
 
-        std::vector<Vec3> FrenetHelicity::evolve_vortex_knot(const std::vector<Vec3>& positions,
+	std::vector<Vec3> evolve_vortex_knot(const std::vector<Vec3>& positions,
 										 const std::vector<Vec3>& tangents,
 										 double dt,
 										 double gamma) {

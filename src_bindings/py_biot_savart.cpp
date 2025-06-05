@@ -8,7 +8,7 @@
 namespace py = pybind11;
 
 void bind_biot_savart(py::module_& m) {
-        m.def("biot_savart_velocity", &vam::BiotSavart::biot_savart_velocity,
+	m.def("biot_savart_velocity", &vam::biot_savart_velocity,
 		  py::arg("r"),
 		  py::arg("filament_points"),
 		  py::arg("tangent_vectors"),

@@ -9,11 +9,11 @@
 namespace py = pybind11;
 
 void bind_pressure_field(py::module_& m) {
-        m.def("compute_bernoulli_pressure", &vam::PressureField::compute_bernoulli_pressure, R"pbdoc(
+	m.def("compute_bernoulli_pressure", &vam::compute_bernoulli_pressure, R"pbdoc(
         Compute Bernoulli pressure field from velocity magnitude.
     )pbdoc");
 
-        m.def("pressure_gradient", &vam::PressureField::pressure_gradient, R"pbdoc(
+	m.def("pressure_gradient", &vam::pressure_gradient, R"pbdoc(
         Compute spatial pressure gradient vector field.
     )pbdoc");
 }

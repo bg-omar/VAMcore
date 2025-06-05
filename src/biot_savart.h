@@ -14,22 +14,12 @@
 #endif
 
 namespace vam {
-        using Vec3 = std::array<double, 3>;
+	using Vec3 = std::array<double, 3>;
 
-        class BiotSavart {
-        public:
-                static Vec3 velocity(const Vec3& r,
-                                                      const std::vector<Vec3>& X,
-                                                      const std::vector<Vec3>& T,
-                                                      double Gamma = 1.0);
-        };
-
-        inline Vec3 biot_savart_velocity(const Vec3& r,
-                                                          const std::vector<Vec3>& X,
-                                                          const std::vector<Vec3>& T,
-                                                          double Gamma = 1.0) {
-                return BiotSavart::velocity(r, X, T, Gamma);
-        }
+	Vec3 biot_savart_velocity(const Vec3& r,
+							  const std::vector<Vec3>& X,
+							  const std::vector<Vec3>& T,
+							  double Gamma = 1.0);
 }
 
 #endif //VAMCORE_BIOT_SAVART_H
