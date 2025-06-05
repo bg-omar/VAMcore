@@ -13,23 +13,42 @@
 
 namespace vam {
 
-	using Vec3 = std::array<double, 3>;
+        using Vec3 = std::array<double, 3>;
 
-// Compute Bernoulli pressure field from velocity magnitude
-	std::vector<double> compute_pressure_field(
-			const std::vector<double>& velocity_magnitude,
-			double rho_ae,
-			double P_infinity);
+        class FluidDynamics {
+        public:
+                static std::vector<double> compute_pressure_field(
+                                const std::vector<double>& velocity_magnitude,
+                                double rho_ae,
+                                double P_infinity);
 
-// Compute velocity magnitude from vector field
-	std::vector<double> compute_velocity_magnitude(
-			const std::vector<Vec3>& velocity);
+                static std::vector<double> compute_velocity_magnitude(
+                                const std::vector<Vec3>& velocity);
 
-// Simple Euler step for particle advection
-	void evolve_positions_euler(
-			std::vector<Vec3>& positions,
-			const std::vector<Vec3>& velocity,
-			double dt);
+                static void evolve_positions_euler(
+                                std::vector<Vec3>& positions,
+                                const std::vector<Vec3>& velocity,
+                                double dt);
+        };
+
+        inline std::vector<double> compute_pressure_field(
+                        const std::vector<double>& velocity_magnitude,
+                        double rho_ae,
+                        double P_infinity) {
+                return FluidDynamics::compute_pressure_field(velocity_magnitude, rho_ae, P_infinity);
+        }
+
+        inline std::vector<double> compute_velocity_magnitude(
+                        const std::vector<Vec3>& velocity) {
+                return FluidDynamics::compute_velocity_magnitude(velocity);
+        }
+
+        inline void evolve_positions_euler(
+                        std::vector<Vec3>& positions,
+                        const std::vector<Vec3>& velocity,
+                        double dt) {
+                FluidDynamics::evolve_positions_euler(positions, velocity, dt);
+        }
 
 } // namespace vam
 

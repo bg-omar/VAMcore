@@ -19,26 +19,38 @@ namespace vam {
 
 	using Vec3 = std::array<double, 3>;
 
-// Compute writhe from filament centerline
-// Ref: Cálugăreanu-White formula (approximated)
-	double compute_writhe(const std::vector<Vec3>& centerline);
+        class KnotDynamics {
+        public:
+                static double compute_writhe(const std::vector<Vec3>& centerline);
+                static int compute_linking_number(const std::vector<Vec3>& curve1, const std::vector<Vec3>& curve2);
+                static double compute_twist(const std::vector<Vec3>& T, const std::vector<Vec3>& B);
+                static double compute_centerline_helicity(const std::vector<Vec3>& curve,
+                                                                           const std::vector<Vec3>& tangent);
+                static std::vector<std::pair<int, int>> detect_reconnection_candidates(
+                        const std::vector<Vec3>& curve, double threshold);
+        };
 
-// Compute linking number between two vortex filaments
-	int compute_linking_number(const std::vector<Vec3>& curve1, const std::vector<Vec3>& curve2);
+        inline double compute_writhe(const std::vector<Vec3>& centerline) {
+                return KnotDynamics::compute_writhe(centerline);
+        }
 
-// Compute twist given tangent and normal
-// Twist = ∫ (T × dN/ds) ⋅ B ds
-	double compute_twist(const std::vector<Vec3>& T, const std::vector<Vec3>& B);
+        inline int compute_linking_number(const std::vector<Vec3>& curve1, const std::vector<Vec3>& curve2) {
+                return KnotDynamics::compute_linking_number(curve1, curve2);
+        }
 
-	// Compute centerline helicity invariant H_cl
-// H_cl = Lk + Wr, combines link and writhe
-	double compute_centerline_helicity(const std::vector<Vec3>& curve,
-									   const std::vector<Vec3>& tangent);
+        inline double compute_twist(const std::vector<Vec3>& T, const std::vector<Vec3>& B) {
+                return KnotDynamics::compute_twist(T, B);
+        }
 
-	// Check for reconnection events
-// Returns indices of close approach
-	std::vector<std::pair<int, int>> detect_reconnection_candidates(
-			const std::vector<Vec3>& curve, double threshold);
+        inline double compute_centerline_helicity(const std::vector<Vec3>& curve,
+                                                                           const std::vector<Vec3>& tangent) {
+                return KnotDynamics::compute_centerline_helicity(curve, tangent);
+        }
+
+        inline std::vector<std::pair<int, int>> detect_reconnection_candidates(
+                        const std::vector<Vec3>& curve, double threshold) {
+                return KnotDynamics::detect_reconnection_candidates(curve, threshold);
+        }
 
 } // namespace vam
 
