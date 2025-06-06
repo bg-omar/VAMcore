@@ -7,8 +7,6 @@
 
 namespace py = pybind11;
 
-namespace py = pybind11;
-
 void bind_time_evolution(py::module_& m) {
 	py::class_<vam::TimeEvolution>(m, "TimeEvolution")
 			.def(py::init<std::vector<vam::Vec3>, std::vector<vam::Vec3>, double>(),

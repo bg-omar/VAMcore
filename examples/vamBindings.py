@@ -2,9 +2,12 @@ import importlib.util
 import sys
 import os
 import inspect
+# ✅ Get the script filename dynamically
+import os
+script_name = os.path.splitext(os.path.basename(__file__))[0]
 
 # Load the module dynamically from the compiled path
-module_path = os.path.abspath("build/Debug/vambindings.cp311-win_amd64.pyd")
+module_path = os.path.abspath("../build/Debug/vambindings.cp311-win_amd64.pyd")
 module_name = "vambindings"
 
 spec = importlib.util.spec_from_file_location(module_name, module_path)
@@ -42,7 +45,7 @@ for name in dir(vambindings):
 markdown_doc = "\n".join(lines)
 
 # Save to file and return path
-output_path = "vambindings_api.md"
+output_path = "../vambindings_api.md"
 with open(output_path, "w", encoding="utf-8") as f:
     f.write(markdown_doc)
 

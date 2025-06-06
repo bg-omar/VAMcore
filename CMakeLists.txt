@@ -22,12 +22,13 @@ add_library(vamcore STATIC
         src/time_evolution.cpp
         src/fluid_dynamics.cpp
         src/kinetic_energy.cpp
+        src/swirl_field.cpp
 )
 
 target_include_directories(vamcore PUBLIC src)
 
-# Python bindings
-pybind11_add_module(vambindings src_bindings/py_vam.cpp)
+# Python bindingsac
+pybind11_add_module(vambindings src_bindings/module_vam.cpp)
 target_sources(vambindings PRIVATE
         src_bindings/py_frenet_helicity.cpp
         src_bindings/py_potential_timefield.cpp
@@ -39,6 +40,7 @@ target_sources(vambindings PRIVATE
         src_bindings/py_fluid_dynamics.cpp
         src_bindings/py_vortex_knot_system.cpp
         src_bindings/py_kinetic_energy.cpp
+        src_bindings/py_swirl_field.cpp
 )
 
 target_link_libraries(vambindings PRIVATE vamcore)

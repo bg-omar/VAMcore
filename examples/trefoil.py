@@ -2,16 +2,19 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+
+import os
+script_name = os.path.splitext(os.path.basename(__file__))[0]
 from matplotlib.colors import TwoSlopeNorm
 from vambindings import VortexKnotSystem, biot_savart_velocity, compute_kinetic_energy
 
 # Simulated data for demonstration
-plotGridsize = 3
-n_vectors = 7
+plotGridsize = 5
+n_vectors = 17
 rho_ae = 7.0e-7
 rotation_axis = "z"
 pole_axis = "y"
-blend_factor = 0.25
+blend_factor = 0.5
 
 # Initialize trefoil knot
 knot = VortexKnotSystem()
@@ -76,6 +79,9 @@ ax = fig.add_subplot(111, projection='3d')
 ax.quiver(points[:, 0], points[:, 1], points[:, 2],
           Vnorm[:, 0], Vnorm[:, 1], Vnorm[:, 2],
           length=0.4, normalize=True, color=final_colors, alpha=0.75)
+
+ax.plot(positions[:, 0], positions[:, 1], positions[:, 2],
+        color='red', linewidth=2, label='Trefoil Vortex Filament')
 
 ax.set_title("Swirl (Gray) + Poles (Greyscale) Coloring of Velocity Field")
 ax.set_xlim(-plotGridsize, plotGridsize)
