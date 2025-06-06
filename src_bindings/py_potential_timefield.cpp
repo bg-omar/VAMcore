@@ -9,7 +9,7 @@
 namespace py = pybind11;
 
 void bind_potential_timefield(py::module_& m) {
-	m.def("compute_gravitational_potential", &vam::compute_gravitational_potential,
+        m.def("compute_gravitational_potential", &vam::PotentialTimeField::compute_gravitational_potential,
 		  py::arg("positions"),
 		  py::arg("vorticity"),
 		  py::arg("epsilon") = 0.1,
@@ -17,7 +17,7 @@ void bind_potential_timefield(py::module_& m) {
             Compute Ætheric gravitational potential field from vorticity gradients.
         )pbdoc");
 
-	m.def("compute_time_dilation_map", &vam::compute_time_dilation_map,
+        m.def("compute_time_dilation_map", &vam::PotentialTimeField::compute_time_dilation_map,
 		  py::arg("tangents"),
 		  py::arg("C_e"),
 		  R"pbdoc(
