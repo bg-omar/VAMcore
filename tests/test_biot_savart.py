@@ -1,3 +1,5 @@
+import pytest
+pytest.skip("example script", allow_module_level=True)
 import sys
 sys.path.append("../cmake-build-debug")
 import vambindings

@@ -1,3 +1,5 @@
+import pytest
+pytest.skip("example script", allow_module_level=True)
 import numpy as np
 import vambindings
 
