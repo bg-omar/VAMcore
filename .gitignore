@@ -1,5 +1,5 @@
 /vcpkg/
-/extern/
+/extern/pybind11/*
 /cmake-build-debug/
 /build/extern/
 /build/test_frenet.dir/
