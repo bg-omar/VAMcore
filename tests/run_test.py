@@ -26,4 +26,6 @@ T, N, B = vambindings.compute_frenet_frames(X)
 kappa, tau = vambindings.compute_curvature_torsion(T, N)
 print("Curvature:", kappa)
 print("Torsion:", tau)
+
 print("Helicity:", vambindings.compute_helicity(T, T))  # test w = v = T
+
