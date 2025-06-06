@@ -34,6 +34,27 @@ We build the C++ VAM-Bindings first, and then we can import it into benchmark Py
 
 ## 📦 Build & Run
 I advise to make use of IDE like CLion, PyCharm or Visual Studio for building and running the project. When using CLion, you can follow these steps:
+You must install Visual Studio 2022 with C++ support, and then you can use CLion to build the project.
+
+### ⚙️ Repair MSVC with the Visual Studio Installer
+Open the Visual Studio Installer and do the following:
+- Find Visual Studio 2022 Community
+- Click Modify
+
+### Make sure the following are selected:
+✔ Individual components:
+✅ MSVC v14.3x - x64/x86 build tools
+✅ Windows 10 SDK (or 11)
+✅ C++ CMake tools for Windows
+✅ C++ ATL/MFC support (optional)
+✅ C++ Standard Library (STL)
+After this, reboot CLion and retry the build.
+
+### 🔧 Use Clang Toolchain (if MSVC is broken)
+You can switch CLion to use Clang (LLVM):
+Install LLVM from: https://github.com/llvm/llvm-project/releases
+Point CLion to `clang++.exe` in your toolchain settings
+You can still use `pybind11` + `C++23` this way and avoid MSVC issues altogether.
 
 ### 🐍 Install Python Dependencies
 Make sure you have Python 3.11+ installed, then create a virtual environment and install the required packages.
@@ -59,6 +80,8 @@ git clone https://github.com/pybind/pybind11.git extern/pybind11
 ### 🔨 Build C++ Core
 ```bash
 "C:\Program Files\JetBrains\CLion\bin\cmake\win\x64\bin\cmake.exe" --build C:\workspace\projects\vamcore\cmake-build-debug --target vambindings -j 18
+"C:\Program Files\JetBrains\CLion\bin\cmake\win\x64\bin\cmake.exe"  -S . -B build
+"C:\Program Files\JetBrains\CLion\bin\cmake\win\x64\bin\cmake.exe" --build build
 ```
 This command compiles the C++ core and generates the Python bindings using `pybind11`.
 

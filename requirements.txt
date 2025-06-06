@@ -1,16 +1,27 @@
+colorama @ file:///C:/ci_311/colorama_1676422310965/work
 contourpy==1.3.1
 cycler==0.12.1
+dill==0.4.0
 fonttools==4.56.0
+iniconfig @ file:///home/linux1/recipes/ci/iniconfig_1610983019677/work
 kiwisolver==1.4.8
+markdown-it-py==3.0.0
 matplotlib==3.10.1
+mdurl==0.1.2
 numpy==2.2.4
-packaging==24.2
+packaging @ file:///C:/b/abs_3by6s2fa66/croot/packaging_1734472138782/work
 pandas==2.2.3
 pillow==11.1.0
-pybind11==2.13.6
-pybind11_global==2.13.6
+pluggy @ file:///C:/b/abs_dfec_m79vo/croot/pluggy_1733170145382/work
+pybind11 @ file:///C:/b/abs_288w2xa_33/croot/pybind11-split_1738946396616/work
+pybind11_global @ file:///C:/b/abs_288w2xa_33/croot/pybind11-split_1738946396616/work
+Pygments==2.19.1
 pyparsing==3.2.1
+pytest @ file:///C:/b/abs_48heoo_k8y/croot/pytest_1690475385915/work
 python-dateutil==2.9.0.post0
 pytz==2025.1
+rich==14.0.0
 six==1.17.0
+taichi==1.7.3
 tzdata==2025.1
+pysph==1.7.0
