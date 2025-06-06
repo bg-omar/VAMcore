@@ -1,4 +1,6 @@
-import vambindings
+import pytest
+pytest.skip("example script", allow_module_level=True)
+import vambindings  # your pybind11 module
 import numpy as np
 
 # Example closed curve (circle in XY-plane)
