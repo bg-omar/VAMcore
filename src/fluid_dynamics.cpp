@@ -40,4 +40,55 @@ namespace vam {
 		}
         }
 
-} // namespace vam
+	using Vec3 = std::array<double, 3>;
+
+	inline bool FluidDynamics::is_incompressible(const Vec3& dudx, const Vec3& dvdy, const Vec3& dwdz) {
+		return std::abs(dudx[0] + dvdy[1] + dwdz[2]) < 1e-8;
+	}
+
+	inline Vec3 FluidDynamics::compute_vorticity(const std::array<std::array<double, 3>, 3>& grad) {
+		return {
+				grad[2][1] - grad[1][2], // wx
+				grad[0][2] - grad[2][0], // wy
+				grad[1][0] - grad[0][1]  // wz
+		};
+	}
+
+	inline double FluidDynamics::swirl_clock_rate(double dv_dx, double du_dy) {
+		return 0.5 * (dv_dx - du_dy);
+	}
+
+	inline double FluidDynamics::vorticity_from_curvature(double V, double R) {
+		return V / R;
+	}
+
+	inline double FluidDynamics::vortex_pressure_drop(double rho, double c) {
+		return 0.5 * rho * c * c;
+	}
+
+	inline double FluidDynamics::vortex_transverse_pressure_diff(double rho, double c) {
+		return 0.25 * rho * c * c;
+	}
+
+	inline double FluidDynamics::swirl_energy(double rho, double omega) {
+		return 0.5 * rho * omega * omega;
+	}
+
+	inline bool FluidDynamics::kairos_energy_trigger(double rho, double omega, double Ce) {
+		return swirl_energy(rho, omega) > 0.5 * rho * Ce * Ce;
+	}
+
+	inline double FluidDynamics::compute_helicity(const std::vector<Vec3>& velocity, const std::vector<Vec3>& vorticity, double dV) {
+		double H = 0.0;
+		for (size_t i = 0; i < velocity.size(); ++i) {
+			H += velocity[i][0] * vorticity[i][0] +
+				 velocity[i][1] * vorticity[i][1] +
+				 velocity[i][2] * vorticity[i][2];
+		}
+		return H * dV;
+	}
+
+	inline double FluidDynamics::potential_vorticity(double fa, double zeta_r, double h) {
+		return (fa + zeta_r) / h;
+	}
+}

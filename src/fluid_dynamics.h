@@ -8,8 +8,9 @@
 
 #pragma once
 
-#include <vector>
 #include <array>
+#include <vector>
+#include <cmath>
 
 namespace vam {
 
@@ -32,7 +33,27 @@ namespace vam {
                                 std::vector<Vec3>& positions,
                                 const std::vector<Vec3>& velocity,
                                 double dt);
-        };
+
+			static Vec3 compute_vorticity(const std::array<std::array<double, 3>, 3> &grad);
+
+			static bool is_incompressible(const Vec3 &dudx, const Vec3 &dvdy, const Vec3 &dwdz);
+
+			static double swirl_clock_rate(double dv_dx, double du_dy);
+
+			static double vorticity_from_curvature(double V, double R);
+
+			static double vortex_pressure_drop(double rho, double c);
+
+			static double vortex_transverse_pressure_diff(double rho, double c);
+
+			static bool kairos_energy_trigger(double rho, double omega, double Ce);
+
+			static double compute_helicity(const std::vector<Vec3> &velocity, const std::vector<Vec3> &vorticity, double dV);
+
+			static double potential_vorticity(double fa, double zeta_r, double h);
+
+			static double swirl_energy(double rho, double omega);
+		};
 
         inline std::vector<double> compute_pressure_field(
                         const std::vector<double>& velocity_magnitude,

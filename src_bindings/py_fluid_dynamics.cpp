@@ -31,4 +31,16 @@ void bind_fluid_dynamics(py::module_& m) {
 		  R"pbdoc(
         Euler-step update of particle positions from velocity vectors.
     )pbdoc");
-}
+
+
+		m.def("compute_vorticity", &vam::FluidDynamics::compute_vorticity);
+		m.def("swirl_clock_rate", &vam::FluidDynamics::swirl_clock_rate);
+		m.def("vorticity_from_curvature", &vam::FluidDynamics::vorticity_from_curvature);
+		m.def("vortex_pressure_drop", &vam::FluidDynamics::vortex_pressure_drop);
+		m.def("vortex_transverse_pressure_diff", &vam::FluidDynamics::vortex_transverse_pressure_diff);
+		m.def("swirl_energy", &vam::FluidDynamics::swirl_energy);
+		m.def("kairos_energy_trigger", &vam::FluidDynamics::kairos_energy_trigger);
+		m.def("compute_helicity", &vam::FluidDynamics::compute_helicity);
+		m.def("potential_vorticity", &vam::FluidDynamics::potential_vorticity);
+	}
+
