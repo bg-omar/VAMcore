@@ -40,7 +40,15 @@ void bind_fluid_dynamics(py::module_& m) {
 		m.def("vortex_transverse_pressure_diff", &vam::FluidDynamics::vortex_transverse_pressure_diff);
 		m.def("swirl_energy", &vam::FluidDynamics::swirl_energy);
 		m.def("kairos_energy_trigger", &vam::FluidDynamics::kairos_energy_trigger);
-		m.def("compute_helicity", &vam::FluidDynamics::compute_helicity);
-		m.def("potential_vorticity", &vam::FluidDynamics::potential_vorticity);
-	}
+                m.def("compute_helicity", &vam::FluidDynamics::compute_helicity);
+                m.def("potential_vorticity", &vam::FluidDynamics::potential_vorticity);
+                m.def("is_incompressible", &vam::FluidDynamics::is_incompressible,
+                                py::arg("dudx"),
+                                py::arg("dvdy"),
+                                py::arg("dwdz"),
+                                R"pbdoc(
+                        Determine if flow is incompressible by checking that the
+                        divergence of the velocity field is approximately zero.
+                )pbdoc");
+        }
 
