@@ -49,4 +49,4 @@ output_path = "../vambindings_api.md"
 with open(output_path, "w", encoding="utf-8") as f:
     f.write(markdown_doc)
 
-output_path
+print(output_path)

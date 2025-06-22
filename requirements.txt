@@ -12,7 +12,7 @@ numpy==2.2.4
 packaging==24.2
 pandas==2.2.3
 pillow==11.1.0
-pluggy==1.2.0
+pluggy==1.5.0
 pybind11 ==2.13.6
 pybind11_global==2.13.6
 Pygments==2.19.1
@@ -24,4 +24,4 @@ rich==14.0.0
 six==1.17.0
 taichi==1.7.3
 tzdata==2025.1
-pysph==1.0b1
+pysph==0.9beta
