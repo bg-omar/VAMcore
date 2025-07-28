@@ -60,15 +60,16 @@ You can still use `pybind11` + `C++23` this way and avoid MSVC issues altogether
 Make sure you have Python 3.11+ installed, then create a virtual environment and install the required packages.
 This might be the time to take a look at Conda, which is a package manager that can help you manage Python environments and dependencies more easily.
 ```bash
+conda create -n  VAMpyBindings    python=3.12
+conda activate  VAMpyBindings   
+```
+
+We now have to at least `pip install pybind11` and  `pip install numpy` to run the Python bindings.
+I recommend to use a `requirements.txt` file to manage the dependencies of the project, it will reflect my environment.
+```bash
 pip install -r requirements.txt
 ```
 To keep file up to date: `pip freeze > requirements.txt`
-
-### ⚙️ Set Python environmet variables first
-```bash
-set PYTHONPATH=build\Debug
-```
-
 
 ### 🛠️ Get pyBind11 inside the project
 ```bash
@@ -77,11 +78,40 @@ mkdir extern/pybind11
 git clone https://github.com/pybind/pybind11.git extern/pybind11
 ````
 
-### 🔨 Build C++ Core
+### 📂 Project Structure
 ```bash
-"C:\Program Files\JetBrains\CLion\bin\cmake\win\x64\bin\cmake.exe" --build C:\workspace\projects\vamcore\cmake-build-debug --target vambindings -j 18
-"C:\Program Files\JetBrains\CLion\bin\cmake\win\x64\bin\cmake.exe"  -S . -B build
-"C:\Program Files\JetBrains\CLion\bin\cmake\win\x64\bin\cmake.exe" --build build
+project-root/
+├── examples/
+│   ├── example_fluid_rotation.py
+│   ├── example_potential_flow.py
+│   ├── example_vortex_ring.py
+│   └── ...
+├── src/
+│   ├── fluid_dynamics.cpp
+│   ├── thermo_dynamics.cpp
+│   ├── vorticity_dynamics.cpp
+│   └── ...
+├── src_bindings/
+│   ├── module_vam.cpp
+│   ├── py_fluid_dynamics.cpp
+│   ├── py_thermo_dynamics.cpp
+│   ├── py_vorticity_dynamics.cpp
+│   └── ...
+├── extern/pybind11/         # <-- Git submodule or manually cloned
+├── CMakeLists.txt
+```
+
+
+### 🔨 Build C++ Core
+Before building, ensure you have CMake installed and your environment is set up correctly.
+Download and install CMake https://cmake.org/download/
+You can use the following commands to build the C++ core and generate the Python bindings using `
+```bash
+mkdir build
+cd build
+cmake ..
+cmake --build . --config Debug  # or Release
+
 ```
 This command compiles the C++ core and generates the Python bindings using `pybind11`.
 
@@ -89,13 +119,21 @@ This command compiles the C++ core and generates the Python bindings using `pybi
 ```bash
 python -c "import vambindings; print(vambindings)"
 ````
-This should return `<module 'vambindings' from 'C:\\workspace\\projects\\vamcore\\build\\Debug\\vambindings.cp311-win_amd64.pyd'>`
+This should return `<module 'vambindings' from 'C:\\workspace\\projects\\vamcore\\build\\Debug\\vambindings.cp312-win_amd64.pyd'>`
 This indicates that the Python bindings for VAMcore have been successfully built and installed.
+If this command fails, ensure that `vambindings.cp312-win_amd64.pyd` is found in the same directory where you run python.
+When it does not work, you can try to recompile the C++ bindings from within `./build/` with `cmake --build . --config Debug` again.
 
-### 🔨 Load the C++ module dynamically from the compiled path
+### 🐍 Import the VAM Bindings in Python
+```
+from vambindings import VortexKnotSystem, biot_savart_velocity, compute_kinetic_energy
+```
+
+
+### 🔨 Load the C++ module dynamically from the compiled path, because the VAM Bindings are not installed in the Python site-packages.
 ```python
 import os
-module_path = os.path.abspath("build/Debug/vambindings.cp311-win_amd64.pyd")
+module_path = os.path.abspath("C:\\Users\\mr\\IdeaProjects\\VAM\\VAMpyBindings\\build\\Debug\\vambindings.cp312-win_amd64.pyd")
 module_name = "vambindings"
 ```
 
@@ -105,14 +143,6 @@ python tests/test_potential_timefield.py
 ```
 ---
 
-## 📖 Zenodo-Registered Releases
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15566101.svg)](https://doi.org/10.5281/zenodo.15566101)  
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15566319.svg)](https://doi.org/10.5281/zenodo.15566319)  
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15566336.svg)](https://doi.org/10.5281/zenodo.15566336)
-
-All papers and associated code are archived on [Zenodo](https://zenodo.org/) for permanent accessibility and citation.
-
----
 
 ## 🧠 Author   
 
@@ -142,6 +172,8 @@ This code is listening. Always.
 
 This document provides a summary of implemented functions in the VAM C++/Python library along with their corresponding physical and mathematical formulas.
 
+
+
 ---
 
 ## 🌀 Helicity
@@ -149,9 +181,7 @@ This document provides a summary of implemented functions in the VAM C++/Python 
 **Function**: `compute_helicity(velocity, vorticity)`
 
 **Formula**:
-\\[
-\\mathcal{H} = \\int_{\\mathbb{R}^3} \\mathbf{v} \\cdot \\boldsymbol{\\omega} \\, d^3\\mathbf{r}
-\\]
+$${H} = \int_{\mathbb{R}^3} \mathbf{v} \cdot \omega \, d^3\mathbf{r}$$
 
 ---
 
@@ -160,9 +190,7 @@ This document provides a summary of implemented functions in the VAM C++/Python 
 **Function**: `compute_kinetic_energy(velocity, rho_ae)`
 
 **Formula**:
-\\[
-E = \\frac{1}{2} \\rho_\\ae \\int |\\mathbf{v}|^2 \\, d^3\\mathbf{r}
-\\]
+$$E = \frac{1}{2} \rho_æ \int |\mathbf{v}|^2 \, d^3\mathbf{r}$$
 
 ---
 
@@ -171,9 +199,7 @@ E = \\frac{1}{2} \\rho_\\ae \\int |\\mathbf{v}|^2 \\, d^3\\mathbf{r}
 **Function**: `compute_curvature_torsion(positions)`
 
 **Formula**:
-\\[
-\\kappa(s) = \\left\\| \\frac{d^2 \\mathbf{X}}{ds^2} \\right\\|
-\\]
+$$\kappa(s) = \left\| \frac{d^2 \mathbf{X}}{ds^2} \right\|$$
 
 ---
 
@@ -182,9 +208,7 @@ E = \\frac{1}{2} \\rho_\\ae \\int |\\mathbf{v}|^2 \\, d^3\\mathbf{r}
 **Function**: `compute_curvature_torsion(positions)`
 
 **Formula**:
-\\[
-\\tau(s) = \\frac{ \\left( \\frac{d \\mathbf{X}}{ds} \\times \\frac{d^2 \\mathbf{X}}{ds^2} \\right) \\cdot \\frac{d^3 \\mathbf{X}}{ds^3} }{ \\left\\| \\frac{d \\mathbf{X}}{ds} \\times \\frac{d^2 \\mathbf{X}}{ds^2} \\right\\|^2 }
-\\]
+$$\tau(s) = \frac{ \left( \frac{d \mathbf{X}}{ds} \times \frac{d^2 \mathbf{X}}{ds^2} \right) \cdot \frac{d^3 \mathbf{X}}{ds^3} }{ \left\| \frac{d \mathbf{X}}{ds} \times \frac{d^2 \mathbf{X}}{ds^2} \right\|^2 }$$
 
 ---
 
@@ -193,9 +217,7 @@ E = \\frac{1}{2} \\rho_\\ae \\int |\\mathbf{v}|^2 \\, d^3\\mathbf{r}
 **Function**: `pressure_gradient` and `compute_bernoulli_pressure`
 
 **Formula**:
-\\[
-\\mathbf{g}(\\mathbf{r}) = -\\frac{1}{\\rho_\\ae} \\nabla P(\\mathbf{r}) = \\nabla \\left( \\frac{1}{2} |\\mathbf{v}|^2 \\right)
-\\]
+$$\mathbf{g}(\mathbf{r}) = -\frac{1}{\rho_æ} \nabla P(\mathbf{r}) = \nabla \left( \frac{1}{2} |\mathbf{v}|^2 \right)$$
 
 ---
 
@@ -204,9 +226,7 @@ E = \\frac{1}{2} \\rho_\\ae \\int |\\mathbf{v}|^2 \\, d^3\\mathbf{r}
 **Function**: `compute_time_dilation_map(tangential_velocities, ce)`
 
 **Formula**:
-\\[
-\\text{Time Dilation} = 1 - \\frac{v^2}{C_e^2}
-\\]
+$$\text{Time Dilation} = 1 - \frac{v^2}{C_e^2}$$
 
 ---
 
@@ -215,9 +235,7 @@ E = \\frac{1}{2} \\rho_\\ae \\int |\\mathbf{v}|^2 \\, d^3\\mathbf{r}
 **Function**: `compute_gravitational_potential(positions, vorticity, aether_density)`
 
 **Formula**:
-\\[
-\\Phi(\\mathbf{r}) = \\text{scalar potential derived from vorticity field}
-\\]
+$$\Phi(\mathbf{r}) = \text{scalar potential derived from vorticity field}$$
 
 ---
 

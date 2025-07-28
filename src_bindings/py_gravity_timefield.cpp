@@ -4,7 +4,7 @@
 // bindings/py_gravity_timefield.cpp
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
-#include "gravity_timefield.h"
+#include "../src/gravity_timefield.h"
 
 namespace py = pybind11;
 

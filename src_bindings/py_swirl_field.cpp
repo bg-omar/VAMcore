@@ -1,6 +1,6 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
-#include "swirl_field.h"
+#include "../src/swirl_field.h"
 
 namespace py = pybind11;
 

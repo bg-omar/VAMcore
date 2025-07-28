@@ -1,22 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Black">
-    <option name="sdkName" value="C:\Users\mr\anaconda3\envs\chat-gpt-catagorizer" />
+    <option name="sdkName" value="VAMpyBindings" />
   </component>
   <component name="CMakePythonSetting">
     <option name="pythonIntegrationState" value="YES" />
   </component>
-  <component name="CMakeWorkspace" PROJECT_DIR="$PROJECT_DIR$" />
-  <component name="CidrRootsConfiguration">
-    <sourceRoots>
-      <file path="$PROJECT_DIR$/bindings" />
-      <file path="$PROJECT_DIR$/include" />
-      <file path="$PROJECT_DIR$/src" />
-    </sourceRoots>
-    <excludeRoots>
-      <file path="$PROJECT_DIR$/cmake-build-debug-system" />
-      <file path="$PROJECT_DIR$/cmake-build-debug-visual-studio" />
-      <file path="$PROJECT_DIR$/extern" />
-    </excludeRoots>
+  <component name="CMakeWorkspace" PROJECT_DIR="$PROJECT_DIR$">
+    <contentRoot DIR="$PROJECT_DIR$/extern/pybind11" />
   </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.11 (VAMcore)" project-jdk-type="Python SDK" />
 </project>

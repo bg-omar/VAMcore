@@ -24,3 +24,4 @@ rich==14.0.0
 six==1.17.0
 taichi==1.7.3
 tzdata==2025.1
+scipy==1.16.1

@@ -89,4 +89,28 @@ namespace vam {
         double FluidDynamics::potential_vorticity(double fa, double zeta_r, double h) {
                 return (fa + zeta_r) / h;
         }
+
+		double FluidDynamics::circulation_surface_integral(
+				const std::vector<Vec3> &omega_field,
+				const std::vector<Vec3> &dA_field) {
+			double Gamma = 0.0;
+			size_t n = omega_field.size();
+			for (size_t i = 0; i < n; ++i) {
+				Gamma += omega_field[i][0] * dA_field[i][0] +
+						 omega_field[i][1] * dA_field[i][1] +
+						 omega_field[i][2] * dA_field[i][2];
+			}
+			return Gamma;
+		}
+
+		double FluidDynamics::enstrophy(
+				const std::vector<double> &omega_squared,
+				const std::vector<double> &ds_area) {
+			double E = 0.0;
+			size_t n = omega_squared.size();
+			for (size_t i = 0; i < n; ++i) {
+				E += omega_squared[i] * ds_area[i];
+			}
+			return E;
+		}
 }

@@ -18,6 +18,8 @@ namespace vam {
 		VortexKnotSystem();
 
 		void initialize_trefoil_knot(size_t resolution = 400);
+        void initialize_figure8_knot(size_t resolution = 400);
+
 		void evolve(double dt, size_t steps);
 
 		const std::vector<Vec3>& get_positions() const;

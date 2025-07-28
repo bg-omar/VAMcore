@@ -105,5 +105,15 @@ void bind_fluid_dynamics(py::module_& m) {
         Determine if flow is incompressible by checking that the
         divergence of the velocity field is approximately zero.
     )pbdoc");
+
+		m.def("circulation_surface_integral", &vam::FluidDynamics::circulation_surface_integral,
+			  py::arg("omega_field"), py::arg("dA_field"),
+			  R"pbdoc(Circulation as surface integral of vorticity dot area vector.
+	)pbdoc");
+
+		m.def("enstrophy", &vam::FluidDynamics::enstrophy,
+			  py::arg("omega_squared"), py::arg("ds_area"),
+			  R"pbdoc(Enstrophy as sum of squared vorticity weighted by area.
+	)pbdoc");
 }
 

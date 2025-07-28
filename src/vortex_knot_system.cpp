@@ -26,6 +26,22 @@ namespace vam {
 		compute_tangents();
 	}
 
+    void VortexKnotSystem::initialize_figure8_knot(size_t resolution) {
+        positions.clear();
+        tangents.clear();
+        positions.reserve(resolution);
+
+        for (size_t i = 0; i < resolution; ++i) {
+            double s = 2.0 * M_PI * static_cast<double>(i) / static_cast<double>(resolution);
+            double x = (2.0 + std::cos(2.0 * s)) * std::cos(3.0 * s);
+            double y = (2.0 + std::cos(2.0 * s)) * std::sin(3.0 * s);
+            double z = std::sin(4.0 * s);
+            positions.push_back({x, y, z});
+        }
+
+        compute_tangents();
+    }
+
 	void VortexKnotSystem::compute_tangents() {
 		tangents.resize(positions.size());
 		size_t N = positions.size();
@@ -62,5 +78,6 @@ namespace vam {
 	const std::vector<Vec3>& VortexKnotSystem::get_tangents() const {
 		return tangents;
 	}
+
 
 } // namespace vam

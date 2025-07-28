@@ -1,7 +1,8 @@
 import taichi as ti
 import math
 
-ti.init(arch=ti.cuda) # or OpenGL for intel arc A770 rendering
+# ti.init(arch=ti.cuda) # or OpenGL for intel arc A770 rendering
+ti.init(arch=ti.opengl) # or OpenGL for intel arc A770 rendering
 
 res = 1024
 num_particles = 3000

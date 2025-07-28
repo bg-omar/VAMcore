@@ -4,7 +4,7 @@
 // bindings/py_potential_timefield.cpp
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
-#include "potential_timefield.h"
+#include "../src/potential_timefield.h"
 
 namespace py = pybind11;
 

@@ -4,7 +4,7 @@ import inspect
 
 
 # Set path if needed
-sys.path.insert(0, os.path.abspath("build/Debug"))
+sys.path.insert(0, os.path.abspath("."))
 
 import vambindings
 

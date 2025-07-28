@@ -1,4 +1,4 @@
-/vcpkg/
+\usepackage{ulem}/vcpkg/
 /extern/pybind11/*
 /cmake-build-debug/
 /build/extern/
@@ -23,3 +23,6 @@
 /build/ZERO_CHECK.vcxproj.filters
 /build/CMakeFiles/
 /sphSimulator_output/
+/build/
+/cmake-build-debug-mingw/
+/cmake-build-relwithdebinfo-mingw/

@@ -53,6 +53,14 @@ namespace vam {
 			static double potential_vorticity(double fa, double zeta_r, double h);
 
 			static double swirl_energy(double rho, double omega);
+
+			static double circulation_surface_integral(
+					const std::vector<Vec3> &omega_field,
+					const std::vector<Vec3> &dA_field);
+
+			static double enstrophy(
+					const std::vector<double> &omega_squared,
+					const std::vector<double> &ds_area);
 		};
 
         inline std::vector<double> compute_pressure_field(

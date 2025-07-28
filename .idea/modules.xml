@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/vamcore.iml" filepath="$PROJECT_DIR$/.idea/vamcore.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/VAMcore.iml" filepath="$PROJECT_DIR$/.idea/VAMcore.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/pybind11.iml" filepath="$PROJECT_DIR$/.idea/pybind11.iml" />
     </modules>
   </component>
 </project>

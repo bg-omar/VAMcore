@@ -16,6 +16,12 @@ void bind_vortex_knot_system(py::module_& m) {
 				 R"pbdoc(
 				Initialize a trefoil knot with given resolution (default = 400 points).
 			)pbdoc")
+			.def("initialize_figure8_knot", &vam::VortexKnotSystem::initialize_figure8_knot,
+                 py::arg("resolution") = 400,
+                 R"pbdoc(
+                    Initialize a figure-eight knot with given resolution (default = 400 points).
+                 )pbdoc")
+
 			.def("evolve", &vam::VortexKnotSystem::evolve,
 				 py::arg("dt"), py::arg("steps"),
 				 R"pbdoc(
