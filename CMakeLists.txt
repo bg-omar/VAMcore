@@ -84,8 +84,11 @@ add_custom_command(TARGET vambindings POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy
         $<TARGET_FILE:vambindings>
         ${CMAKE_SOURCE_DIR}/$<TARGET_FILE_NAME:vambindings>
-        COMMENT "Copied vambindings module to project root for easy import"
         COMMAND ${CMAKE_COMMAND} -E copy
         $<TARGET_FILE:vambindings>
         ${CMAKE_SOURCE_DIR}/examples/$<TARGET_FILE_NAME:vambindings>
+        COMMAND ${CMAKE_COMMAND} -E copy
+        $<TARGET_FILE:vambindings>
+        ${CMAKE_SOURCE_DIR}/../VAM/$<TARGET_FILE_NAME:vambindings>
+        COMMENT "Copied vambindings module to project root, examples/, and ../VAM/ for easy import"
 )
