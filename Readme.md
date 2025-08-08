@@ -56,11 +56,18 @@ Install LLVM from: https://github.com/llvm/llvm-project/releases
 Point CLion to `clang++.exe` in your toolchain settings
 You can still use `pybind11` + `C++23` this way and avoid MSVC issues altogether.
 
+### VAMBINDINGS Installation Guide (Windows)
+These precompiled `vambindings.cp311-win_amd64.pyd` and `vambindings.cp312-win_amd64.pyd` files are pybind11 modules
+compiled for Python 3.11 and 3.12 on 64-bit Windows.
+If you encounter an ImportError:
+- Make sure the `.pyd` file matches your Python version and architecture (64-bit)
+- Recompile using CMake and pybind11 if necessary for other OS
+
 ### 🐍 Install Python Dependencies
 Make sure you have Python 3.11+ installed, then create a virtual environment and install the required packages.
 This might be the time to take a look at Conda, which is a package manager that can help you manage Python environments and dependencies more easily.
 ```bash
-conda create -n  VAM    python=3.12
+conda create -n  VAM    python=3.11
 conda activate  VAM  
 ```
 

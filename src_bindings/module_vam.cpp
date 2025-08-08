@@ -23,6 +23,7 @@ void bind_vortex_knot_system(py::module_& m);
 void bind_vortex_ring(py::module_& m);
 void bind_vorticity_dynamics(py::module_& m);
 void bind_vorticity_transport(py::module_& m);
+void bind_fourier_knot(py::module_& m); // Forward declaration
 
 
 PYBIND11_MODULE(vambindings, m) {
@@ -46,4 +47,5 @@ PYBIND11_MODULE(vambindings, m) {
   bind_vortex_ring(m);
   bind_vorticity_dynamics(m);
   bind_vorticity_transport(m);
+  bind_fourier_knot(m); // Binding call
 }

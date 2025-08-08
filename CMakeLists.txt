@@ -36,6 +36,7 @@ add_library(vamcore STATIC
         src/vortex_ring.cpp
         src/vorticity_dynamics.cpp
         src/vorticity_transport.cpp
+        src/FourierKnot.cpp
 )
 
 target_include_directories(vamcore PUBLIC src)
@@ -61,7 +62,8 @@ target_sources(vambindings PRIVATE
         src_bindings/py_vortex_knot_system.cpp
         src_bindings/py_vortex_ring.cpp
         src_bindings/py_vorticity_dynamics.cpp
-        src_bindings/py_vorticity_transport.cpp)
+        src_bindings/py_vorticity_transport.cpp
+        src_bindings/py_FourierKnot.cpp)
 
 target_link_libraries(vambindings PRIVATE vamcore)
 target_include_directories(vambindings PRIVATE extern/pybind11/include)
