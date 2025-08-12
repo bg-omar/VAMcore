@@ -1,4 +1,4 @@
-#include "FourierKnot.hpp"
+#include "fourier_knot.h"
 #include "biot_savart.h"
 #include <algorithm>
 #include <cmath>
@@ -13,7 +13,7 @@ static inline double wrap_index(int i, int n) {
   return (r < 0) ? r + n : r;
 }
 
-std::vector<FourierBlock> FourierKnot::parse_fseries_multi(const std::string& path) {
+std::vector<FourierBlock> fourier_knot::parse_fseries_multi(const std::string& path) {
   std::ifstream in(path);
   std::vector<FourierBlock> blocks;
   if (!in) return blocks;
@@ -50,7 +50,7 @@ std::vector<FourierBlock> FourierKnot::parse_fseries_multi(const std::string& pa
   return blocks;
 }
 
-int FourierKnot::index_of_largest_block(const std::vector<FourierBlock>& blocks) {
+int fourier_knot::index_of_largest_block(const std::vector<FourierBlock>& blocks) {
   if (blocks.empty()) return -1;
   int idx = 0;
   size_t best = blocks[0].a_x.size();
@@ -61,7 +61,7 @@ int FourierKnot::index_of_largest_block(const std::vector<FourierBlock>& blocks)
   return idx;
 }
 
-std::vector<Vec3> FourierKnot::evaluate(const FourierBlock& b, const std::vector<double>& s) {
+std::vector<Vec3> fourier_knot::evaluate(const FourierBlock& b, const std::vector<double>& s) {
   const int N = (int)b.a_x.size();
   std::vector<Vec3> out(s.size(), {0.0,0.0,0.0});
   for (size_t i=0;i<s.size();++i) {
@@ -79,7 +79,7 @@ std::vector<Vec3> FourierKnot::evaluate(const FourierBlock& b, const std::vector
   return out;
 }
 
-std::vector<Vec3> FourierKnot::center_points(const std::vector<Vec3>& pts) {
+std::vector<Vec3> fourier_knot::center_points(const std::vector<Vec3>& pts) {
   if (pts.empty()) return {};
   double cx=0, cy=0, cz=0;
   for (auto &p: pts) { cx+=p[0]; cy+=p[1]; cz+=p[2]; }
@@ -89,7 +89,7 @@ std::vector<Vec3> FourierKnot::center_points(const std::vector<Vec3>& pts) {
   return out;
 }
 
-std::vector<double> FourierKnot::curvature(const std::vector<Vec3>& pts, double eps) {
+std::vector<double> fourier_knot::curvature(const std::vector<Vec3>& pts, double eps) {
   const int n = (int)pts.size();
   std::vector<double> k(n, 0.0);
   if (n < 3) return k;
@@ -118,7 +118,7 @@ std::vector<double> FourierKnot::curvature(const std::vector<Vec3>& pts, double 
 }
 
 std::pair<std::vector<Vec3>, std::vector<double>>
-FourierKnot::load_knot(const std::string& path, int nsamples) {
+fourier_knot::load_knot(const std::string& path, int nsamples) {
   auto blocks = parse_fseries_multi(path);
   int idx = index_of_largest_block(blocks);
   if (idx < 0) return {{}, {}};
@@ -133,7 +133,7 @@ FourierKnot::load_knot(const std::string& path, int nsamples) {
 
 
 
-void FourierKnot::loadBlocks(const std::string& filename) {
+void fourier_knot::loadBlocks(const std::string& filename) {
   blocks.clear();
   std::ifstream file(filename);
   if (!file.is_open()) {
@@ -178,7 +178,7 @@ void FourierKnot::loadBlocks(const std::string& filename) {
   }
 }
 
-void FourierKnot::selectMaxHarmonics() {
+void fourier_knot::selectMaxHarmonics() {
   if (blocks.empty()) {
     throw std::runtime_error("No Fourier blocks loaded");
   }
@@ -193,7 +193,7 @@ void FourierKnot::selectMaxHarmonics() {
   activeBlock = blocks[maxIdx];
 }
 
-void FourierKnot::reconstruct(size_t N) {
+void fourier_knot::reconstruct(size_t N) {
   if (activeBlock.a_x.empty()) {
     throw std::runtime_error("No active Fourier block selected");
   }
@@ -206,7 +206,7 @@ void FourierKnot::reconstruct(size_t N) {
   }
 }
 
-Vec3 FourierKnot::evalPoint(const Block& blk, double s) {
+Vec3 fourier_knot::evalPoint(const Block& blk, double s) {
   double x = 0.0, y = 0.0, z = 0.0;
   size_t N = blk.a_x.size();
   for (size_t j = 0; j < N; ++j) {

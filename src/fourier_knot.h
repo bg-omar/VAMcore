@@ -15,7 +15,7 @@ struct FourierBlock {
 };
 
 
-class FourierKnot {
+class fourier_knot {
 public:
   struct Block {
     std::vector<double> a_x, b_x, a_y, b_y, a_z, b_z;

@@ -68,7 +68,7 @@ Make sure you have Python 3.11+ installed, then create a virtual environment and
 This might be the time to take a look at Conda, which is a package manager that can help you manage Python environments and dependencies more easily.
 ```bash
 conda create -n  VAM    python=3.11
-conda activate  VAM  
+conda activate  VAMcore 
 ```
 
 We now have to at least `pip install pybind11` and  `pip install numpy` to run the Python bindings.
@@ -84,29 +84,6 @@ mkdir extern
 mkdir extern/pybind11
 git clone https://github.com/pybind/pybind11.git extern/pybind11
 ````
-
-### 📂 Project Structure
-```bash
-project-root/
-├── examples/
-│   ├── example_fluid_rotation.py
-│   ├── example_potential_flow.py
-│   ├── example_vortex_ring.py
-│   └── ...
-├── src/
-│   ├── fluid_dynamics.cpp
-│   ├── thermo_dynamics.cpp
-│   ├── vorticity_dynamics.cpp
-│   └── ...
-├── src_bindings/
-│   ├── module_vam.cpp
-│   ├── py_fluid_dynamics.cpp
-│   ├── py_thermo_dynamics.cpp
-│   ├── py_vorticity_dynamics.cpp
-│   └── ...
-├── extern/pybind11/         # <-- Git submodule or manually cloned
-├── CMakeLists.txt
-```
 
 
 ### 🔨 Build C++ Core
@@ -149,6 +126,31 @@ module_name = "vambindings"
 python tests/test_potential_timefield.py
 ```
 ---
+
+### 📂 Project Structure
+```bash
+project-root/
+├── build/
+│   └── ...
+├── examples/
+│   ├── example_fluid_rotation.py
+│   ├── example_potential_flow.py
+│   ├── example_vortex_ring.py
+│   └── ...
+├── src/
+│   ├── fluid_dynamics.cpp
+│   ├── thermo_dynamics.cpp
+│   ├── vorticity_dynamics.cpp
+│   └── ...
+├── src_bindings/
+│   ├── module_vam.cpp
+│   ├── py_fluid_dynamics.cpp
+│   ├── py_thermo_dynamics.cpp
+│   ├── py_vorticity_dynamics.cpp
+│   └── ...
+├── extern/pybind11/         # <-- Git submodule or manually cloned -- git clone https://github.com/pybind/pybind11.git extern/pybind11
+├── CMakeLists.txt
+```
 
 
 ## 🧠 Author   

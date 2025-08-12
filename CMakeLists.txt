@@ -1,5 +1,11 @@
 cmake_minimum_required(VERSION 3.23)
 project(VAMCore LANGUAGES CXX)
+
+# Ensure C++ compiler is set
+if(NOT CMAKE_CXX_COMPILER)
+    message(FATAL_ERROR "CMAKE_CXX_COMPILER is not set. Please specify a C++ compiler (e.g., by setting the CXX environment variable or using -DCMAKE_CXX_COMPILER=...).")
+endif()
+
 # === Python Executable Compatibility ===
 # If Python3_EXECUTABLE is set but not Python_EXECUTABLE, map it
 if(Python3_EXECUTABLE AND NOT Python_EXECUTABLE)
@@ -10,8 +16,6 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-
-
 # Use vendored pybind11 from extern/ directory
 add_subdirectory(extern/pybind11)
 
@@ -20,6 +24,8 @@ add_library(vamcore STATIC
         src/biot_savart.cpp
         src/fluid_dynamics.cpp
         src/fluid_rotation.cpp
+        src/fourier_knot.cpp
+        src/field_kernels.cpp
         src/frenet_helicity.cpp
         src/gravity_timefield.cpp
         src/kinetic_energy.cpp
@@ -36,7 +42,6 @@ add_library(vamcore STATIC
         src/vortex_ring.cpp
         src/vorticity_dynamics.cpp
         src/vorticity_transport.cpp
-        src/FourierKnot.cpp
 )
 
 target_include_directories(vamcore PUBLIC src)
@@ -45,8 +50,10 @@ target_include_directories(vamcore PUBLIC src)
 pybind11_add_module(vambindings src_bindings/module_vam.cpp)
 target_sources(vambindings PRIVATE
         src_bindings/py_biot_savart.cpp
+        src_bindings/py_field_kernels.cpp
         src_bindings/py_fluid_dynamics.cpp
         src_bindings/py_fluid_rotation.cpp
+        src_bindings/py_fourier_knot.cpp
         src_bindings/py_frenet_helicity.cpp
         src_bindings/py_gravity_timefield.cpp
         src_bindings/py_kinetic_energy.cpp
@@ -62,8 +69,7 @@ target_sources(vambindings PRIVATE
         src_bindings/py_vortex_knot_system.cpp
         src_bindings/py_vortex_ring.cpp
         src_bindings/py_vorticity_dynamics.cpp
-        src_bindings/py_vorticity_transport.cpp
-        src_bindings/py_FourierKnot.cpp)
+        src_bindings/py_vorticity_transport.cpp)
 
 target_link_libraries(vambindings PRIVATE vamcore)
 target_include_directories(vambindings PRIVATE extern/pybind11/include)

@@ -1,10 +1,10 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
-#include "../src/FourierKnot.hpp"
+#include "../src/fourier_knot.h"
 
 namespace py = pybind11;
 using vam::FourierBlock;
-using vam::FourierKnot;
+using vam::fourier_knot;
 using vam::Vec3;
 
 void bind_fourier_knot(py::module_& m) {
@@ -29,33 +29,33 @@ void bind_fourier_knot(py::module_& m) {
         .def_readwrite("a_z", &FourierBlock::a_z)
         .def_readwrite("b_z", &FourierBlock::b_z);
 
-    py::class_<FourierKnot>(m, "FourierKnot")
+    py::class_<fourier_knot>(m, "fourier_knot")
         .def(py::init<>())
-        .def("loadBlocks", &FourierKnot::loadBlocks)
-        .def("selectMaxHarmonics", &FourierKnot::selectMaxHarmonics)
-        .def("reconstruct", &FourierKnot::reconstruct)
-        .def_readwrite("points", &FourierKnot::points)
-        .def_readwrite("blocks", &FourierKnot::blocks)
-        .def_readwrite("activeBlock", &FourierKnot::activeBlock);
+        .def("loadBlocks", &fourier_knot::loadBlocks)
+        .def("selectMaxHarmonics", &fourier_knot::selectMaxHarmonics)
+        .def("reconstruct", &fourier_knot::reconstruct)
+        .def_readwrite("points", &fourier_knot::points)
+        .def_readwrite("blocks", &fourier_knot::blocks)
+        .def_readwrite("activeBlock", &fourier_knot::activeBlock);
 
-    m.def("parse_fseries_multi", &FourierKnot::parse_fseries_multi,
+    m.def("parse_fseries_multi", &fourier_knot::parse_fseries_multi,
           py::arg("path"), "Parse a .fseries file into Fourier blocks.");
 
-    m.def("index_of_largest_block", &FourierKnot::index_of_largest_block,
+    m.def("index_of_largest_block", &fourier_knot::index_of_largest_block,
           py::arg("blocks"), "Return index of block with most harmonics.");
 
-    m.def("evaluate_fourier_block", &FourierKnot::evaluate,
+    m.def("evaluate_fourier_block", &fourier_knot::evaluate,
           py::arg("block"), py::arg("s"),
           "Evaluate r(s) for the given Fourier block.");
 
-    m.def("center_points", &FourierKnot::center_points,
+    m.def("center_points", &fourier_knot::center_points,
           py::arg("points"), "Center points at their centroid.");
 
-    m.def("curvature_of_points", &FourierKnot::curvature,
+    m.def("curvature_of_points", &fourier_knot::curvature,
           py::arg("points"), py::arg("eps") = 1e-8,
           "Discrete curvature using periodic central differences.");
 
-    m.def("load_knot_from_fseries", &FourierKnot::load_knot,
+    m.def("load_knot_from_fseries", &fourier_knot::load_knot,
           py::arg("path"), py::arg("nsamples") = 1000,
           "Load, evaluate (largest block), center and compute curvature.");
 }
