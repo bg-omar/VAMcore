@@ -32,6 +32,33 @@ We build the C++ VAM-Bindings first, and then we can import it into benchmark Py
 
 ---
 
+conda create -n VAMcore3.12 intelpython3_full python=3.12 -c https://software.repos.intel.com/python/conda -c conda-forge --override-channels
+conda activate VAMcore3.12
+
+conda install conda -c https://software.repos.intel.com/python/conda/
+conda install conda -c conda-forge
+conda install conda -c main
+conda config --add channels conda-forge
+conda config --set channel_priority flexible
+
+conda install scikit-learn -c https://software.repos.intel.com/python/conda/
+conda install scikit-learn-intelex -c https://software.repos.intel.com/python/conda/
+conda install xgboost -c https://software.repos.intel.com/python/conda/
+conda install numpy -c https://software.repos.intel.com/python/conda/ -c conda-forge
+conda install scipy -c https://software.repos.intel.com/python/conda/ -c conda-forge
+conda install numexpr -c https://software.repos.intel.com/python/conda/ -c conda-forge
+
+
+
+
+
+
+
+
+
+
+
+
 ## 📦 Build & Run
 I advise to make use of IDE like CLion, PyCharm or Visual Studio for building and running the project. When using CLion, you can follow these steps:
 You must install Visual Studio 2022 with C++ support, and then you can use CLion to build the project.

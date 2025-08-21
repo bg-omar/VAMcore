@@ -7,7 +7,7 @@ import os
 script_name = os.path.splitext(os.path.basename(__file__))[0]
 
 # Load the module dynamically from the compiled path
-module_path = os.path.abspath("../build/Debug/vambindings.cp311-win_amd64.pyd")
+module_path = os.path.abspath("vambindings.cp312-win_amd64.pyd")
 module_name = "vambindings"
 
 spec = importlib.util.spec_from_file_location(module_name, module_path)

@@ -28,8 +28,11 @@ add_library(vamcore STATIC
         src/field_kernels.cpp
         src/frenet_helicity.cpp
         src/gravity_timefield.cpp
+        src/heavy_knot.cpp
+        src/hyperbolic_volume.cpp
         src/kinetic_energy.cpp
         src/knot_dynamics.cpp
+        src/knot_pd.cpp
         src/potential_flow.cpp
         src/potential_timefield.cpp
         src/pressure_field.cpp
@@ -56,8 +59,11 @@ target_sources(vambindings PRIVATE
         src_bindings/py_fourier_knot.cpp
         src_bindings/py_frenet_helicity.cpp
         src_bindings/py_gravity_timefield.cpp
+        src_bindings/py_heavy_knot.cpp
+        src_bindings/py_hyperbolic_volume.cpp
         src_bindings/py_kinetic_energy.cpp
         src_bindings/py_knot_dynamics.cpp
+        src_bindings/py_knot_pd.cpp
         src_bindings/py_potential_flow.cpp
         src_bindings/py_potential_timefield.cpp
         src_bindings/py_pressure_field.cpp

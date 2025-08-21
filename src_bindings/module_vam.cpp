@@ -13,8 +13,11 @@ void bind_field_kernels(py::module_ &m);
 void bind_fourier_knot(py::module_& m);
 void bind_frenet_helicity(py::module_& m);
 void bind_gravity_timefield(py::module_& m);
+void bind_heavy_knot(py::module_& m);
+void bind_hyperbolic_volume(py::module_& m);
 void bind_kinetic_energy(py::module_& m);
 void bind_knot_dynamics(py::module_& m);
+void bind_knot_pd(py::module_& m);
 void bind_potential_flow(py::module_& m);
 void bind_potential_timefield(py::module_& m);
 void bind_pressure_field(py::module_& m);
@@ -30,6 +33,7 @@ void bind_vorticity_transport(py::module_& m);
 
 
 
+
 PYBIND11_MODULE(vambindings, m) {
   m.doc() = "VAM Core Bindings";
   bind_biot_savart(m);
@@ -39,8 +43,11 @@ PYBIND11_MODULE(vambindings, m) {
   bind_fourier_knot(m);
   bind_frenet_helicity(m);
   bind_gravity_timefield(m);
+  bind_heavy_knot(m);
+  bind_hyperbolic_volume(m);
   bind_kinetic_energy(m);
   bind_knot_dynamics(m);
+  bind_knot_pd(m),
   bind_potential_flow(m);
   bind_potential_timefield(m);
   bind_pressure_field(m);

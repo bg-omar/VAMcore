@@ -133,7 +133,7 @@ static py::tuple dipole_ring_field_grid_np(py::array X,
     pos.reserve(rows); mom.reserve(rows);
     for (py::ssize_t i = 0; i < Pu.shape(0); ++i) {
         pos.push_back(Vec3{Pu(i,0), Pu(i,1), Pu(i,2)});
-        mom.emplace_back(Vec3{Mu(i,0), Mu(i,1), Mu(i,2)}}}});
+        mom.emplace_back(Vec3{Mu(i,0), Mu(i,1), Mu(i,2)});
     }
 
     FieldKernels::dipole_ring_field_grid(Xp, Yp, Zp, n_grid, pos, mom, Bxp, Byp, Bzp);
