@@ -10,6 +10,7 @@ void bind_biot_savart(py::module_& m);
 void bind_fluid_dynamics(py::module_ &m);
 void bind_fluid_rotation(py::module_ &m);
 void bind_field_kernels(py::module_ &m);
+void bind_field_ops(py::module_& m);
 void bind_fourier_knot(py::module_& m);
 void bind_frenet_helicity(py::module_& m);
 void bind_gravity_timefield(py::module_& m);
@@ -40,6 +41,7 @@ PYBIND11_MODULE(vambindings, m) {
   bind_fluid_dynamics(m);
   bind_fluid_rotation(m);
   bind_field_kernels(m);
+  bind_field_ops(m);
   bind_fourier_knot(m);
   bind_frenet_helicity(m);
   bind_gravity_timefield(m);

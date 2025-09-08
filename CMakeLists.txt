@@ -54,6 +54,7 @@ pybind11_add_module(vambindings src_bindings/module_vam.cpp)
 target_sources(vambindings PRIVATE
         src_bindings/py_biot_savart.cpp
         src_bindings/py_field_kernels.cpp
+        src_bindings/py_field_ops.cpp
         src_bindings/py_fluid_dynamics.cpp
         src_bindings/py_fluid_rotation.cpp
         src_bindings/py_fourier_knot.cpp
