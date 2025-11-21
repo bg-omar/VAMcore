@@ -9,6 +9,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 #include <pybind11/stl.h>
+#include <algorithm> // added for std::fill / std::fill_n
 
 #include "../src/field_kernels.h"
 
@@ -37,6 +38,18 @@ static std::vector<py::ssize_t> shape_vec(const py::array &A) {
     std::vector<py::ssize_t> s(static_cast<size_t>(A.ndim()));
     for (py::ssize_t i = 0; i < A.ndim(); ++i) s[static_cast<size_t>(i)] = A.shape(i);
     return s;
+}
+
+// Added helper: convert Nx3 array to std::vector<Vec3>
+static std::vector<Vec3> to_vec3_list(const py::array_t<double>& arr) {
+    if (arr.ndim() != 2 || arr.shape(1) != 3)
+        throw std::invalid_argument("Expected shape [N,3]");
+    auto u = arr.unchecked<2>();
+    std::vector<Vec3> out;
+    out.reserve(static_cast<size_t>(u.shape(0)));
+    for (py::ssize_t i = 0; i < u.shape(0); ++i)
+        out.emplace_back(Vec3{u(i,0), u(i,1), u(i,2)});
+    return out;
 }
 
 // ---------------- NumPy wrappers ----------------
@@ -209,7 +222,9 @@ void bind_field_kernels(py::module_ &m) {
           R"pbdoc(Analytical point dipole field (mu0=1).)pbdoc");
 
     m.def("biot_savart_wire_grid",
-          &biot_savart_wire_grid_np,
+          [](py::array X, py::array Y, py::array Z, py::array wire_points, double current){
+              return biot_savart_wire_grid_np(X,Y,Z,wire_points,current);
+          },
           py::arg("X"), py::arg("Y"), py::arg("Z"),
           py::arg("wire_points"), py::arg("current") = 1.0,
           R"pbdoc(Biot–Savart of polyline on a 3D grid (midpoint per segment).)pbdoc");
@@ -219,4 +234,45 @@ void bind_field_kernels(py::module_ &m) {
           py::arg("X"), py::arg("Y"), py::arg("Z"),
           py::arg("positions"), py::arg("moments"),
           R"pbdoc(Superposition of point dipoles on a 3D grid.)pbdoc");
+
+    // Fixed wrapper for Vector Potential (Polyline -> Grid)
+    m.def("biot_savart_vector_potential_grid",
+          [](py::array_t<double> polyline, py::array_t<double> grid, double current) {
+              // Validate input shapes
+              if (polyline.ndim() != 2 || polyline.shape(1) != 3)
+                  throw std::invalid_argument("polyline must have shape [N,3]");
+              if (grid.ndim() != 2 || grid.shape(1) != 3)
+                  throw std::invalid_argument("grid must have shape [M,3]");
+
+              auto wire = to_vec3_list(polyline);
+              auto pts  = to_vec3_list(grid);
+              size_t N = pts.size();
+
+              py::array_t<double> Ax({(py::ssize_t)N});
+              py::array_t<double> Ay({(py::ssize_t)N});
+              py::array_t<double> Az({(py::ssize_t)N});
+
+              auto Axm = Ax.mutable_unchecked<1>();
+              auto Aym = Ay.mutable_unchecked<1>();
+              auto Azm = Az.mutable_unchecked<1>();
+              for (size_t i = 0; i < N; ++i) { Axm(i)=0.0; Aym(i)=0.0; Azm(i)=0.0; }
+
+              std::vector<double> X(N), Y(N), Z(N);
+              for (size_t i = 0; i < N; ++i) {
+                  X[i] = pts[i][0];
+                  Y[i] = pts[i][1];
+                  Z[i] = pts[i][2];
+              }
+
+              // Call the local kernel (correct scope)
+              biot_savart_vector_potential(
+                  X.data(), Y.data(), Z.data(), N,
+                  wire, current,
+                  Ax.mutable_data(), Ay.mutable_data(), Az.mutable_data()
+              );
+
+              return py::make_tuple(Ax, Ay, Az);
+          },
+          py::arg("polyline"), py::arg("grid"), py::arg("current")=1.0,
+          "Computes Magnetic Vector Potential A on a grid.");
 }

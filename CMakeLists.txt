@@ -107,6 +107,6 @@ add_custom_command(TARGET sstbindings POST_BUILD
         ${CMAKE_SOURCE_DIR}/examples/$<TARGET_FILE_NAME:sstbindings>
         COMMAND ${CMAKE_COMMAND} -E copy
         $<TARGET_FILE:sstbindings>
-        ${CMAKE_SOURCE_DIR}/../SwirlStringTheory/$<TARGET_FILE_NAME:sstbindings>
+        ${CMAKE_SOURCE_DIR}/../SwirlStringTheory/SST_Mathematical_Proof_Python/$<TARGET_FILE_NAME:sstbindings>
         COMMENT "Copied sstbindings module to project root, examples/, and ../SwirlStringTheory/ for easy import"
 )

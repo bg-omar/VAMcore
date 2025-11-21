@@ -8,6 +8,17 @@ It supports both `R"pbdoc` and Standard String documentation.
 
 ## 1. SST Gravity & Metric Engineering
 
+### `biot_savart_vector_potential_grid`
+🛠️ *[Auto-Extracted from py_field_kernels.cpp]*
+
+**Description:** Computes Magnetic Vector Potential A on a grid.
+
+**Equation:**
+$$
+Computes Magnetic Vector Potential A on a grid.
+$$
+
+---
 ### `compute_beltrami_shear`
 ✅ **[SST Canon]**
 
@@ -84,6 +95,17 @@ $$
 **Equation:**
 $$
 See Description
+$$
+
+---
+### `biot_savart_vector_potential_grid`
+🛠️ *[Auto-Extracted from py_field_kernels.cpp]*
+
+**Description:** Computes Magnetic Vector Potential A on a grid.
+
+**Equation:**
+$$
+Computes Magnetic Vector Potential A on a grid.
 $$
 
 ---
