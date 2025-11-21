@@ -1,12 +1,12 @@
 // vorticity_dynamics.h
-#ifndef VAMCORE_VORTICITY_DYNAMICS_H
-#define VAMCORE_VORTICITY_DYNAMICS_H
+#ifndef SSTCORE_VORTICITY_DYNAMICS_H
+#define SSTCORE_VORTICITY_DYNAMICS_H
 
 #include <array>
 #include <vector>
 #include <cmath>
 
-namespace vam {
+namespace sst {
 /**
  * @brief Compute vorticity ω = ∂v/∂x - ∂u/∂y for 2D fields.
  */
@@ -29,6 +29,6 @@ namespace vam {
 		static std::array<double, 3> crocco_relation(const std::array<double, 3>& vorticity, double rho, const std::array<double, 3>& pressure_gradient);
 	};
 
-} // namespace vam
+} // namespace sst
 
 #endif

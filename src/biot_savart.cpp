@@ -2,7 +2,7 @@
 #include <cmath>
 #include <numeric>
 
-namespace vam {
+namespace sst {
 
     std::vector<Vec3> BiotSavart::computeVelocity(
         const std::vector<Vec3>& curve,

@@ -1,7 +1,7 @@
 #include "knot_dynamics.h"
 #include <cmath>
 
-namespace vam {
+namespace sst {
 
         double KnotDynamics::compute_writhe(const std::vector<Vec3>& X) {
                 double W = 0.0;
@@ -68,4 +68,4 @@ namespace vam {
                 return candidates;
         }
 
-} // namespace vam
+} // namespace sst

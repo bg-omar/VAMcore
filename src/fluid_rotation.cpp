@@ -6,7 +6,7 @@
 #include "knot_dynamics.h"
 #include <cmath>
 
-namespace vam {
+namespace sst {
 
 double FluidRotation::rossby_number(double U, double omega, double d) {
   return U / (2.0 * omega * d);

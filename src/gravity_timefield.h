@@ -1,5 +1,5 @@
-#ifndef VAMCORE_GRAVITY_TIMEFIELD_H
-#define VAMCORE_GRAVITY_TIMEFIELD_H
+#ifndef SSTCORE_GRAVITY_TIMEFIELD_H
+#define SSTCORE_GRAVITY_TIMEFIELD_H
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
@@ -7,7 +7,7 @@
 #include <vector>
 #include <array>
 
-namespace vam {
+namespace sst {
         using Vec3 = std::array<double, 3>;
 
         class GravityTimeField {
@@ -34,4 +34,4 @@ namespace vam {
         }
 }
 
-#endif //VAMCORE_GRAVITY_TIMEFIELD_H
+#endif //SSTCORE_GRAVITY_TIMEFIELD_H

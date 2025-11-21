@@ -2,14 +2,14 @@
 // Created by mr on 3/21/2025.
 //
 
-#ifndef VAMCORE_VORTEX_KNOT_SYSTEM_H
-#define VAMCORE_VORTEX_KNOT_SYSTEM_H
+#ifndef SSTCORE_VORTEX_KNOT_SYSTEM_H
+#define SSTCORE_VORTEX_KNOT_SYSTEM_H
 
 #pragma once
 #include <vector>
 #include <array>
 
-namespace vam {
+namespace sst {
 
 	using Vec3 = std::array<double, 3>;
 
@@ -35,4 +35,4 @@ namespace vam {
 }
 
 
-#endif //VAMCORE_VORTEX_KNOT_SYSTEM_H
+#endif //SSTCORE_VORTEX_KNOT_SYSTEM_H

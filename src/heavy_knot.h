@@ -2,14 +2,14 @@
 // Created by mr on 8/15/2025.
 //
 
-#ifndef VAMCORE_HEAVY_KNOT_H
-#define VAMCORE_HEAVY_KNOT_H
+#ifndef SSTCORE_HEAVY_KNOT_H
+#define SSTCORE_HEAVY_KNOT_H
 
 #pragma once
 #include <vector>
 #include <array>
 
-namespace vam {
+namespace sst {
 using Vec3 = std::array<double, 3>;
 
 struct FourierResult {
@@ -35,4 +35,4 @@ int estimate_crossing_number(
 }
 
 
-#endif // VAMCORE_HEAVY_KNOT_H
+#endif // SSTCORE_HEAVY_KNOT_H

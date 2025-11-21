@@ -2,7 +2,7 @@
 #include "vorticity_dynamics.h"
 #include <cassert>
 
-namespace vam {
+namespace sst {
 
 		/**
 	 * @param u Flattened 2D array (row-major) size (nx*ny)
@@ -60,5 +60,4 @@ namespace vam {
 		};
 	}
 
-} // namespace vam
-
+} // namespace sst

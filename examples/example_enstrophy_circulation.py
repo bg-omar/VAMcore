@@ -5,7 +5,7 @@ import sys
 
 # Set path if needed
 sys.path.insert(0, os.path.abspath("."))
-from vambindings import circulation_surface_integral, enstrophy
+from sstbindings import circulation_surface_integral, enstrophy
 
 # Example field data
 omega_field = np.array([[0.0, 0.0, 1.0]] * 100)

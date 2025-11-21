@@ -6,7 +6,7 @@
 #include "heavy_knot.h"
 
 namespace py = pybind11;
-using namespace vam;
+using namespace sst;
 
 void bind_heavy_knot(py::module_& m) {
   py::class_<FourierResult>(m, "FourierResult")

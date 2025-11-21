@@ -1,10 +1,10 @@
-#ifndef VAMCORE_PRESSURE_FIELD_H
-#define VAMCORE_PRESSURE_FIELD_H
+#ifndef SSTCORE_PRESSURE_FIELD_H
+#define SSTCORE_PRESSURE_FIELD_H
 #pragma once
 #include <array>
 #include <vector>
 
-namespace vam {
+namespace sst {
         using Vec3 = std::array<double, 3>;
 
         class PressureField {
@@ -31,4 +31,4 @@ namespace vam {
         }
 }
 
-#endif //VAMCORE_PRESSURE_FIELD_H
+#endif //SSTCORE_PRESSURE_FIELD_H

@@ -54,7 +54,7 @@ def render(t: ti.f32):
         hue = 0.5 + 0.5 * ti.sin(10 * (uv.norm() - t))
         pixels[i, j] = glow * ti.Vector([hue * tension, tension**2, hue**0.5])
 
-gui = ti.GUI("🧠 VAM Swirlcore", res=(res, res))
+gui = ti.GUI("🧠 SST Swirlcore", res=(res, res))
 init_particles()
 t = 0.0
 

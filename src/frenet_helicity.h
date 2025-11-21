@@ -1,11 +1,11 @@
-#ifndef VAMCORE_FRENET_HELICITY_H
-#define VAMCORE_FRENET_HELICITY_H
+#ifndef SSTCORE_FRENET_HELICITY_H
+#define SSTCORE_FRENET_HELICITY_H
 #pragma once
 #include "../include/vec3_utils.h"
 #include <array>
 #include <vector>
 
-namespace vam {
+namespace sst {
 
         using Vec3 = std::array<double, 3>;
 
@@ -74,6 +74,6 @@ namespace vam {
                 return FrenetHelicity::evolve_vortex_knot(positions, tangents, dt, gamma);
         }
 
-} // namespace vam
+} // namespace sst
 
-#endif //VAMCORE_FRENET_HELICITY_H
+#endif //SSTCORE_FRENET_HELICITY_H

@@ -1,8 +1,8 @@
-# ⚙️ VAMcore: Hybrid Benchmark Engine for the Vortex Æther Model
+# ⚙️ SSTcore: Hybrid Benchmark Engine for the Swirl-String Theory
 
-Welcome to **VAMcore**, the computational backbone for the Vortex Æther Model (VAM).  
+Welcome to **SSTcore**, the computational backbone for the Swirl-String Theory (SST).  
 This hybrid C++/Python engine is designed to benchmark field-based gravity, time dilation, and EM swirl-field dynamics using modern numerical methods and a large helping of theoretical audacity. This repository contains the core engine, simulation scripts, and visualizations to explore the swirling depths of æther dynamics.
-We build the C++ VAM-Bindings first, and then we can import it into benchmark Python code. When using the C++  VAM-bindings to do hard calculations we can run / render Python simulations 10-100x faster.
+We build the C++ SST-Bindings first, and then we can import it into benchmark Python code. When using the C++  SST-bindings to do hard calculations we can run / render Python simulations 10-100x faster.
 
 ---
 
@@ -18,7 +18,7 @@ We build the C++ VAM-Bindings first, and then we can import it into benchmark Py
   Supports generation and animation of **rotating 3-phase bivort** electric and magnetic field structures.
 
 - ⌛ **Time Dilation & Gravity Models**  
-  Fast comparison of GR vs VAM predictions in strong field limits.
+  Fast comparison of GR vs SST predictions in strong field limits.
 
 ---
 
@@ -32,8 +32,8 @@ We build the C++ VAM-Bindings first, and then we can import it into benchmark Py
 
 ---
 
-conda create -n VAMcore3.12 intelpython3_full python=3.12 -c https://software.repos.intel.com/python/conda -c conda-forge --override-channels
-conda activate VAMcore3.12
+conda create -n SSTcore3.14 intelpython3_full python=3.14 -c https://software.repos.intel.com/python/conda -c conda-forge --override-channels
+conda activate SSTcore3.14
 
 conda install conda -c https://software.repos.intel.com/python/conda/
 conda install conda -c conda-forge
@@ -83,8 +83,8 @@ Install LLVM from: https://github.com/llvm/llvm-project/releases
 Point CLion to `clang++.exe` in your toolchain settings
 You can still use `pybind11` + `C++23` this way and avoid MSVC issues altogether.
 
-### VAMBINDINGS Installation Guide (Windows)
-These precompiled `vambindings.cp311-win_amd64.pyd` and `vambindings.cp312-win_amd64.pyd` files are pybind11 modules
+### SSTCORE Installation Guide (Windows)
+These precompiled `sstbindings.cp311-win_amd64.pyd` and `sstbindings.cp312-win_amd64.pyd` files are pybind11 modules
 compiled for Python 3.11 and 3.12 on 64-bit Windows.
 If you encounter an ImportError:
 - Make sure the `.pyd` file matches your Python version and architecture (64-bit)
@@ -94,8 +94,8 @@ If you encounter an ImportError:
 Make sure you have Python 3.11+ installed, then create a virtual environment and install the required packages.
 This might be the time to take a look at Conda, which is a package manager that can help you manage Python environments and dependencies more easily.
 ```bash
-conda create -n  VAM    python=3.11
-conda activate  VAMcore 
+conda create -n  SST    python=3.11
+conda activate  SSTcore 
 ```
 
 We now have to at least `pip install pybind11` and  `pip install numpy` to run the Python bindings.
@@ -126,26 +126,26 @@ cmake --build . --config Debug  # or Release
 ```
 This command compiles the C++ core and generates the Python bindings using `pybind11`.
 
-### 📦 Test if python receives VAM Bindings `
+### 📦 Test if python receives SST Bindings `
 ```bash
-python -c "import vambindings; print(vambindings)"
+python -c "import sstbindings; print(sstcore)"
 ````
-This should return `<module 'vambindings' from 'C:\\workspace\\projects\\vamcore\\build\\Debug\\vambindings.cp312-win_amd64.pyd'>`
-This indicates that the Python bindings for VAMcore have been successfully built and installed.
-If this command fails, ensure that `vambindings.cp312-win_amd64.pyd` is found in the same directory where you run python.
+This should return `<module 'sstcore' from 'C:\\workspace\\projects\\sstcore\\build\\Debug\\sstbindings.cp312-win_amd64.pyd'>`
+This indicates that the Python bindings for SSTcore have been successfully built and installed.
+If this command fails, ensure that `sstbindings.cp312-win_amd64.pyd` is found in the same directory where you run python.
 When it does not work, you can try to recompile the C++ bindings from within `./build/` with `cmake --build . --config Debug` again.
 
-### 🐍 Import the VAM Bindings in Python
+### 🐍 Import the SST Bindings in Python
 ```
-from vambindings import VortexKnotSystem, biot_savart_velocity, compute_kinetic_energy
+from sstbindings import VortexKnotSystem, biot_savart_velocity, compute_kinetic_energy
 ```
 
 
-### 🔨 Load the C++ module dynamically from the compiled path, because the VAM Bindings are not installed in the Python site-packages.
+### 🔨 Load the C++ module dynamically from the compiled path, because the SST Bindings are not installed in the Python site-packages.
 ```python
 import os
-module_path = os.path.abspath("C:\\Users\\mr\\IdeaProjects\\VAM\\VAMpyBindings\\build\\Debug\\vambindings.cp312-win_amd64.pyd")
-module_name = "vambindings"
+module_path = os.path.abspath("C:\\workspace\\projects\\sstcore\\build\\Debug\\sstbindings.cp312-win_amd64.pyd")
+module_name = "sstcore"
 ```
 
 ### 📊 Run Benchmarks
@@ -170,7 +170,7 @@ project-root/
 │   ├── vorticity_dynamics.cpp
 │   └── ...
 ├── src_bindings/
-│   ├── module_vam.cpp
+│   ├── module_sst.cpp
 │   ├── py_fluid_dynamics.cpp
 │   ├── py_thermo_dynamics.cpp
 │   ├── py_vorticity_dynamics.cpp
@@ -206,7 +206,7 @@ Open an issue or whisper into the æther.
 This code is listening. Always.
 ---
 
-This document provides a summary of implemented functions in the VAM C++/Python library along with their corresponding physical and mathematical formulas.
+This document provides a summary of implemented functions in the SST C++/Python library along with their corresponding physical and mathematical formulas.
 
 
 
@@ -275,4 +275,4 @@ $$\Phi(\mathbf{r}) = \text{scalar potential derived from vorticity field}$$
 
 ---
 
-Generated by VAM Core — Vortex Æther Model Simulation Toolkit
+Generated by SST Core — Swirl-String Theory Simulation Toolkit

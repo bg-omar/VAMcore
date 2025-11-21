@@ -7,7 +7,7 @@
 #include <sstream>
 #include <stdexcept>
 
-namespace vam {
+namespace sst {
 static inline double wrap_index(int i, int n) {
   int r = i % n;
   return (r < 0) ? r + n : r;
@@ -219,5 +219,4 @@ Vec3 fourier_knot::evalPoint(const Block& blk, double s) {
   }
   return Vec3{x, y, z};
 }
-} // namespace vam
-
+} // namespace sst

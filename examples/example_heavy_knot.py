@@ -1,5 +1,5 @@
 import numpy as np
-from vambindings import (
+from sstbindings import (
     evaluate_fourier_series,
     writhe_gauss_curve,
     estimate_crossing_number

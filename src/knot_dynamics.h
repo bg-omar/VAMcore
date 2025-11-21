@@ -2,8 +2,8 @@
 // Created by mr on 3/22/2025.
 //
 
-#ifndef VAMCORE_KNOT_DYNAMICS_H
-#define VAMCORE_KNOT_DYNAMICS_H
+#ifndef SSTCORE_KNOT_DYNAMICS_H
+#define SSTCORE_KNOT_DYNAMICS_H
 
 #include "../include/vec3_utils.h"
 #ifndef M_PI
@@ -15,7 +15,7 @@
 #include <vector>
 #include <array>
 
-namespace vam {
+namespace sst {
 
 	using Vec3 = std::array<double, 3>;
 
@@ -65,7 +65,7 @@ namespace vam {
                 return KnotDynamics::detect_reconnection_candidates(curve, threshold);
         }
 
-} // namespace vam
+} // namespace sst
 
 
-#endif //VAMCORE_KNOT_DYNAMICS_H
+#endif //SSTCORE_KNOT_DYNAMICS_H

@@ -9,7 +9,7 @@
 namespace py = pybind11;
 
 void bind_kinetic_energy(py::module_& m) {
-        m.def("compute_kinetic_energy", &vam::KineticEnergy::compute,
+        m.def("compute_kinetic_energy", &sst::KineticEnergy::compute,
 		  py::arg("velocity"),
 		  py::arg("rho_ae"),
 		  R"pbdoc(

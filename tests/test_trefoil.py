@@ -1,6 +1,6 @@
 import pytest
 pytest.skip("example script", allow_module_level=True)
-from vambindings import VortexKnotSystem
+from sstbindings import VortexKnotSystem
 import numpy as np
 import matplotlib.pyplot as plt
 

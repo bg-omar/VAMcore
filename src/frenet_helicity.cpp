@@ -7,7 +7,7 @@
 #include <cmath>
 #include <numeric>
 
-namespace vam {
+namespace sst {
 
 	Vec3 normalize(const Vec3& v) {
 		double norm = std::sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
@@ -98,4 +98,4 @@ namespace vam {
 										 double gamma) {
 		return rk4_integrate(positions, tangents, dt, gamma);
 	}
-} // namespace vam
+} // namespace sst

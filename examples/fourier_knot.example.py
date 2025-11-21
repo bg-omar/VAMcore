@@ -1,6 +1,6 @@
 # fourier_knot.example.py
 import numpy as np
-from vambindings import load_knot_from_fseries, evaluate_fourier_block, curvature_of_points
+from sstbindings import load_knot_from_fseries, evaluate_fourier_block, curvature_of_points
 
 # Load (auto-selects largest block), evaluate at 1000 points, returns centered points + curvature
 pts, kappa = load_knot_from_fseries("myKnot.fseries", 1000)

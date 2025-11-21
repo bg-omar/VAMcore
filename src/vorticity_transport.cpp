@@ -5,7 +5,7 @@
 #include "vorticity_transport.h"
 
 
-namespace vam {
+namespace sst {
 
 	Vec3 VorticityTransport::baroclinic_term(const Vec3& grad_rho, const Vec3& grad_p, double rho) {
 		return {

@@ -1,7 +1,7 @@
 #include "pressure_field.h"
 #include <cmath>
 
-namespace vam {
+namespace sst {
 
         std::vector<double> PressureField::compute_bernoulli_pressure(const std::vector<double>& velocity_magnitude,
                                                                         double rho,
@@ -30,4 +30,4 @@ namespace vam {
                 return grad;
         }
 
-} // namespace vam
+} // namespace sst

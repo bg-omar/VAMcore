@@ -2,13 +2,13 @@
 // Created by mr on 7/18/2025.
 //
 
-#ifndef VAMCORE_RELATIVE_VORTICITY_H
-#define VAMCORE_RELATIVE_VORTICITY_H
+#ifndef SSTCORE_RELATIVE_VORTICITY_H
+#define SSTCORE_RELATIVE_VORTICITY_H
 
 #pragma once
 #include <array>
 
-namespace vam {
+namespace sst {
 
 	using Vec3 = std::array<double, 3>;
 
@@ -36,4 +36,4 @@ namespace vam {
 
 
 
-#endif //VAMCORE_RELATIVE_VORTICITY_H
+#endif //SSTCORE_RELATIVE_VORTICITY_H

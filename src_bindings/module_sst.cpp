@@ -1,4 +1,4 @@
-// bindings/py_vam.cpp
+// bindings/py_sst.cpp
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <algorithm>
@@ -31,12 +31,12 @@ void bind_vortex_knot_system(py::module_& m);
 void bind_vortex_ring(py::module_& m);
 void bind_vorticity_dynamics(py::module_& m);
 void bind_vorticity_transport(py::module_& m);
+void bind_sst_gravity(py::module_& m);
 
 
 
-
-PYBIND11_MODULE(vambindings, m) {
-  m.doc() = "VAM Core Bindings";
+PYBIND11_MODULE(sstbindings, m) {
+  m.doc() = "SST Core Bindings";
   bind_biot_savart(m);
   bind_fluid_dynamics(m);
   bind_fluid_rotation(m);
@@ -62,6 +62,7 @@ PYBIND11_MODULE(vambindings, m) {
   bind_vortex_ring(m);
   bind_vorticity_dynamics(m);
   bind_vorticity_transport(m);
+  bind_sst_gravity(m);
 
  // module-wide listing utility
     m.def(
@@ -117,7 +118,7 @@ PYBIND11_MODULE(vambindings, m) {
         py::arg("pattern") = py::none(),
         py::arg("include_private") = false,
         R"pbdoc(
-        Return a dictionary of exported names in vambindings.
+        Return a dictionary of exported names in sstbindings.
 
         Args:
           pattern (str|None): optional case-insensitive substring filter.
@@ -128,4 +129,3 @@ PYBIND11_MODULE(vambindings, m) {
         Also sets module __all__ = functions + classes (public names).
         )pbdoc");
 }
-

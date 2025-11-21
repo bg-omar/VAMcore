@@ -3,8 +3,8 @@
 /cmake-build-debug/
 /build/extern/
 /build/test_frenet.dir/
-/build/vambindings.dir/
-/build/vamcore.dir/
+/build/sstbindings.dir/
+/build/sstbindings.dir/
 /build/x64/
 /build/ALL_BUILD.vcxproj
 /build/ALL_BUILD.vcxproj.filters
@@ -14,8 +14,8 @@
 /build/INSTALL.vcxproj.filters
 /build/test_frenet.vcxproj
 /build/test_frenet.vcxproj.filters
-/build/vambindings.vcxproj
-/build/vambindings.vcxproj.filters
+/build/sstbindings.vcxproj
+/build/sstbindings.vcxproj.filters
 /build/VAMCore.sln
 /build/vamcore.vcxproj
 /build/vamcore.vcxproj.filters

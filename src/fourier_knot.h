@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 #include "../include/vec3_utils.h" // Your existing Vec3 struct and math
-namespace vam {
+namespace sst {
 
 using Vec3 = std::array<double, 3>;
 
@@ -54,5 +54,4 @@ private:
   static Vec3 evalPoint(const Block& blk, double s);
 };
 
-} // namespace vam
-
+} // namespace sst

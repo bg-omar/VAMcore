@@ -5,7 +5,7 @@
 #include "../src/biot_savart.h"
 
 namespace py = pybind11;
-using namespace vam;
+using namespace sst;
 
 static std::vector<Vec3> to_vec3_list(
     py::array_t<double, py::array::c_style | py::array::forcecast> arr)
@@ -28,7 +28,7 @@ void bind_biot_savart(py::module_& m) {
       .def_static("extract_interior",   &BiotSavart::extractInterior)
       .def_static("compute_invariants", &BiotSavart::computeInvariants);
 
-  m.def("biot_savart_velocity", &vam::BiotSavart::velocity,
+  m.def("biot_savart_velocity", &sst::BiotSavart::velocity,
         py::arg("r"), py::arg("filament_points"),
         py::arg("tangent_vectors"), py::arg("circulation") = 1.0,
         "Velocity at a single point r due to a filament.");

@@ -5,7 +5,7 @@
 #include "../src/vortex_ring.h"
 
 namespace py = pybind11;
-using namespace vam;
+using namespace sst;
 
 void bind_vortex_ring(py::module_& m) {
   m.def("lamb_oseen_velocity", &VortexRing::lamb_oseen_velocity);

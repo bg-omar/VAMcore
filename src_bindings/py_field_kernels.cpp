@@ -13,8 +13,8 @@
 #include "../src/field_kernels.h"
 
 namespace py = pybind11;
-using vam::FieldKernels;
-using vam::Vec3;
+using sst::FieldKernels;
+using sst::Vec3;
 
 static void require_same_shape(const py::array &A, const py::array &B, const py::array &C) {
     if (A.ndim() != B.ndim() || A.ndim() != C.ndim())
@@ -138,6 +138,67 @@ static py::tuple dipole_ring_field_grid_np(py::array X,
 
     FieldKernels::dipole_ring_field_grid(Xp, Yp, Zp, n_grid, pos, mom, Bxp, Byp, Bzp);
     return py::make_tuple(bx, by, bz);
+}
+
+// -------------------------------------------------------------------------
+// Compute Magnetic Vector Potential (A)
+// A(r) = (mu0 I / 4pi) * Integral( dl / |r-r'| )
+// Represents the "Ether Momentum" flow.
+// -------------------------------------------------------------------------
+static void biot_savart_vector_potential(const double* X,
+                                         const double* Y,
+                                         const double* Z,
+                                         std::size_t n_grid,
+                                         const std::vector<Vec3>& wire_points,
+                                         double current,
+                                         double* Ax,
+                                         double* Ay,
+                                         double* Az)
+{
+    constexpr double PI = 3.1415926535897932384626433832795;
+    constexpr double K  = 1.0 / (4.0 * PI); // mu0/4pi
+    const double factor = K * current;
+    const double eps = 1e-12;
+
+    if (wire_points.size() < 2) return;
+
+    // Precompute segments
+    const std::size_t S = wire_points.size() - 1;
+    std::vector<Vec3> mid(S), dl(S);
+    for (std::size_t i = 0; i < S; ++i) {
+        const Vec3& p0 = wire_points[i];
+        const Vec3& p1 = wire_points[i+1];
+        mid[i] = { 0.5*(p0[0]+p1[0]), 0.5*(p0[1]+p1[1]), 0.5*(p0[2]+p1[2]) };
+        dl[i]  = { p1[0]-p0[0],       p1[1]-p0[1],       p1[2]-p0[2]       };
+    }
+
+    // Grid Loop
+    for (std::size_t i = 0; i < n_grid; ++i) {
+        double local_Ax = 0.0, local_Ay = 0.0, local_Az = 0.0;
+
+        for (std::size_t s = 0; s < S; ++s) {
+            const Vec3& mp = mid[s];
+            const Vec3& d  = dl[s];
+
+            // Distance R
+            double rx = X[i] - mp[0];
+            double ry = Y[i] - mp[1];
+            double rz = Z[i] - mp[2];
+            double R = std::sqrt(rx*rx + ry*ry + rz*rz);
+
+            if (R < eps) continue;
+
+            // Integration: dl / R
+            double invR = 1.0 / R;
+            local_Ax += d[0] * invR;
+            local_Ay += d[1] * invR;
+            local_Az += d[2] * invR;
+        }
+
+        Ax[i] += factor * local_Ax;
+        Ay[i] += factor * local_Ay;
+        Az[i] += factor * local_Az;
+    }
 }
 
 // ------------- Class-style binder -------------

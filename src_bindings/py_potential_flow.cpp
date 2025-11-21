@@ -6,7 +6,7 @@
 #include "../src/potential_flow.h"
 
 namespace py = pybind11;
-using namespace vam;
+using namespace sst;
 
 void bind_potential_flow(py::module_& m) {
   m.def("laplacian_phi", &PotentialFlow::laplacian_phi);

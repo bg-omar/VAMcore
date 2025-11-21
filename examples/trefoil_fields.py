@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from vambindings import VortexKnotSystem, biot_savart_velocity
+from sstbindings import VortexKnotSystem, biot_savart_velocity
 # ✅ Get the script filename dynamically
 import os
 script_name = os.path.splitext(os.path.basename(__file__))[0]
@@ -138,7 +138,7 @@ fig = plt.figure(figsize=(12, 10))
 ax = fig.add_subplot(111, projection='3d')
 ax.plot(X[:, 0], X[:, 1], X[:, 2], color='gray', linewidth=1.5, label='Initial Trefoil')
 ax.plot(X_evolved[:, 0], X_evolved[:, 1], X_evolved[:, 2], color='red', linewidth=2.5, label='Evolved Trefoil')
-ax.set_title('Trefoil Vortex Evolution Under VAM Dynamics')
+ax.set_title('Trefoil Vortex Evolution Under SST Dynamics')
 ax.set_xlim(-plotGridsize, plotGridsize)
 ax.set_ylim(-plotGridsize, plotGridsize)
 ax.set_zlim(-plotGridsize, plotGridsize)

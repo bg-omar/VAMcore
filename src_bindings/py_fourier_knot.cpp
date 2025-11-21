@@ -5,9 +5,9 @@
 #include "../src/fourier_knot.h"
 
 namespace py = pybind11;
-using vam::FourierBlock;
-using vam::fourier_knot;
-using vam::Vec3;
+using sst::FourierBlock;
+using sst::fourier_knot;
+using sst::Vec3;
 
 static void _check_1d_same_len(const py::array &a, const py::array &b, const char* name){
   if(a.ndim()!=1 || b.ndim()!=1 || a.shape(0)!=b.shape(0))
@@ -79,7 +79,7 @@ void bind_fourier_knot(py::module_& m) {
           auto sraw=s.unchecked<1>();
           for(py::ssize_t i=0;i<s.shape(0);++i) S.push_back(sraw(i));
 
-          std::vector<Vec3> P = vam::fourier_knot::evaluate(blk, S);
+          std::vector<Vec3> P = sst::fourier_knot::evaluate(blk, S);
 
           py::array_t<double> x(s.shape(0)), y(s.shape(0)), z(s.shape(0));
           auto xr=x.mutable_unchecked<1>();

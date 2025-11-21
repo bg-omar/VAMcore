@@ -2,7 +2,7 @@
 #include "swirl_field.h"
 #include <cmath>
 
-namespace vam {
+namespace sst {
 
 		std::vector<Vec2f> compute_swirl_field(int res, float time) {
 		std::vector<Vec2f> field(res * res);

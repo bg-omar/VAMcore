@@ -3,25 +3,32 @@ import sys
 import os
 import inspect
 # ✅ Get the script filename dynamically
+import sys
+import os
+import inspect
+
+
+# Set path if needed
+sys.path.insert(0, os.path.abspath("."))
+# ✅ Get the script filename dynamically
 import os
 script_name = os.path.splitext(os.path.basename(__file__))[0]
 
 # Load the module dynamically from the compiled path
-module_path = os.path.abspath("vambindings.cp312-win_amd64.pyd")
-module_name = "vambindings"
+module_path = os.path.abspath("sstbindings.cp313-win_amd64.pyd")
+module_name = "sstbindings"
 
-spec = importlib.util.spec_from_file_location(module_name, module_path)
-vambindings = importlib.util.module_from_spec(spec)
-sys.modules[module_name] = vambindings
-spec.loader.exec_module(vambindings)
+import sstbindings
+
+
 
 # Generate Markdown documentation
-lines = ["# VAM Python Bindings (Auto-Generated API)\n"]
+lines = ["# SST Python Bindings (Auto-Generated API)\n"]
 
-for name in dir(vambindings):
+for name in dir(sstbindings):
     if name.startswith("__"):
         continue
-    obj = getattr(vambindings, name)
+    obj = getattr(sstbindings, name)
     if inspect.isclass(obj):
         lines.append(f"## Class: `{name}`\n")
         doc = inspect.getdoc(obj)
@@ -45,7 +52,7 @@ for name in dir(vambindings):
 markdown_doc = "\n".join(lines)
 
 # Save to file and return path
-output_path = "../vambindings_api.md"
+output_path = "../sstcore_api.md"
 with open(output_path, "w", encoding="utf-8") as f:
     f.write(markdown_doc)
 

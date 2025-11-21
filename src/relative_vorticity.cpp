@@ -5,7 +5,7 @@
 #include "relative_vorticity.h"
 
 
-namespace vam {
+namespace sst {
 
 	Vec3 Relative_Vorticity::rotating_frame_rhs(
 			const Vec3& velocity,

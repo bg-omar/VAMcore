@@ -5,10 +5,10 @@
 #include "time_evolution.h"
 
 // src/time_evolution.cpp
-#include "biot_savart.h"  // assumes vam::biot_savart_velocity is defined
+#include "biot_savart.h"  // assumes sst::biot_savart_velocity is defined
 #include "frenet_helicity.h"
 
-namespace vam {
+namespace sst {
 
 	TimeEvolution::TimeEvolution(std::vector<Vec3> initial_positions,
 								 std::vector<Vec3> initial_tangents,
@@ -40,4 +40,4 @@ namespace vam {
 		return tangents;
 	}
 
-} // namespace vam
+} // namespace sst

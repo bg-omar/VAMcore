@@ -6,8 +6,8 @@
 #include "../src/knot_pd.h"
 
 namespace py = pybind11;
-using vam::Vec3;
-using vam::PD;
+using sst::Vec3;
+using sst::PD;
 
 // Accept a NumPy (N,3) array (C-contiguous or force-castable) and return std::vector<Vec3>
 static std::vector<Vec3> to_vec3(
@@ -37,7 +37,7 @@ void bind_knot_pd(py::module_& m){
             // sequence of triples -> std::vector<std::array<double,3>>
             P3 = P3_like.cast<std::vector<Vec3>>();
           }
-          PD pd = vam::pd_from_curve(P3, tries, seed);
+          PD pd = sst::pd_from_curve(P3, tries, seed);
           return pd; // -> List[List[int]]
         },
         py::arg("P3"), py::arg("tries")=40, py::arg("seed")=12345,

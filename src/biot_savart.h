@@ -2,8 +2,8 @@
 // Created by mr on 3/21/2025.
 //
 
-#ifndef VAMCORE_BIOT_SAVART_H
-#define VAMCORE_BIOT_SAVART_H
+#ifndef SSTCORE_BIOT_SAVART_H
+#define SSTCORE_BIOT_SAVART_H
 
 #pragma once
 #include <array>
@@ -14,7 +14,7 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-namespace vam {
+namespace sst {
         using Vec3 = std::array<double, 3>;
 
         class BiotSavart {
@@ -61,4 +61,4 @@ namespace vam {
         }
 }
 
-#endif //VAMCORE_BIOT_SAVART_H
+#endif //SSTCORE_BIOT_SAVART_H

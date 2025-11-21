@@ -2,8 +2,8 @@
 // Created by mr on 3/22/2025.
 //
 
-#ifndef VAMCORE_FLUID_DYNAMICS_H
-#define VAMCORE_FLUID_DYNAMICS_H
+#ifndef SSTCORE_FLUID_DYNAMICS_H
+#define SSTCORE_FLUID_DYNAMICS_H
 
 
 #pragma once
@@ -12,7 +12,7 @@
 #include <vector>
 #include <cmath>
 
-namespace vam {
+namespace sst {
 
         using Vec3 = std::array<double, 3>;
 
@@ -82,8 +82,8 @@ namespace vam {
                 FluidDynamics::evolve_positions_euler(positions, velocity, dt);
         }
 
-} // namespace vam
+} // namespace sst
 
 
 
-#endif //VAMCORE_FLUID_DYNAMICS_H
+#endif //SSTCORE_FLUID_DYNAMICS_H

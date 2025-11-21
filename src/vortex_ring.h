@@ -11,7 +11,7 @@
 #include <vector>
 #include <array>
 
-namespace vam {
+namespace sst {
 
 using Vec3 = std::array<double, 3>;
 

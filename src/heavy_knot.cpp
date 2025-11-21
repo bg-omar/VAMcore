@@ -8,7 +8,7 @@
 #include <random>
 #include <numeric>
 
-namespace vam {
+namespace sst {
 
 FourierResult evaluate_fourier_series(
     const std::vector<std::array<double, 6>>& coeffs,
@@ -143,4 +143,4 @@ int estimate_crossing_number(
   return min_cross;
 }
 
-}  // namespace vam
+}  // namespace sst

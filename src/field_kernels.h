@@ -2,8 +2,8 @@
 // Created by omar.iskandarani on 8/12/2025.
 //
 
-#ifndef VAMCORE_FIELD_KERNELS_H
-#define VAMCORE_FIELD_KERNELS_H
+#ifndef SSTCORE_FIELD_KERNELS_H
+#define SSTCORE_FIELD_KERNELS_H
 // field_kernels.h
 // Static kernels for Biot–Savart over a wire polyline and dipole superposition.
 // Units: mu0 = 1, so factor = 1/(4π).
@@ -14,7 +14,7 @@
 #include <cmath>
 #include <algorithm>
 
-namespace vam {
+namespace sst {
 
 using Vec3 = std::array<double, 3>;
 
@@ -119,7 +119,7 @@ public:
     }
 };
 
-} // namespace vam
+} // namespace sst
 
 
-#endif // VAMCORE_FIELD_KERNELS_H
+#endif // SSTCORE_FIELD_KERNELS_H

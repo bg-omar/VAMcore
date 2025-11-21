@@ -10,10 +10,10 @@
 namespace py = pybind11;
 
 void bind_hyperbolic_volume(py::module_& m){
-#ifdef VAM_ENABLE_HYPVOL
-  // Native C++ path (you must implement vam::hyperbolic_volume_from_pd)
+#ifdef SST_ENABLE_HYPVOL
+  // Native C++ path (you must implement sst::hyperbolic_volume_from_pd)
   m.def("hyperbolic_volume_from_pd",
-        &vam::hyperbolic_volume_from_pd,
+        &sst::hyperbolic_volume_from_pd,
         py::arg("pd"),
         R"pbdoc(Hyperbolic volume from PD (native).)pbdoc");
 #else
@@ -21,7 +21,7 @@ void bind_hyperbolic_volume(py::module_& m){
   m.def("hyperbolic_volume_from_pd",
         [](const std::vector<std::array<int,4>>& pd)->double{
           py::gil_scoped_acquire gil;
-          py::object mod = py::module_::import("vam_hypvol_no_deps");
+          py::object mod = py::module_::import("sst_hypvol_no_deps");
           py::object fn  = mod.attr("hyperbolic_volume_from_pd");
           py::object out = fn(py::cast(pd), py::arg("verbose")=false);
           return out.cast<double>();

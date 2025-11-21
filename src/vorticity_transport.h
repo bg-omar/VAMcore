@@ -2,14 +2,14 @@
 // Created by mr on 7/18/2025.
 //
 
-#ifndef VAMCORE_VORTICITY_TRANSPORT_H
-#define VAMCORE_VORTICITY_TRANSPORT_H
+#ifndef SSTCORE_VORTICITY_TRANSPORT_H
+#define SSTCORE_VORTICITY_TRANSPORT_H
 
 
 #pragma once
 #include <array>
 
-namespace vam {
+namespace sst {
 
 	using Vec3 = std::array<double, 3>;
 
@@ -23,4 +23,4 @@ namespace vam {
 }
 
 
-#endif //VAMCORE_VORTICITY_TRANSPORT_H
+#endif //SSTCORE_VORTICITY_TRANSPORT_H

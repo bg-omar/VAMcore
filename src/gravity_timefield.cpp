@@ -1,7 +1,7 @@
 #include "gravity_timefield.h"
 #include <cmath>
 
-namespace vam {
+namespace sst {
 
         std::vector<double> GravityTimeField::compute_gravitational_potential(const std::vector<Vec3>& positions,
                                                                                const std::vector<Vec3>& vorticity,
@@ -42,4 +42,4 @@ namespace vam {
                 return gamma;
         }
 
-} // namespace vam
+} // namespace sst

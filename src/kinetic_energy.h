@@ -2,8 +2,8 @@
 // Created by mr on 3/23/2025.
 //
 
-#ifndef VAMCORE_KINETIC_ENERGY_H
-#define VAMCORE_KINETIC_ENERGY_H
+#ifndef SSTCORE_KINETIC_ENERGY_H
+#define SSTCORE_KINETIC_ENERGY_H
 
 // include/kinetic_energy.hpp
 #pragma once
@@ -11,7 +11,7 @@
 #include <vector>
 #include <array>
 
-namespace vam {
+namespace sst {
 
 	using Vec3 = std::array<double, 3>;
 
@@ -25,6 +25,6 @@ namespace vam {
                 return KineticEnergy::compute(velocity, rho_ae);
         }
 
-} // namespace vam
+} // namespace sst
 
-#endif //VAMCORE_KINETIC_ENERGY_H
+#endif //SSTCORE_KINETIC_ENERGY_H

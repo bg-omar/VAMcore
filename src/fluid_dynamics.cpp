@@ -5,7 +5,7 @@
 #include "fluid_dynamics.h"
 #include <cmath>
 
-namespace vam {
+namespace sst {
 
         std::vector<double> FluidDynamics::compute_pressure_field(
                         const std::vector<double>& velocity_magnitude,

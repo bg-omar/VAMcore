@@ -2,14 +2,14 @@
 // Created by mr on 7/18/2025.
 //
 
-#ifndef VAMCORE_POTENTIAL_FLOW_H
-#define VAMCORE_POTENTIAL_FLOW_H
+#ifndef SSTCORE_POTENTIAL_FLOW_H
+#define SSTCORE_POTENTIAL_FLOW_H
 
 
 #pragma once
 #include <array>
 
-namespace vam {
+namespace sst {
 
 	using Vec3 = std::array<double, 3>;
 
@@ -23,4 +23,4 @@ namespace vam {
 }
 
 
-#endif //VAMCORE_POTENTIAL_FLOW_H
+#endif //SSTCORE_POTENTIAL_FLOW_H

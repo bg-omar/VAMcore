@@ -6,7 +6,7 @@
 #include <random>
 #include <stdexcept>
 
-namespace vam {
+namespace sst {
 
 static inline double dot3(const Vec3& a, const Vec3& b){
   return a[0]*b[0] + a[1]*b[1] + a[2]*b[2];
@@ -173,4 +173,4 @@ PD pd_from_curve(const std::vector<Vec3>& P3,
   return best;
 }
 
-} // namespace vam
+} // namespace sst

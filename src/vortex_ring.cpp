@@ -8,7 +8,7 @@
 
 #include <cmath>
 
-namespace vam {
+namespace sst {
 
     double VortexRing::lamb_oseen_velocity(double gamma, double R, double nu, double t) {
       return (gamma / (2.0 * M_PI * R)) * (1.0 - std::exp(-R*R / (4.0 * nu * t)));

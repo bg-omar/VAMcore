@@ -1,10 +1,10 @@
-#ifndef VAMCORE_THERMO_DYNAMICS_H
-#define VAMCORE_THERMO_DYNAMICS_H
+#ifndef SSTCORE_THERMO_DYNAMICS_H
+#define SSTCORE_THERMO_DYNAMICS_H
 
 #include <vector>
 #include <cmath>
 
-namespace vam {
+namespace sst {
 
 	class ThermoDynamics {
 	public:

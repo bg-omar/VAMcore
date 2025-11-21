@@ -5,7 +5,7 @@
 namespace py = pybind11;
 
 void bind_swirl_field(py::module_& m) {
-			m.def("compute_swirl_field", &vam::compute_swirl_field,
+			m.def("compute_swirl_field", &sst::compute_swirl_field,
 						py::arg("res"), py::arg("time"),
 						R"pbdoc(
 				Compute 2D swirl force field at a given resolution and time.

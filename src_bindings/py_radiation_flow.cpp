@@ -5,7 +5,7 @@
 #include "../src/radiation_flow.h"
 
 namespace py = pybind11;
-using namespace vam;
+using namespace sst;
 
 void bind_radiation_flow(py::module_& m) {
   m.def("radiation_force", &RadiationFlow::radiation_force);

@@ -4,7 +4,7 @@
 
 #include "radiation_flow.h"
 
-namespace vam {
+namespace sst {
 
 double RadiationFlow::radiation_force(double I0, double Qm, double lambda1, double lambda2, double lambda_g) {
   double factor = (lambda1 / lambda_g) * (lambda2 / lambda_g);

@@ -2,15 +2,15 @@
 // Created by mr on 8/21/2025.
 //
 
-#ifndef VAMCORE_HYPERBOLIC_VOLUME_H
-#define VAMCORE_HYPERBOLIC_VOLUME_H
+#ifndef SSTCORE_HYPERBOLIC_VOLUME_H
+#define SSTCORE_HYPERBOLIC_VOLUME_H
 
 // ./src/hyperbolic_volume.h
 #pragma once
 #include <vector>
 #include <array>
 
-namespace vam {
+namespace sst {
 
 using Crossing = std::array<int,4>;
 using PD = std::vector<Crossing>;
@@ -21,7 +21,7 @@ using PD = std::vector<Crossing>;
  */
 double hyperbolic_volume_from_pd(const PD& pd);
 
-} // namespace vam
+} // namespace sst
 
 
-#endif // VAMCORE_HYPERBOLIC_VOLUME_H
+#endif // SSTCORE_HYPERBOLIC_VOLUME_H

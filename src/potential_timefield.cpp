@@ -1,7 +1,7 @@
 #include "potential_timefield.h"
 #include <cmath>
 
-namespace vam {
+namespace sst {
 
         std::vector<double> PotentialTimeField::compute_gravitational_potential(
                         const std::vector<Vec3>& positions,
@@ -47,4 +47,4 @@ namespace vam {
                 return time_factor;
         }
 
-} // namespace vam
+} // namespace sst

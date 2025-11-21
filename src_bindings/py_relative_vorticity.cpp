@@ -6,7 +6,7 @@
 #include "../src/relative_vorticity.h"
 
 namespace py = pybind11;
-using namespace vam;
+using namespace sst;
 
 void bind_relative_vorticity(py::module_& m) {
 	m.def("crocco_gradient", &Relative_Vorticity::crocco_gradient,

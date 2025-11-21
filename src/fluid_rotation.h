@@ -10,7 +10,7 @@
 #pragma once
 #include <cmath>
 
-namespace vam {
+namespace sst {
 
 class FluidRotation {
 public:

@@ -5,7 +5,7 @@
 #include "potential_flow.h"
 
 
-namespace vam {
+namespace sst {
 
 	double PotentialFlow::laplacian_phi(double d2phidx2, double d2phidy2, double d2phidz2) {
 		return d2phidx2 + d2phidy2 + d2phidz2;

@@ -3,7 +3,7 @@
 #include "../src/vorticity_transport.h"
 
 namespace py = pybind11;
-using namespace vam;
+using namespace sst;
 
 void bind_vorticity_transport(py::module_& m) {
     m.def("baroclinic_term", &VorticityTransport::baroclinic_term, "Baroclinic torque term");

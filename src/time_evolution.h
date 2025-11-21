@@ -2,8 +2,8 @@
 // Created by mr on 3/22/2025.
 //
 
-#ifndef VAMCORE_TIME_EVOLUTION_H
-#define VAMCORE_TIME_EVOLUTION_H
+#ifndef SSTCORE_TIME_EVOLUTION_H
+#define SSTCORE_TIME_EVOLUTION_H
 
 
 #pragma once
@@ -11,7 +11,7 @@
 #include <vector>
 #include <array>
 
-namespace vam {
+namespace sst {
 
 	using Vec3 = std::array<double, 3>;
 
@@ -32,7 +32,7 @@ namespace vam {
 		double circulation;
 	};
 
-} // namespace vam
+} // namespace sst
 
 
-#endif //VAMCORE_TIME_EVOLUTION_H
+#endif //SSTCORE_TIME_EVOLUTION_H

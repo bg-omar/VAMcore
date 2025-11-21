@@ -1,7 +1,7 @@
 #include "kinetic_energy.h"
 #include <cmath>
 
-namespace vam {
+namespace sst {
 
         double KineticEnergy::compute(const std::vector<Vec3>& velocity, double rho_ae) {
                 double sum = 0.0;
@@ -11,4 +11,4 @@ namespace vam {
                 return 0.5 * rho_ae * sum;
         }
 
-} // namespace vam
+} // namespace sst

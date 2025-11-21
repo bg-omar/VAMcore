@@ -2,8 +2,8 @@
 // Created by mr on 3/22/2025.
 //
 
-#ifndef VAMCORE_POTENTIAL_TIMEFIELD_H
-#define VAMCORE_POTENTIAL_TIMEFIELD_H
+#ifndef SSTCORE_POTENTIAL_TIMEFIELD_H
+#define SSTCORE_POTENTIAL_TIMEFIELD_H
 
 
 // include/potential_timefield.hpp
@@ -12,7 +12,7 @@
 #include <array>
 #include <vector>
 
-namespace vam {
+namespace sst {
 
 	using Vec3 = std::array<double, 3>;
 
@@ -43,7 +43,7 @@ namespace vam {
                 return PotentialTimeField::compute_time_dilation_map(tangential_velocities, ce);
         }
 
-} // namespace vam
+} // namespace sst
 
 
-#endif //VAMCORE_POTENTIAL_TIMEFIELD_H
+#endif //SSTCORE_POTENTIAL_TIMEFIELD_H

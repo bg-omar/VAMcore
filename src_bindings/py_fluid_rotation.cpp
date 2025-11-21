@@ -6,7 +6,7 @@
 #include "../src/fluid_rotation.h"
 
 namespace py = pybind11;
-using namespace vam;
+using namespace sst;
 
 void bind_fluid_rotation(py::module_& m) {
   m.def("rossby_number", &FluidRotation::rossby_number);

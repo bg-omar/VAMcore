@@ -7,7 +7,7 @@
 #include <cmath>
 
 int main() {
-	using namespace vam;
+	using namespace sst;
 
 	std::vector<Vec3> X = {
 			{1.0, 0.0, 0.0},

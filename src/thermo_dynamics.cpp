@@ -1,7 +1,7 @@
 #include "thermo_dynamics.h"
 #include <cmath>
 
-namespace vam {
+namespace sst {
 
 	double ThermoDynamics::potential_temperature(double T, double p0, double p, double R, double cp) {
 		double k = R / cp;

@@ -6,7 +6,7 @@
 #include "biot_savart.h"
 #include <cmath>
 
-namespace vam {
+namespace sst {
 
 	VortexKnotSystem::VortexKnotSystem() = default;
 
@@ -80,4 +80,4 @@ namespace vam {
 	}
 
 
-} // namespace vam
+} // namespace sst
