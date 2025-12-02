@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.23)
-project(SSTCore LANGUAGES CXX)
+project(sstcore LANGUAGES CXX)
 
 # Ensure C++ compiler is set
 if(NOT CMAKE_CXX_COMPILER)
@@ -15,7 +15,12 @@ endif()
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-
+# Optimization flags for scientific calculation
+if(MSVC)
+    add_compile_options(/O2 /fp:fast)
+else()
+    add_compile_options(-O3 -march=native -ffast-math)
+endif()
 # Use vendored pybind11 from extern/ directory
 add_subdirectory(extern/pybind11)
 

@@ -367,21 +367,17 @@ $$
 ### `compute_centerline_helicity`
 ✅ **[SST Canon]**
 
-**Description:** Total helicity decomposed into Writhe and Twist.
-
+**Description:** Total helicity decomposed into Writhe and Twist.  
 **Equation:**
 $$
 H = Wr + Tw
 $$
-
-![Topology Diagram](topology_concept.png)
 
 ---
 ### `compute_helicity`
 ✅ **[SST Canon]**
 
 **Description:** Computes Hydrodynamic Helicity (Knottedness).
-
 **Equation:**
 $$
 \mathcal{H} = \int_V \vec{v} \cdot \vec{\omega} \, dV

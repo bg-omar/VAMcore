@@ -19,7 +19,7 @@ omega_drive = 10.9e6
 B_saturation = 5.0
 
 plotGridsize = 3.0
-n_vectors = 15
+n_vectors = 5
 
 # --- 2. Initialize Geometry (Trefoil Knot) ---
 print("Initializing Vortex Geometry...")
