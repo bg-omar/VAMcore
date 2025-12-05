@@ -96,8 +96,8 @@ You can still use `pybind11` + `C++23` this way and avoid MSVC issues altogether
 Make sure you have Python 3.11+ installed, then create a virtual environment and install the required packages.
 This might be the time to take a look at Conda, which is a package manager that can help you manage Python environments and dependencies more easily.
 ```bash
-conda create -n  SSTcore    python=3.12
-conda activate  SSTcore 
+conda create -n  SSTcore12    python=3.12
+conda activate  SSTcore12 
 ```
 
 We now have to at least `pip install pybind11` and  `pip install numpy` to run the Python bindings.

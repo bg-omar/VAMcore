@@ -1,6 +1,11 @@
 import numpy as np
 
 """
+Note: This example shows a Python implementation. For C++ bindings, use:
+    from sstbindings import baroclinic_term, compute_vorticity_rhs
+    # baroclinic_term(grad_rho, grad_p, rho)
+    # compute_vorticity_rhs(omega, grad_u, div_u, grad_rho, grad_p, rho)
+
 \section*{Vorticity Transport Equation (Variable Density)}
 
 \textbf{Condition:}
