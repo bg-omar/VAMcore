@@ -15,17 +15,31 @@ endif()
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+
+# Platform detection
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    set(IS_LINUX TRUE)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    set(IS_WINDOWS TRUE)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    set(IS_MACOS TRUE)
+endif()
+
 # Optimization flags for scientific calculation
 if(MSVC)
     add_compile_options(/O2 /fp:fast)
 else()
     add_compile_options(-O3 -march=native -ffast-math)
+    # Linux-specific optimizations
+    if(IS_LINUX)
+        add_compile_options(-fPIC)  # Position-independent code for shared libraries
+    endif()
 endif()
 # Use vendored pybind11 from extern/ directory
 add_subdirectory(extern/pybind11)
 
 # Core SST library sources
-add_library(sstcore STATIC
+add_library(sstcore_lib STATIC
         src/biot_savart.cpp
         src/fluid_dynamics.cpp
         src/fluid_rotation.cpp
@@ -54,11 +68,12 @@ add_library(sstcore STATIC
         src/sst_gravity.h
 )
 
-target_include_directories(sstcore PUBLIC src)
+target_include_directories(sstcore_lib PUBLIC src)
 
-# Python bindingsac
-pybind11_add_module(sstbindings src_bindings/module_sst.cpp)
-target_sources(sstbindings PRIVATE
+# Python bindings
+# pybind11 will automatically use .pyd on Windows and .so on Linux/Mac
+pybind11_add_module(sstcore src_bindings/module_sst.cpp)
+target_sources(sstcore PRIVATE
         src_bindings/py_biot_savart.cpp
         src_bindings/py_field_kernels.cpp
         src_bindings/py_field_ops.cpp
@@ -86,14 +101,22 @@ target_sources(sstbindings PRIVATE
         src_bindings/py_vorticity_transport.cpp
         src_bindings/py_sst_gravity.cpp)
 
-target_link_libraries(sstbindings PRIVATE sstcore)
-target_include_directories(sstbindings PRIVATE extern/pybind11/include)
+target_link_libraries(sstcore PRIVATE sstcore_lib)
+target_include_directories(sstcore PRIVATE extern/pybind11/include)
+
+# Linux-specific linker settings
+if(IS_LINUX)
+    # Ensure proper linking on Linux
+    set_target_properties(sstcore PROPERTIES
+        LINK_FLAGS "-Wl,--no-undefined"
+    )
+endif()
 add_executable(test_frenet tests/test_frenet_helicity.cpp)
-target_link_libraries(test_frenet PRIVATE sstcore)
+target_link_libraries(test_frenet PRIVATE sstcore_lib)
 
 
 # Install targets
-install(TARGETS sstcore sstbindings
+install(TARGETS sstcore_lib sstcore
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib
         RUNTIME DESTINATION bin)
@@ -103,15 +126,15 @@ install(DIRECTORY include/ DESTINATION include)
 # After sstcore is built, copy it to ${CMAKE_SOURCE_DIR}
 # So you can easily import it from Python scripts in the root directory
 
-add_custom_command(TARGET sstbindings POST_BUILD
+add_custom_command(TARGET sstcore POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy
-        $<TARGET_FILE:sstbindings>
-        ${CMAKE_SOURCE_DIR}/$<TARGET_FILE_NAME:sstbindings>
+        $<TARGET_FILE:sstcore>
+        ${CMAKE_SOURCE_DIR}/$<TARGET_FILE_NAME:sstcore>
         COMMAND ${CMAKE_COMMAND} -E copy
-        $<TARGET_FILE:sstbindings>
-        ${CMAKE_SOURCE_DIR}/examples/$<TARGET_FILE_NAME:sstbindings>
+        $<TARGET_FILE:sstcore>
+        ${CMAKE_SOURCE_DIR}/examples/$<TARGET_FILE_NAME:sstcore>
         COMMAND ${CMAKE_COMMAND} -E copy
-        $<TARGET_FILE:sstbindings>
-        ${CMAKE_SOURCE_DIR}/../SwirlStringTheory/SST_Mathematical_Proof_Python/$<TARGET_FILE_NAME:sstbindings>
-        COMMENT "Copied sstbindings module to project root, examples/, and ../SwirlStringTheory/ for easy import"
+        $<TARGET_FILE:sstcore>
+        ${CMAKE_SOURCE_DIR}/../SwirlStringTheory/SST_Mathematical_Proof_Python/$<TARGET_FILE_NAME:sstcore>
+        COMMENT "Copied sstcore module to project root, examples/, and ../SwirlStringTheory/ for easy import"
 )
