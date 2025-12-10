@@ -10,23 +10,23 @@ import os
 script_name = os.path.splitext(os.path.basename(__file__))[0]
 
 # Load the module dynamically from the compiled path
-module_path = os.path.abspath("sstbindings.cp311-win_amd64.pyd")
+module_path = os.path.abspath("swirl_string_core.cp312-win_amd64.pyd")
 module_name = "sstcore"
 
-import sstbindings
+import swirl_string_core
 
-print(sstbindings.list_bindings())
+print(swirl_string_core.list_bindings())
 
 
 
 print("=== Functions ===")
-for name in dir(sstbindings):
-    attr = getattr(sstbindings, name)
+for name in dir(swirl_string_core):
+    attr = getattr(swirl_string_core, name)
     if inspect.isfunction(attr):
         print(name)
 
 print("=== Available Attributes in sstcore ===")
-for attr in dir(sstbindings):
+for attr in dir(swirl_string_core):
     if not attr.startswith("__"):
         print(attr)
 

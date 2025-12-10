@@ -1,5 +1,5 @@
 import numpy as np
-from sstbindings import (
+from swirl_string_core import (
     evaluate_fourier_series,
     writhe_gauss_curve,
     estimate_crossing_number

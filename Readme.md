@@ -1,6 +1,6 @@
-# ⚙️ SSTcore: Hybrid Benchmark Engine for the Swirl-String Theory
+# ⚙️ Swirl_String_core: Hybrid Benchmark Engine for the Swirl-String Theory
 
-Welcome to **SSTcore**, the computational backbone for the Swirl-String Theory (SST).  
+Welcome to **Swirl_String_core**, the computational backbone for the Swirl-String Theory (SST).  
 This hybrid C++/Python engine is designed to benchmark field-based gravity, time dilation, and EM swirl-field dynamics using modern numerical methods and a large helping of theoretical audacity. This repository contains the core engine, simulation scripts, and visualizations to explore the swirling depths of æther dynamics.
 We build the C++ SST-Bindings first, and then we can import it into benchmark Python code. When using the C++  SST-bindings to do hard calculations we can run / render Python simulations 10-100x faster.
 
@@ -96,8 +96,8 @@ You can still use `pybind11` + `C++23` this way and avoid MSVC issues altogether
 Make sure you have Python 3.11+ installed, then create a virtual environment and install the required packages.
 This might be the time to take a look at Conda, which is a package manager that can help you manage Python environments and dependencies more easily.
 ```bash
-conda create -n  SSTcore    python=3.12
-conda activate  SSTcore 
+conda create -n  SSTcore12    python=3.12
+conda activate  SSTcore12 
 ```
 
 We now have to at least `pip install pybind11` and  `pip install numpy` to run the Python bindings.

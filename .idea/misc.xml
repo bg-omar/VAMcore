@@ -9,5 +9,13 @@
   <component name="CMakeWorkspace" PROJECT_DIR="$PROJECT_DIR$">
     <contentRoot DIR="$PROJECT_DIR$/extern/pybind11" />
   </component>
+  <component name="CidrRootsConfiguration">
+    <libraryRoots>
+      <file path="$PROJECT_DIR$/extern" />
+    </libraryRoots>
+    <excludeRoots>
+      <file path="$PROJECT_DIR$/extern/pybind11" />
+    </excludeRoots>
+  </component>
   <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.11 (SSTcore)" project-jdk-type="Python SDK" />
 </project>

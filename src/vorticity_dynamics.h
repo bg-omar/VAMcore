@@ -1,15 +1,17 @@
 // vorticity_dynamics.h
-#ifndef SSTCORE_VORTICITY_DYNAMICS_H
-#define SSTCORE_VORTICITY_DYNAMICS_H
+#ifndef SWIRL_STRING_CORE_VORTICITY_DYNAMICS_H
+#define SWIRL_STRING_CORE_VORTICITY_DYNAMICS_H
 
 #include <array>
 #include <vector>
 #include <cmath>
 
 namespace sst {
-/**
- * @brief Compute vorticity ω = ∂v/∂x - ∂u/∂y for 2D fields.
- */
+	using Vec3 = std::array<double, 3>;
+
+	/**
+	 * @brief Compute vorticity ω = ∂v/∂x - ∂u/∂y for 2D fields.
+	 */
 	class VorticityDynamics {
 	public:
 		/**
@@ -27,6 +29,26 @@ namespace sst {
 		static double solid_body_rotation_vorticity(double omega);
 		static double couette_vorticity(double alpha);
 		static std::array<double, 3> crocco_relation(const std::array<double, 3>& vorticity, double rho, const std::array<double, 3>& pressure_gradient);
+
+		// Relative vorticity methods (from Relative_Vorticity)
+		static Vec3 rotating_frame_rhs(
+				const Vec3& velocity,
+				const Vec3& vorticity,
+				const Vec3& grad_phi,
+				const Vec3& grad_p,
+				const Vec3& omega,
+				double rho);
+		static Vec3 crocco_gradient(
+				const Vec3& velocity,
+				const Vec3& vorticity,
+				const Vec3& grad_phi,
+				const Vec3& grad_p,
+				double rho);
+
+		// Vorticity transport methods (from VorticityTransport)
+		static Vec3 baroclinic_term(const Vec3& grad_rho, const Vec3& grad_p, double rho);
+		static Vec3 compute_vorticity_rhs(const Vec3& omega, const std::array<Vec3, 3>& grad_u,
+										 double div_u, const Vec3& grad_rho, const Vec3& grad_p, double rho);
 	};
 
 } // namespace sst

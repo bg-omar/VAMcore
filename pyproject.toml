@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "pybind11>=2.6.0", "numpy>=1.19.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "swirl-string-core"
+version = "0.1.3"
+description = "Swirl String Theory Canonical Core - High-performance C++ library for knot dynamics, vortex systems, and fluid mechanics"
+readme = "Readme.md"
+requires-python = ">=3.7"
+license = {text = "CC BY-NC 4.0"}
+authors = [
+    {name = "Omar Iskandarani", email = "info@omariskandarani.com"}
+]
+maintainers = [
+    {name = "Omar Iskandarani", email = "info@omariskandarani.com"}
+]
+keywords = ["physics", "fluid-dynamics", "knot-theory", "vortex", "computational-physics", "cpp"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "License :: Other/Proprietary License",  # CC BY-NC 4.0 (non-commercial)
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: C++",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "pybind11>=2.6.0",
+    "numpy>=1.19.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Swirl-String-Theory/SSTcore"
+Documentation = "https://github.com/Swirl-String-Theory/SSTcore#readme"
+Repository = "https://github.com/Swirl-String-Theory/SSTcore"
+"Bug Tracker" = "https://github.com/Swirl-String-Theory/SSTcore/issues"
+
+[tool.setuptools]
+packages = {find = {}}
+
+[tool.setuptools.package-data]
+"*" = ["src/knot_fseries/**/*.fseries", "src/knot_fseries/**/*.short"]

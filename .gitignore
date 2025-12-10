@@ -26,3 +26,12 @@
 /build/
 /cmake-build-debug-mingw/
 /cmake-build-relwithdebinfo-mingw/
+/extern/
+
+# Python packaging artifacts
+/dist/
+/*.egg-info/
+/build/temp/
+/build/lib/
+*.egg
+/Secrets.md

@@ -60,4 +60,83 @@ namespace sst {
 		};
 	}
 
+	// Relative vorticity methods (from Relative_Vorticity)
+	Vec3 VorticityDynamics::rotating_frame_rhs(
+			const Vec3& velocity,
+			const Vec3& vorticity,
+			const Vec3& grad_phi,
+			const Vec3& grad_p,
+			const Vec3& omega,
+			double rho)
+	{
+		Vec3 omega_cross_u = {
+				omega[1]*velocity[2] - omega[2]*velocity[1],
+				omega[2]*velocity[0] - omega[0]*velocity[2],
+				omega[0]*velocity[1] - omega[1]*velocity[0]
+		};
+
+		Vec3 rhs;
+		for (int i = 0; i < 3; ++i)
+			rhs[i] = -2.0 * omega_cross_u[i] - grad_phi[i] - grad_p[i] / rho;
+
+		return rhs;
+	}
+
+	Vec3 VorticityDynamics::crocco_gradient(
+			const Vec3& velocity,
+			const Vec3& vorticity,
+			const Vec3& grad_phi,
+			const Vec3& grad_p,
+			double rho)
+	{
+		Vec3 omega_cross_u = {
+				vorticity[1]*velocity[2] - vorticity[2]*velocity[1],
+				vorticity[2]*velocity[0] - vorticity[0]*velocity[2],
+				vorticity[0]*velocity[1] - vorticity[1]*velocity[0]
+		};
+
+		double kinetic_energy = 0.5 * (
+				velocity[0]*velocity[0] +
+				velocity[1]*velocity[1] +
+				velocity[2]*velocity[2]);
+
+		Vec3 grad_H;
+		for (int i = 0; i < 3; ++i)
+			grad_H[i] = rho * (omega_cross_u[i]) + grad_phi[i] + grad_p[i] / rho;
+
+		return grad_H;
+	}
+
+	// Vorticity transport methods (from VorticityTransport)
+	Vec3 VorticityDynamics::baroclinic_term(const Vec3& grad_rho, const Vec3& grad_p, double rho) {
+		return {
+				(grad_rho[1]*grad_p[2] - grad_rho[2]*grad_p[1]) / (rho*rho),
+				(grad_rho[2]*grad_p[0] - grad_rho[0]*grad_p[2]) / (rho*rho),
+				(grad_rho[0]*grad_p[1] - grad_rho[1]*grad_p[0]) / (rho*rho)
+		};
+	}
+
+	Vec3 VorticityDynamics::compute_vorticity_rhs(const Vec3& omega, const std::array<Vec3, 3>& grad_u,
+										 double div_u, const Vec3& grad_rho, const Vec3& grad_p, double rho) {
+		Vec3 stretch = {
+				omega[0]*grad_u[0][0] + omega[1]*grad_u[0][1] + omega[2]*grad_u[0][2],
+				omega[0]*grad_u[1][0] + omega[1]*grad_u[1][1] + omega[2]*grad_u[1][2],
+				omega[0]*grad_u[2][0] + omega[1]*grad_u[2][1] + omega[2]*grad_u[2][2]
+		};
+
+		Vec3 compress = {
+				-div_u * omega[0],
+				-div_u * omega[1],
+				-div_u * omega[2]
+		};
+
+		Vec3 baroclinic = baroclinic_term(grad_rho, grad_p, rho);
+
+		return {
+				stretch[0] + compress[0] + baroclinic[0],
+				stretch[1] + compress[1] + baroclinic[1],
+				stretch[2] + compress[2] + baroclinic[2]
+		};
+	}
+
 } // namespace sst

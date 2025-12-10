@@ -5,9 +5,9 @@ from mpl_toolkits.mplot3d import Axes3D
 import os
 script_name = os.path.splitext(os.path.basename(__file__))[0]
 # Load the module dynamically from the compiled path
-module_path = os.path.abspath("../build/Debug/sstbindings.cp311-win_amd64.pyd")
+module_path = os.path.abspath("../build/Debug/swirl_string_core.cp312-win_amd64.pyd")
 module_name = "sstcore"
-from sstbindings import VortexKnotSystem, biot_savart_velocity, compute_kinetic_energy
+from swirl_string_core import VortexKnotSystem, biot_savart_velocity, compute_kinetic_energy
 
 plotGridsize = 3
 n_vectors = 15

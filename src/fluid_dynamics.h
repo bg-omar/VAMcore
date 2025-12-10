@@ -2,8 +2,8 @@
 // Created by mr on 3/22/2025.
 //
 
-#ifndef SSTCORE_FLUID_DYNAMICS_H
-#define SSTCORE_FLUID_DYNAMICS_H
+#ifndef SWIRL_STRING_CORE_FLUID_DYNAMICS_H
+#define SWIRL_STRING_CORE_FLUID_DYNAMICS_H
 
 
 #pragma once
@@ -61,6 +61,31 @@ namespace sst {
 			static double enstrophy(
 					const std::vector<double> &omega_squared,
 					const std::vector<double> &ds_area);
+
+			// Pressure field methods (from PressureField)
+			static std::vector<double> compute_bernoulli_pressure(
+					const std::vector<double>& velocity_magnitude,
+					double rho = 7.0e-7,
+					double p_inf = 0.0);
+			static std::vector<std::vector<Vec3>> pressure_gradient(
+					const std::vector<std::vector<double>>& pressure_field,
+					double dx = 1.0,
+					double dy = 1.0);
+
+			// Potential flow methods (from PotentialFlow)
+			static double laplacian_phi(double d2phidx2, double d2phidy2, double d2phidz2);
+			static Vec3 grad_phi(const Vec3& phi_grad);
+			static double bernoulli_pressure_potential(double velocity_squared, double V);
+
+			// Kinetic energy methods (from KineticEnergy)
+			static double compute_kinetic_energy(const std::vector<Vec3>& velocity, double rho_ae);
+
+			// Fluid rotation methods (from FluidRotation)
+			static double rossby_number(double U, double omega, double d);
+			static double ekman_number(double nu, double omega, double H);
+			static double cylinder_mass(double rho, double R, double H);
+			static double cylinder_inertia(double mass, double R);
+			static double torque(double inertia, double alpha);
 		};
 
         inline std::vector<double> compute_pressure_field(
@@ -86,4 +111,4 @@ namespace sst {
 
 
 
-#endif //SSTCORE_FLUID_DYNAMICS_H
+#endif //SWIRL_STRING_CORE_FLUID_DYNAMICS_H

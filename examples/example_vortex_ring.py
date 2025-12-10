@@ -5,7 +5,7 @@ import sys
 
 # Set path if needed
 sys.path.insert(0, os.path.abspath("."))
-from sstbindings import (
+from swirl_string_core import (
     lamb_oseen_velocity,
     lamb_oseen_vorticity,
     hill_streamfunction,

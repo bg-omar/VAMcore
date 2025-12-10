@@ -2,8 +2,8 @@
 // Created by mr on 3/22/2025.
 //
 
-#ifndef SSTCORE_VEC3_UTILS_H
-#define SSTCORE_VEC3_UTILS_H
+#ifndef SWIRL_STRING_CORE_VEC3_UTILS_H
+#define SWIRL_STRING_CORE_VEC3_UTILS_H
 #pragma once
 #include <array>
 #include <cmath>
@@ -32,4 +32,4 @@ namespace sst {
 	}
 }
 
-#endif //SSTCORE_VEC3_UTILS_H
+#endif //SWIRL_STRING_CORE_VEC3_UTILS_H

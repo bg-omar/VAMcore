@@ -1,0 +1,17 @@
+# Include all .fseries knot data files
+recursive-include src/knot_fseries *.fseries
+recursive-include src/knot_fseries *.short
+
+# Include README and documentation
+include Readme.md
+include README_sstbindings.txt
+include LICENSE
+
+# Include setup files
+include setup.py
+include pyproject.toml
+include MANIFEST.in
+
+# Include CMake files (for reference, though not used in pip build)
+recursive-include cmake *.cmake
+
