@@ -14,14 +14,14 @@ if os.path.exists(build_dir):
     sys.path.insert(0, build_dir)
 
 try:
-    import sstcore
+    import swirl_string_core
     HAS_SST = True
 except ImportError:
     try:
-        import sstbindings as sstcore
+        import sstbindings as swirl_string_core
         HAS_SST = True
     except ImportError:
-        print("ERROR: Could not import sstcore or sstbindings")
+        print("ERROR: Could not import swirl_string_core or sstbindings")
         sys.exit(1)
 
 
@@ -66,7 +66,7 @@ def test_compute_swirl_field():
     formula = r"$\mathbf{F}_{swirl}(\mathbf{r}, t) = \text{swirl force field}$"
     
     try:
-        result = sstcore.compute_swirl_field(res, time)
+        result = swirl_string_core.compute_swirl_field(res, time)
         
         log_test(
             "compute_swirl_field",
@@ -105,4 +105,3 @@ if __name__ == "__main__":
     print("\n" + "="*80)
     print("ALL TESTS COMPLETED")
     print("="*80)
-

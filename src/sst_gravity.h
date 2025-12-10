@@ -1,6 +1,6 @@
 // sst_gravity.h
-#ifndef SSTCORE_SST_GRAVITY_H
-#define SSTCORE_SST_GRAVITY_H
+#ifndef SWIRL_STRING_CORE_SST_GRAVITY_H
+#define SWIRL_STRING_CORE_SST_GRAVITY_H
 #pragma once
 
 #include <array>
@@ -224,4 +224,4 @@ namespace sst {
 
 } // namespace sst
 
-#endif // SSTCORE_SST_GRAVITY_H
+#endif // SWIRL_STRING_CORE_SST_GRAVITY_H

@@ -2,8 +2,8 @@
 // Created by mr on 3/22/2025.
 //
 
-#ifndef SSTCORE_TIME_EVOLUTION_H
-#define SSTCORE_TIME_EVOLUTION_H
+#ifndef SWIRL_STRING_CORE_TIME_EVOLUTION_H
+#define SWIRL_STRING_CORE_TIME_EVOLUTION_H
 
 
 #pragma once
@@ -35,4 +35,4 @@ namespace sst {
 } // namespace sst
 
 
-#endif //SSTCORE_TIME_EVOLUTION_H
+#endif //SWIRL_STRING_CORE_TIME_EVOLUTION_H

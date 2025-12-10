@@ -2,12 +2,12 @@ import numpy as np
 import os
 script_name = os.path.splitext(os.path.basename(__file__))[0]
 # Load the module dynamically from the compiled path
-module_path = os.path.abspath("../build/Debug/sstbindings.cp311-win_amd64.pyd")
+module_path = os.path.abspath("../build/Debug/swirl_string_core.cp312-win_amd64.pyd")
 module_name = "sstcore"
 import sys
 sys.path.insert(0, os.path.abspath("."))
-import sstbindings
-from sstbindings import circulation_surface_integral, enstrophy, BiotSavart, parse_fseries_multi, index_of_largest_block, evaluate_fourier_block
+import swirl_string_core
+from swirl_string_core import circulation_surface_integral, enstrophy, BiotSavart, parse_fseries_multi, index_of_largest_block, evaluate_fourier_block
 
 # Load knot points from .fseries file
 blocks = parse_fseries_multi("example.fseries")

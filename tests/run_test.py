@@ -5,8 +5,8 @@ import os
 
 # (VAM) C:\workspace\projects\vamcore>set PYTHONPATH=build\Debug
 #
-# (VAM) C:\workspace\projects\vamcore>python -c "import sstbindings; print(sstcore)"
-# <module 'sstcore' from 'C:\\workspace\\projects\\vamcore\\build\\Debug\\sstbindings.cp311-win_amd64.pyd'>
+# (VAM) C:\workspace\projects\vamcore>python -c "import sstbindings; print(swirl_string_core)"
+# <module 'swirl_string_core' from 'C:\\workspace\\projects\\vamcore\\build\\Debug\\sstbindings.cp311-win_amd64.pyd'>
 #
 
 # Adjust path if needed

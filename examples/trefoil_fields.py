@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from sstbindings import VortexKnotSystem, biot_savart_velocity
+from swirl_string_core import VortexKnotSystem, biot_savart_velocity
 # ✅ Get the script filename dynamically
 import os
 script_name = os.path.splitext(os.path.basename(__file__))[0]

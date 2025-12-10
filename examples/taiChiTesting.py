@@ -4,7 +4,7 @@ import taichi as ti
 ti.init(arch=ti.opengl)
 
 import numpy as np
-from sstbindings import compute_swirl_field
+from swirl_string_core import compute_swirl_field
 res = 512
 field = compute_swirl_field(res, time=0.5)
 

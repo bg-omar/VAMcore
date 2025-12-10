@@ -14,14 +14,14 @@ if os.path.exists(build_dir):
     sys.path.insert(0, build_dir)
 
 try:
-    import sstcore
+    import swirl_string_core
     HAS_SST = True
 except ImportError:
     try:
-        import sstbindings as sstcore
+        import sstbindings as swirl_string_core
         HAS_SST = True
     except ImportError:
-        print("ERROR: Could not import sstcore or sstbindings")
+        print("ERROR: Could not import swirl_string_core or sstbindings")
         sys.exit(1)
 
 
@@ -87,7 +87,7 @@ def test_fourier_knot_eval():
     
     formula = r"$\mathbf{r}(s) = \sum_{n=0}^{N} \left(a_n \cos(ns) + b_n \sin(ns)\right)$"
     
-    x, y, z = sstcore.fourier_knot_eval(a_x, b_x, a_y, b_y, a_z, b_z, s)
+    x, y, z = swirl_string_core.fourier_knot_eval(a_x, b_x, a_y, b_y, a_z, b_z, s)
     
     log_test(
         "fourier_knot_eval",
@@ -118,7 +118,7 @@ def test_compute_writhe():
     formula = r"$Wr = \frac{1}{4\pi}\oint\oint\frac{(\mathbf{r}_1-\mathbf{r}_2)\cdot(d\mathbf{r}_1\times d\mathbf{r}_2)}{|\mathbf{r}_1-\mathbf{r}_2|^3}$"
     
     try:
-        result = sstcore.compute_writhe(r)
+        result = swirl_string_core.compute_writhe(r)
         
         log_test(
             "compute_writhe",
@@ -157,7 +157,7 @@ def test_compute_linking_number():
     formula = r"$Lk = \frac{1}{4\pi}\oint\oint\frac{(\mathbf{r}_1-\mathbf{r}_2)\cdot(d\mathbf{r}_1\times d\mathbf{r}_2)}{|\mathbf{r}_1-\mathbf{r}_2|^3}$"
     
     try:
-        result = sstcore.compute_linking_number(curve1, curve2)
+        result = swirl_string_core.compute_linking_number(curve1, curve2)
         
         log_test(
             "compute_linking_number",
@@ -195,7 +195,7 @@ def test_compute_twist():
     formula = r"$Tw = \frac{1}{2\pi}\oint \tau(s) ds$ where $\tau = -\mathbf{N} \cdot \mathbf{B}'$"
     
     try:
-        result = sstcore.compute_twist(T, N)
+        result = swirl_string_core.compute_twist(T, N)
         
         log_test(
             "compute_twist",
@@ -230,7 +230,7 @@ def test_compute_centerline_helicity():
     formula = r"$H_{centerline} = Wr + Tw$"
     
     try:
-        result = sstcore.compute_centerline_helicity(r)
+        result = swirl_string_core.compute_centerline_helicity(r)
         
         log_test(
             "compute_centerline_helicity",
@@ -268,7 +268,7 @@ def test_pd_from_curve():
     formula = r"$\text{PD code} = \{(a_i, b_i, c_i, d_i)\}$ from curve projection"
     
     try:
-        result = sstcore.pd_from_curve(P3, tries, seed, min_angle_deg, depth_tol)
+        result = swirl_string_core.pd_from_curve(P3, tries, seed, min_angle_deg, depth_tol)
         
         log_test(
             "pd_from_curve",
@@ -308,7 +308,7 @@ def test_estimate_crossing_number():
     formula = r"$\text{Crossing number} = \text{max crossings over random projections}$"
     
     try:
-        result = sstcore.estimate_crossing_number(r, directions, seed)
+        result = swirl_string_core.estimate_crossing_number(r, directions, seed)
         
         log_test(
             "estimate_crossing_number",
@@ -339,7 +339,7 @@ def test_vortex_knot_system():
     formula = r"$\frac{d\mathbf{r}}{dt} = \mathbf{v}(\mathbf{r}, t)$ (Biot-Savart dynamics)"
     
     # Initialize system
-    knot = sstcore.VortexKnotSystem(circulation)
+    knot = swirl_string_core.VortexKnotSystem(circulation)
     
     log_test(
         "VortexKnotSystem.__init__",
@@ -409,4 +409,3 @@ if __name__ == "__main__":
     print("\n" + "="*80)
     print("ALL TESTS COMPLETED")
     print("="*80)
-

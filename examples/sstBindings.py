@@ -15,20 +15,20 @@ import os
 script_name = os.path.splitext(os.path.basename(__file__))[0]
 
 # Load the module dynamically from the compiled path
-module_path = os.path.abspath("sstbindings.cp313-win_amd64.pyd")
-module_name = "sstbindings"
+module_path = os.path.abspath("swirl_string_core.cp312-win_amd64.pyd")
+module_name = "swirl_string_core"
 
-import sstbindings
+import swirl_string_core
 
 
 
 # Generate Markdown documentation
 lines = ["# SST Python Bindings (Auto-Generated API)\n"]
 
-for name in dir(sstbindings):
+for name in dir(swirl_string_core):
     if name.startswith("__"):
         continue
-    obj = getattr(sstbindings, name)
+    obj = getattr(swirl_string_core, name)
     if inspect.isclass(obj):
         lines.append(f"## Class: `{name}`\n")
         doc = inspect.getdoc(obj)

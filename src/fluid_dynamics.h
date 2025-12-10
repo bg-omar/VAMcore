@@ -2,8 +2,8 @@
 // Created by mr on 3/22/2025.
 //
 
-#ifndef SSTCORE_FLUID_DYNAMICS_H
-#define SSTCORE_FLUID_DYNAMICS_H
+#ifndef SWIRL_STRING_CORE_FLUID_DYNAMICS_H
+#define SWIRL_STRING_CORE_FLUID_DYNAMICS_H
 
 
 #pragma once
@@ -111,4 +111,4 @@ namespace sst {
 
 
 
-#endif //SSTCORE_FLUID_DYNAMICS_H
+#endif //SWIRL_STRING_CORE_FLUID_DYNAMICS_H

@@ -6,7 +6,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import os
 script_name = os.path.splitext(os.path.basename(__file__))[0]
 from matplotlib.colors import TwoSlopeNorm
-from sstbindings import VortexKnotSystem, biot_savart_velocity, compute_kinetic_energy
+from swirl_string_core import VortexKnotSystem, biot_savart_velocity, compute_kinetic_energy
 
 # Simulated data for demonstration
 plotGridsize = 5

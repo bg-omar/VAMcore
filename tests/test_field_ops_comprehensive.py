@@ -14,14 +14,14 @@ if os.path.exists(build_dir):
     sys.path.insert(0, build_dir)
 
 try:
-    import sstcore
+    import swirl_string_core
     HAS_SST = True
 except ImportError:
     try:
-        import sstbindings as sstcore
+        import sstbindings as swirl_string_core
         HAS_SST = True
     except ImportError:
-        print("ERROR: Could not import sstcore or sstbindings")
+        print("ERROR: Could not import swirl_string_core or sstbindings")
         sys.exit(1)
 
 
@@ -82,7 +82,7 @@ def test_curl3d_central():
     
     formula = r"$\boldsymbol{\omega} = \nabla \times \mathbf{v} = \left(\frac{\partial v_z}{\partial y} - \frac{\partial v_y}{\partial z}, \frac{\partial v_x}{\partial z} - \frac{\partial v_z}{\partial x}, \frac{\partial v_y}{\partial x} - \frac{\partial v_x}{\partial y}\right)$"
     
-    result = sstcore.curl3d_central(vel, spacing)
+    result = swirl_string_core.curl3d_central(vel, spacing)
     
     log_test(
         "curl3d_central",
@@ -106,4 +106,3 @@ if __name__ == "__main__":
     print("\n" + "="*80)
     print("ALL TESTS COMPLETED")
     print("="*80)
-

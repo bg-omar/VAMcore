@@ -2,8 +2,8 @@
 // Created by mr on 8/21/2025.
 //
 
-#ifndef SSTCORE_HYPERBOLIC_VOLUME_H
-#define SSTCORE_HYPERBOLIC_VOLUME_H
+#ifndef SWIRL_STRING_CORE_HYPERBOLIC_VOLUME_H
+#define SWIRL_STRING_CORE_HYPERBOLIC_VOLUME_H
 
 // ./src/hyperbolic_volume.h
 #pragma once
@@ -24,4 +24,4 @@ double hyperbolic_volume_from_pd(const PD& pd);
 } // namespace sst
 
 
-#endif // SSTCORE_HYPERBOLIC_VOLUME_H
+#endif // SWIRL_STRING_CORE_HYPERBOLIC_VOLUME_H

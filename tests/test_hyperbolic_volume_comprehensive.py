@@ -14,14 +14,14 @@ if os.path.exists(build_dir):
     sys.path.insert(0, build_dir)
 
 try:
-    import sstcore
+    import swirl_string_core
     HAS_SST = True
 except ImportError:
     try:
-        import sstbindings as sstcore
+        import sstbindings as swirl_string_core
         HAS_SST = True
     except ImportError:
-        print("ERROR: Could not import sstcore or sstbindings")
+        print("ERROR: Could not import swirl_string_core or sstbindings")
         sys.exit(1)
 
 
@@ -70,7 +70,7 @@ def test_hyperbolic_volume_from_pd():
     formula = r"$\text{Vol}(K) = \text{hyperbolic volume from PD code}$ (topological invariant)"
     
     try:
-        result = sstcore.hyperbolic_volume_from_pd(pd)
+        result = swirl_string_core.hyperbolic_volume_from_pd(pd)
         
         log_test(
             "hyperbolic_volume_from_pd",
@@ -107,4 +107,3 @@ if __name__ == "__main__":
     print("\n" + "="*80)
     print("ALL TESTS COMPLETED")
     print("="*80)
-

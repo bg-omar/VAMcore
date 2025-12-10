@@ -14,14 +14,14 @@ if os.path.exists(build_dir):
     sys.path.insert(0, build_dir)
 
 try:
-    import sstcore
+    import swirl_string_core
     HAS_SST = True
 except ImportError:
     try:
-        import sstbindings as sstcore
+        import sstbindings as swirl_string_core
         HAS_SST = True
     except ImportError:
-        print("ERROR: Could not import sstcore or sstbindings")
+        print("ERROR: Could not import swirl_string_core or sstbindings")
         sys.exit(1)
 
 
@@ -75,7 +75,7 @@ def test_time_evolution():
     formula = r"$\frac{d\mathbf{r}}{dt} = \mathbf{v}(\mathbf{r}, t)$"
     
     # Create TimeEvolution instance
-    te = sstcore.TimeEvolution(initial_positions, initial_tangents, gamma)
+    te = swirl_string_core.TimeEvolution(initial_positions, initial_tangents, gamma)
     
     # Get initial state
     pos_init = te.get_positions()
@@ -132,4 +132,3 @@ if __name__ == "__main__":
     print("\n" + "="*80)
     print("ALL TESTS COMPLETED")
     print("="*80)
-

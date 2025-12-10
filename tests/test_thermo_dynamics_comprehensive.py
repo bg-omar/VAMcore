@@ -14,14 +14,14 @@ if os.path.exists(build_dir):
     sys.path.insert(0, build_dir)
 
 try:
-    import sstcore
+    import swirl_string_core
     HAS_SST = True
 except ImportError:
     try:
-        import sstbindings as sstcore
+        import sstbindings as swirl_string_core
         HAS_SST = True
     except ImportError:
-        print("ERROR: Could not import sstcore or sstbindings")
+        print("ERROR: Could not import swirl_string_core or sstbindings")
         sys.exit(1)
 
 
@@ -54,7 +54,7 @@ def test_potential_temperature():
     
     formula = r"$\theta = T\left(\frac{p_0}{p}\right)^\kappa$ where $\kappa = \frac{R}{c_p}$"
     
-    result = sstcore.potential_temperature(T, p0, p, R, cp)
+    result = swirl_string_core.potential_temperature(T, p0, p, R, cp)
     
     log_test(
         "potential_temperature",
@@ -79,7 +79,7 @@ def test_entropy_from_theta():
     
     formula = r"$ds = c_p \frac{d\theta}{\theta}$"
     
-    result = sstcore.entropy_from_theta(cp, theta, dtheta)
+    result = swirl_string_core.entropy_from_theta(cp, theta, dtheta)
     
     log_test(
         "entropy_from_theta",
@@ -104,7 +104,7 @@ def test_entropy_from_pv():
     
     formula = r"$ds = \frac{NR}{\gamma-1}(\ln(p) + \ln(V))$"
     
-    result = sstcore.entropy_from_pv(N, R, p, V, gamma)
+    result = swirl_string_core.entropy_from_pv(N, R, p, V, gamma)
     
     log_test(
         "entropy_from_pv",
@@ -129,7 +129,7 @@ def test_enthalpy():
     
     formula = r"$H = E + pV$"
     
-    result = sstcore.enthalpy(internal_energy, p, V)
+    result = swirl_string_core.enthalpy(internal_energy, p, V)
     
     log_test(
         "enthalpy",
@@ -157,4 +157,3 @@ if __name__ == "__main__":
     print("\n" + "="*80)
     print("ALL TESTS COMPLETED")
     print("="*80)
-

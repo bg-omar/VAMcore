@@ -14,14 +14,14 @@ if os.path.exists(build_dir):
     sys.path.insert(0, build_dir)
 
 try:
-    import sstcore
+    import swirl_string_core
     HAS_SST = True
 except ImportError:
     try:
-        import sstbindings as sstcore
+        import sstbindings as swirl_string_core
         HAS_SST = True
     except ImportError:
-        print("ERROR: Could not import sstcore or sstbindings")
+        print("ERROR: Could not import swirl_string_core or sstbindings")
         sys.exit(1)
 
 
@@ -81,7 +81,7 @@ def test_compute_frenet_frames():
     
     formula = r"$\mathbf{T} = \frac{d\mathbf{r}/ds}{|d\mathbf{r}/ds|}, \quad \mathbf{N} = \frac{d\mathbf{T}/ds}{|d\mathbf{T}/ds|}, \quad \mathbf{B} = \mathbf{T} \times \mathbf{N}$"
     
-    T, N, B = sstcore.compute_frenet_frames(X)
+    T, N, B = swirl_string_core.compute_frenet_frames(X)
     
     log_test(
         "compute_frenet_frames",
@@ -107,7 +107,7 @@ def test_compute_curvature_torsion():
     
     formula = r"$\kappa = |\mathbf{T}'|, \quad \tau = -\mathbf{N} \cdot \mathbf{B}'$"
     
-    curvature, torsion = sstcore.compute_curvature_torsion(T, N)
+    curvature, torsion = swirl_string_core.compute_curvature_torsion(T, N)
     
     log_test(
         "compute_curvature_torsion",
@@ -141,7 +141,7 @@ def test_compute_helicity():
     
     formula = r"$H = \int \mathbf{v} \cdot \boldsymbol{\omega} \, dV$"
     
-    result = sstcore.compute_helicity(velocity, vorticity)
+    result = swirl_string_core.compute_helicity(velocity, vorticity)
     
     log_test(
         "compute_helicity",
@@ -201,4 +201,3 @@ if __name__ == "__main__":
     print("\n" + "="*80)
     print("ALL TESTS COMPLETED")
     print("="*80)
-

@@ -1,6 +1,6 @@
-# ⚙️ SSTcore: Hybrid Benchmark Engine for the Swirl-String Theory
+# ⚙️ Swirl_String_core: Hybrid Benchmark Engine for the Swirl-String Theory
 
-Welcome to **SSTcore**, the computational backbone for the Swirl-String Theory (SST).  
+Welcome to **Swirl_String_core**, the computational backbone for the Swirl-String Theory (SST).  
 This hybrid C++/Python engine is designed to benchmark field-based gravity, time dilation, and EM swirl-field dynamics using modern numerical methods and a large helping of theoretical audacity. This repository contains the core engine, simulation scripts, and visualizations to explore the swirling depths of æther dynamics.
 We build the C++ SST-Bindings first, and then we can import it into benchmark Python code. When using the C++  SST-bindings to do hard calculations we can run / render Python simulations 10-100x faster.
 

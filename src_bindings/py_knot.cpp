@@ -184,6 +184,272 @@ list[list[int]]
     PD tuples (a,b,c,d).
 )pbdoc");
 
+  // ===== Biot-Savart and Helicity Calculations =====
+  m.def("compute_biot_savart_velocity_grid",
+        [](py::object curve_like, py::object grid_like) {
+          std::vector<Vec3> curve, grid;
+          if (py::isinstance<py::array>(curve_like)) {
+            curve = to_vec3(curve_like.cast<py::array_t<double, py::array::c_style | py::array::forcecast>>());
+          } else {
+            curve = curve_like.cast<std::vector<Vec3>>();
+          }
+          if (py::isinstance<py::array>(grid_like)) {
+            grid = to_vec3(grid_like.cast<py::array_t<double, py::array::c_style | py::array::forcecast>>());
+          } else {
+            grid = grid_like.cast<std::vector<Vec3>>();
+          }
+          std::vector<Vec3> result = KnotDynamics::compute_biot_savart_velocity_grid(curve, grid);
+          py::array_t<double> out({(py::ssize_t)result.size(), (py::ssize_t)3});
+          auto o = out.mutable_unchecked<2>();
+          for (size_t i = 0; i < result.size(); ++i) {
+            o((py::ssize_t)i, 0) = result[i][0];
+            o((py::ssize_t)i, 1) = result[i][1];
+            o((py::ssize_t)i, 2) = result[i][2];
+          }
+          return out;
+        },
+        py::arg("curve"), py::arg("grid_points"),
+        R"pbdoc(
+Compute Biot-Savart velocity field from a closed curve at grid points.
+
+Parameters
+----------
+curve : array_like, shape (N,3)
+    Closed curve points.
+grid_points : array_like, shape (G,3)
+    Grid points where velocity is computed.
+
+Returns
+-------
+array, shape (G,3)
+    Velocity vectors at each grid point.
+)pbdoc");
+
+  m.def("compute_vorticity_grid",
+        [](py::array_t<double, py::array::c_style | py::array::forcecast> velocity,
+           std::array<int, 3> shape, double spacing) {
+          std::vector<Vec3> vel = to_vec3(velocity);
+          std::vector<Vec3> result = KnotDynamics::compute_vorticity_grid(vel, shape, spacing);
+          py::array_t<double> out({(py::ssize_t)result.size(), (py::ssize_t)3});
+          auto o = out.mutable_unchecked<2>();
+          for (size_t i = 0; i < result.size(); ++i) {
+            o((py::ssize_t)i, 0) = result[i][0];
+            o((py::ssize_t)i, 1) = result[i][1];
+            o((py::ssize_t)i, 2) = result[i][2];
+          }
+          return out;
+        },
+        py::arg("velocity"), py::arg("shape"), py::arg("spacing"),
+        R"pbdoc(
+Compute vorticity from velocity field on a regular grid.
+
+Parameters
+----------
+velocity : array, shape (N,3)
+    Velocity field on grid.
+shape : tuple of 3 ints
+    Grid shape (nx, ny, nz).
+spacing : float
+    Grid spacing.
+
+Returns
+-------
+array, shape (N,3)
+    Vorticity field.
+)pbdoc");
+
+  m.def("extract_interior_field",
+        [](py::array_t<double, py::array::c_style | py::array::forcecast> field,
+           std::array<int, 3> shape, int margin) {
+          std::vector<Vec3> f = to_vec3(field);
+          std::vector<Vec3> result = KnotDynamics::extract_interior_field(f, shape, margin);
+          py::array_t<double> out({(py::ssize_t)result.size(), (py::ssize_t)3});
+          auto o = out.mutable_unchecked<2>();
+          for (size_t i = 0; i < result.size(); ++i) {
+            o((py::ssize_t)i, 0) = result[i][0];
+            o((py::ssize_t)i, 1) = result[i][1];
+            o((py::ssize_t)i, 2) = result[i][2];
+          }
+          return out;
+        },
+        py::arg("field"), py::arg("shape"), py::arg("margin"),
+        R"pbdoc(
+Extract cubic interior field subset.
+
+Parameters
+----------
+field : array, shape (N,3)
+    Field on full grid.
+shape : tuple of 3 ints
+    Grid shape (nx, ny, nz).
+margin : int
+    Margin to exclude from each side.
+
+Returns
+-------
+array, shape (M,3)
+    Interior field subset.
+)pbdoc");
+
+  m.def("compute_helicity_invariants",
+        [](py::array_t<double, py::array::c_style | py::array::forcecast> v_sub,
+           py::array_t<double, py::array::c_style | py::array::forcecast> w_sub,
+           py::array_t<double, py::array::c_style | py::array::forcecast> r_sq) {
+          std::vector<Vec3> v = to_vec3(v_sub);
+          std::vector<Vec3> w = to_vec3(w_sub);
+          if (r_sq.ndim() != 1 || r_sq.shape(0) != (py::ssize_t)v.size()) {
+            throw std::invalid_argument("r_sq must be 1D with same length as v_sub/w_sub");
+          }
+          std::vector<double> r_sq_vec;
+          auto r_sq_raw = r_sq.unchecked<1>();
+          for (py::ssize_t i = 0; i < r_sq.shape(0); ++i) {
+            r_sq_vec.push_back(r_sq_raw(i));
+          }
+          auto [H_charge, H_mass, a_mu] = KnotDynamics::compute_helicity_invariants(v, w, r_sq_vec);
+          return py::make_tuple(H_charge, H_mass, a_mu);
+        },
+        py::arg("v_sub"), py::arg("w_sub"), py::arg("r_sq"),
+        R"pbdoc(
+Compute helicity invariants (H_charge, H_mass, a_mu).
+
+Parameters
+----------
+v_sub : array, shape (M,3)
+    Interior velocity field.
+w_sub : array, shape (M,3)
+    Interior vorticity field.
+r_sq : array, shape (M,)
+    Squared distances from origin for interior points.
+
+Returns
+-------
+tuple
+    (H_charge, H_mass, a_mu)
+)pbdoc");
+
+  m.def("compute_helicity_from_fourier_block",
+        [](const FourierBlock& block,
+           int grid_size, double spacing, int interior_margin, int nsamples) {
+          auto [H_charge, H_mass, a_mu] = KnotDynamics::compute_helicity_from_fourier_block(
+              block, grid_size, spacing, interior_margin, nsamples);
+          return py::make_tuple(H_charge, H_mass, a_mu);
+        },
+        py::arg("block"), py::arg("grid_size") = 32, py::arg("spacing") = 0.1,
+        py::arg("interior_margin") = 8, py::arg("nsamples") = 1000,
+        R"pbdoc(
+Compute helicity invariants from a Fourier block (high-level convenience method).
+
+This method performs the full workflow:
+1. Evaluates Fourier block to get knot points
+2. Computes velocity on grid
+3. Computes vorticity
+4. Extracts interior
+5. Computes invariants
+
+Parameters
+----------
+block : FourierBlock
+    Fourier series coefficients.
+grid_size : int
+    Grid size (default: 32).
+spacing : float
+    Grid spacing (default: 0.1).
+interior_margin : int
+    Interior margin to exclude (default: 8).
+nsamples : int
+    Number of samples for knot evaluation (default: 1000).
+
+Returns
+-------
+tuple
+    (H_charge, H_mass, a_mu)
+)pbdoc");
+
+  // ===== FourierKnot Curvature =====
+  m.def("compute_curvature",
+        [](py::array_t<double, py::array::c_style | py::array::forcecast> pts, double eps) {
+          std::vector<Vec3> points = to_vec3(pts);
+          std::vector<double> result = FourierKnot::curvature(points, eps);
+          py::array_t<double> out((py::ssize_t)result.size());
+          auto o = out.mutable_unchecked<1>();
+          for (size_t i = 0; i < result.size(); ++i) {
+            o((py::ssize_t)i) = result[i];
+          }
+          return out;
+        },
+        py::arg("points"), py::arg("eps") = 1e-8,
+        R"pbdoc(
+Compute discrete curvature from points using central differences (periodic curve).
+
+Parameters
+----------
+points : array, shape (N,3)
+    Curve points.
+eps : float
+    Small epsilon for numerical stability (default: 1e-8).
+
+Returns
+-------
+array, shape (N,)
+    Curvature values at each point.
+)pbdoc");
+
+  // ===== Load All Knots =====
+  py::class_<FourierKnot::LoadedKnot>(m, "LoadedKnot")
+      .def_readonly("name", &FourierKnot::LoadedKnot::name)
+      .def_readonly("points", &FourierKnot::LoadedKnot::points)
+      .def_readonly("curvature", &FourierKnot::LoadedKnot::curvature)
+      .def("get_points_array",
+           [](const FourierKnot::LoadedKnot& knot) {
+             py::array_t<double> out({(py::ssize_t)knot.points.size(), (py::ssize_t)3});
+             auto o = out.mutable_unchecked<2>();
+             for (size_t i = 0; i < knot.points.size(); ++i) {
+               o((py::ssize_t)i, 0) = knot.points[i][0];
+               o((py::ssize_t)i, 1) = knot.points[i][1];
+               o((py::ssize_t)i, 2) = knot.points[i][2];
+             }
+             return out;
+           },
+           "Get points as NumPy array (N,3)")
+      .def("get_curvature_array",
+           [](const FourierKnot::LoadedKnot& knot) {
+             py::array_t<double> out((py::ssize_t)knot.curvature.size());
+             auto o = out.mutable_unchecked<1>();
+             for (size_t i = 0; i < knot.curvature.size(); ++i) {
+               o((py::ssize_t)i) = knot.curvature[i];
+             }
+             return out;
+           },
+           "Get curvature as NumPy array (N,)");
+
+  m.def("load_all_knots",
+        [](const std::vector<std::string>& paths, int nsamples) {
+          std::vector<FourierKnot::LoadedKnot> knots = FourierKnot::load_all_knots(paths, nsamples);
+          return knots;
+        },
+        py::arg("paths"), py::arg("nsamples") = 1000,
+        R"pbdoc(
+Load all knots from a list of .fseries file paths.
+
+This method loads all knots, evaluates them, and computes curvature.
+All calculations are done in C++ - Python only receives the results for display.
+
+Parameters
+----------
+paths : list of str
+    List of paths to .fseries files.
+nsamples : int
+    Number of samples for evaluation (default: 1000).
+
+Returns
+-------
+list of LoadedKnot
+    List of loaded knots, each containing:
+    - name: filename without extension (with 'knot'/'Knot' removed)
+    - points: evaluated 3D points (N,3) - use get_points_array() for NumPy
+    - curvature: curvature values (N,) - use get_curvature_array() for NumPy
+)pbdoc");
+
   // ===== Vortex Knot System =====
   py::class_<VortexKnotSystem, std::shared_ptr<VortexKnotSystem>>(m, "VortexKnotSystem")
       .def(py::init<double>(), py::arg("circulation") = 1.0,
@@ -202,6 +468,21 @@ list[list[int]]
            py::arg("resolution") = 400,
            R"pbdoc(
         Initialize a figure-eight knot with given resolution (default = 400 points).
+    )pbdoc")
+      .def("initialize_knot_from_name", &VortexKnotSystem::initialize_knot_from_name,
+           py::arg("knot_id"), py::arg("resolution") = 1000,
+           R"pbdoc(
+        Initialize any knot from bundled .fseries file by identifier.
+        
+        Examples:
+            - "3_1" for Electron/Positron knot
+            - "4_1" for Dark Knot
+            - "5_1" for Muon knot
+            - "5_2" for Up Quark knot
+            - "6_1" for Down Quark knot
+            - "7_1" for Tau knot
+        
+        The method searches for knot.{knot_id}.fseries in standard locations.
     )pbdoc")
       .def("evolve", &VortexKnotSystem::evolve,
            py::arg("dt"), py::arg("steps"),

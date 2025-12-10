@@ -14,14 +14,14 @@ if os.path.exists(build_dir):
     sys.path.insert(0, build_dir)
 
 try:
-    import sstcore
+    import swirl_string_core
     HAS_SST = True
 except ImportError:
     try:
-        import sstbindings as sstcore
+        import sstbindings as swirl_string_core
         HAS_SST = True
     except ImportError:
-        print("ERROR: Could not import sstcore or sstbindings")
+        print("ERROR: Could not import swirl_string_core or sstbindings")
         sys.exit(1)
 
 
@@ -96,7 +96,7 @@ def test_compute_beltrami_shear():
     
     formula = r"$S = |\mathbf{B} \times (\nabla \times \mathbf{B})|$"
     
-    result = sstcore.SSTGravity.compute_beltrami_shear(B_field, Curl_B)
+    result = swirl_string_core.SSTGravity.compute_beltrami_shear(B_field, Curl_B)
     
     log_test(
         "SSTGravity.compute_beltrami_shear",
@@ -125,7 +125,7 @@ def test_compute_gravity_dilation():
     
     formula = r"$G_{local} = G_0\left[1 - \left(\frac{v_{induced}}{v_{swirl}}\right)^2\right]$"
     
-    result = sstcore.SSTGravity.compute_gravity_dilation(
+    result = swirl_string_core.SSTGravity.compute_gravity_dilation(
         B_field, omega_drive, v_swirl, B_saturation
     )
     
@@ -162,7 +162,7 @@ def test_compute_helicity_density():
     
     formula = r"$h = \mathbf{A} \cdot \mathbf{B}$"
     
-    result = sstcore.SSTGravity.compute_helicity_density(A_field, B_field)
+    result = swirl_string_core.SSTGravity.compute_helicity_density(A_field, B_field)
     
     log_test(
         "SSTGravity.compute_helicity_density",
@@ -188,4 +188,3 @@ if __name__ == "__main__":
     print("\n" + "="*80)
     print("ALL TESTS COMPLETED")
     print("="*80)
-

@@ -1,6 +1,6 @@
 # fourier_knot.example.py
 import numpy as np
-from sstbindings import parse_fseries_multi, index_of_largest_block, evaluate_fourier_block
+from swirl_string_core import parse_fseries_multi, index_of_largest_block, evaluate_fourier_block
 
 # Load (auto-selects largest block), evaluate at 1000 points
 blocks = parse_fseries_multi("myKnot.fseries")

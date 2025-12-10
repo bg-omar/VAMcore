@@ -24,7 +24,7 @@ void bind_sst_gravity(py::module_& m);
 
 
 
-PYBIND11_MODULE(sstcore, m) {
+PYBIND11_MODULE(swirl_string_core, m) {
   m.doc() = "SST Core Bindings";
   bind_biot_savart(m);
   bind_fluid_dynamics(m);
@@ -96,7 +96,7 @@ PYBIND11_MODULE(sstcore, m) {
         py::arg("pattern") = py::none(),
         py::arg("include_private") = false,
         R"pbdoc(
-        Return a dictionary of exported names in sstcore.
+        Return a dictionary of exported names in swirl_string_core.
 
         Args:
           pattern (str|None): optional case-insensitive substring filter.

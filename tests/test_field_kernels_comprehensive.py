@@ -14,14 +14,14 @@ if os.path.exists(build_dir):
     sys.path.insert(0, build_dir)
 
 try:
-    import sstcore
+    import swirl_string_core
     HAS_SST = True
 except ImportError:
     try:
-        import sstbindings as sstcore
+        import sstbindings as swirl_string_core
         HAS_SST = True
     except ImportError:
-        print("ERROR: Could not import sstcore or sstbindings")
+        print("ERROR: Could not import swirl_string_core or sstbindings")
         sys.exit(1)
 
 
@@ -70,7 +70,7 @@ def test_dipole_field_at_point():
     
     formula = r"$\mathbf{B}(\mathbf{r}) = \frac{\mu_0}{4\pi}\frac{3(\mathbf{m}\cdot\hat{\mathbf{r}})\hat{\mathbf{r}}-\mathbf{m}}{r^3}$"
     
-    result = sstcore.dipole_field_at_point(r, m)
+    result = swirl_string_core.dipole_field_at_point(r, m)
     
     log_test(
         "dipole_field_at_point",
@@ -104,7 +104,7 @@ def test_biot_savart_wire_grid():
     
     formula = r"$\mathbf{B}(\mathbf{r}) = \frac{\mu_0 I}{4\pi}\sum_{segments}\frac{d\mathbf{l}\times(\mathbf{r}-\mathbf{r}_{mid})}{|\mathbf{r}-\mathbf{r}_{mid}|^3}$"
     
-    bx, by, bz = sstcore.biot_savart_wire_grid(
+    bx, by, bz = swirl_string_core.biot_savart_wire_grid(
         X.flatten(), Y.flatten(), Z.flatten(),
         wire_points, current
     )
@@ -147,7 +147,7 @@ def test_dipole_ring_field_grid():
     
     formula = r"$\mathbf{B}(\mathbf{r}) = \sum_{i=1}^{M}\frac{\mu_0}{4\pi}\frac{3(\mathbf{m}_i\cdot\hat{\mathbf{r}}_i)\hat{\mathbf{r}}_i-\mathbf{m}_i}{|\mathbf{r}-\mathbf{r}_i|^3}$"
     
-    bx, by, bz = sstcore.dipole_ring_field_grid(
+    bx, by, bz = swirl_string_core.dipole_ring_field_grid(
         X.flatten(), Y.flatten(), Z.flatten(),
         positions, moments
     )
@@ -190,7 +190,7 @@ def test_biot_savart_vector_potential_grid():
     
     formula = r"$\mathbf{A}(\mathbf{r}) = \frac{\mu_0 I}{4\pi}\int\frac{d\mathbf{l}}{|\mathbf{r}-\mathbf{r}'|}$"
     
-    Ax, Ay, Az = sstcore.biot_savart_vector_potential_grid(polyline, grid, current)
+    Ax, Ay, Az = swirl_string_core.biot_savart_vector_potential_grid(polyline, grid, current)
     
     log_test(
         "biot_savart_vector_potential_grid",
@@ -222,4 +222,3 @@ if __name__ == "__main__":
     print("\n" + "="*80)
     print("ALL TESTS COMPLETED")
     print("="*80)
-

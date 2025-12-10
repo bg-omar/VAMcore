@@ -14,14 +14,14 @@ if os.path.exists(build_dir):
     sys.path.insert(0, build_dir)
 
 try:
-    import sstcore
+    import swirl_string_core
     HAS_SST = True
 except ImportError:
     try:
-        import sstbindings as sstcore
+        import sstbindings as swirl_string_core
         HAS_SST = True
     except ImportError:
-        print("ERROR: Could not import sstcore or sstbindings")
+        print("ERROR: Could not import swirl_string_core or sstbindings")
         sys.exit(1)
 
 
@@ -78,7 +78,7 @@ def test_compute_gravitational_potential_gradient():
     
     formula = r"$\Phi(\mathbf{r}) = \int \frac{\boldsymbol{\omega} \cdot d\mathbf{A}}{|\mathbf{r}-\mathbf{r}'| + \epsilon}$ (gradient-based)"
     
-    result = sstcore.compute_gravitational_potential_gradient(positions, vorticity, epsilon)
+    result = swirl_string_core.compute_gravitational_potential_gradient(positions, vorticity, epsilon)
     
     log_test(
         "compute_gravitational_potential_gradient",
@@ -105,7 +105,7 @@ def test_compute_time_dilation_map_sqrt():
     
     formula = r"$\gamma = \sqrt{1 - \frac{|\mathbf{v}|^2}{C_e^2}}$"
     
-    result = sstcore.compute_time_dilation_map_sqrt(tangents, C_e)
+    result = swirl_string_core.compute_time_dilation_map_sqrt(tangents, C_e)
     
     log_test(
         "compute_time_dilation_map_sqrt",
@@ -135,7 +135,7 @@ def test_compute_gravitational_potential_direct():
     
     formula = r"$\Phi(\mathbf{r}) = \int \frac{\boldsymbol{\omega} \cdot d\mathbf{A}}{|\mathbf{r}-\mathbf{r}'| + \epsilon}$ (direct computation)"
     
-    result = sstcore.compute_gravitational_potential_direct(positions, vorticity, epsilon)
+    result = swirl_string_core.compute_gravitational_potential_direct(positions, vorticity, epsilon)
     
     log_test(
         "compute_gravitational_potential_direct",
@@ -161,7 +161,7 @@ def test_compute_time_dilation_map_linear():
     
     formula = r"$\gamma = 1 - \frac{|\mathbf{v}|}{C_e}$ (linear approximation)"
     
-    result = sstcore.compute_time_dilation_map_linear(tangents, C_e)
+    result = swirl_string_core.compute_time_dilation_map_linear(tangents, C_e)
     
     log_test(
         "compute_time_dilation_map_linear",
@@ -189,7 +189,7 @@ def test_compute_gravitational_potential():
     
     formula = r"$\Phi(\mathbf{r}) = \int \frac{\boldsymbol{\omega} \cdot d\mathbf{A}}{|\mathbf{r}-\mathbf{r}'| + \epsilon}$ (backward compat)"
     
-    result = sstcore.compute_gravitational_potential(positions, vorticity, epsilon)
+    result = swirl_string_core.compute_gravitational_potential(positions, vorticity, epsilon)
     
     log_test(
         "compute_gravitational_potential",
@@ -214,7 +214,7 @@ def test_compute_time_dilation_map():
     
     formula = r"$\gamma = \sqrt{1 - \frac{|\mathbf{v}|^2}{C_e^2}}$ (backward compat)"
     
-    result = sstcore.compute_time_dilation_map(tangents, C_e)
+    result = swirl_string_core.compute_time_dilation_map(tangents, C_e)
     
     log_test(
         "compute_time_dilation_map",
@@ -243,4 +243,3 @@ if __name__ == "__main__":
     print("\n" + "="*80)
     print("ALL TESTS COMPLETED")
     print("="*80)
-

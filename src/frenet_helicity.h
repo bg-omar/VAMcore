@@ -1,5 +1,5 @@
-#ifndef SSTCORE_FRENET_HELICITY_H
-#define SSTCORE_FRENET_HELICITY_H
+#ifndef SWIRL_STRING_CORE_FRENET_HELICITY_H
+#define SWIRL_STRING_CORE_FRENET_HELICITY_H
 #pragma once
 #include "../include/vec3_utils.h"
 #include <array>
@@ -76,4 +76,4 @@ namespace sst {
 
 } // namespace sst
 
-#endif //SSTCORE_FRENET_HELICITY_H
+#endif //SWIRL_STRING_CORE_FRENET_HELICITY_H

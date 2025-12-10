@@ -1,6 +1,6 @@
 // vorticity_dynamics.h
-#ifndef SSTCORE_VORTICITY_DYNAMICS_H
-#define SSTCORE_VORTICITY_DYNAMICS_H
+#ifndef SWIRL_STRING_CORE_VORTICITY_DYNAMICS_H
+#define SWIRL_STRING_CORE_VORTICITY_DYNAMICS_H
 
 #include <array>
 #include <vector>

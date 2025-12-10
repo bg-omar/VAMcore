@@ -2,8 +2,8 @@
 // Created by omar.iskandarani on 8/12/2025.
 //
 
-#ifndef SSTCORE_FIELD_KERNELS_H
-#define SSTCORE_FIELD_KERNELS_H
+#ifndef SWIRL_STRING_CORE_FIELD_KERNELS_H
+#define SWIRL_STRING_CORE_FIELD_KERNELS_H
 // field_kernels.h
 // Static kernels for Biot–Savart over a wire polyline and dipole superposition.
 // Units: mu0 = 1, so factor = 1/(4π).
@@ -122,4 +122,4 @@ public:
 } // namespace sst
 
 
-#endif // SSTCORE_FIELD_KERNELS_H
+#endif // SWIRL_STRING_CORE_FIELD_KERNELS_H

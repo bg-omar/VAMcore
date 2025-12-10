@@ -2,8 +2,8 @@
 // Created by mr on 3/22/2025.
 //
 
-#ifndef SSTCORE_KNOT_DYNAMICS_H
-#define SSTCORE_KNOT_DYNAMICS_H
+#ifndef SWIRL_STRING_CORE_KNOT_DYNAMICS_H
+#define SWIRL_STRING_CORE_KNOT_DYNAMICS_H
 
 #include "../include/vec3_utils.h"
 #ifndef M_PI
@@ -16,10 +16,18 @@
 #include <array>
 #include <string>
 #include <stdexcept>
+#include <tuple>
+#include <map>
 
 namespace sst {
 
 	using Vec3 = std::array<double, 3>;
+
+	// Forward declaration
+	struct FourierBlock;
+	
+	// Forward declaration for embedded knot files (generated during build)
+	std::map<std::string, std::string> get_embedded_knot_files();
 
         class KnotDynamics {
         public:
@@ -73,6 +81,39 @@ namespace sst {
                         unsigned int seed = 12345,
                         double min_angle_deg = 1.0,
                         double depth_tol = 1e-6);
+
+                // Biot-Savart and helicity calculations (wrappers for BiotSavart)
+                // Compute Biot-Savart velocity field from a closed curve at grid points
+                static std::vector<Vec3> compute_biot_savart_velocity_grid(
+                        const std::vector<Vec3>& curve,
+                        const std::vector<Vec3>& grid_points);
+
+                // Compute vorticity from velocity field on a regular grid
+                static std::vector<Vec3> compute_vorticity_grid(
+                        const std::vector<Vec3>& velocity,
+                        const std::array<int, 3>& shape,
+                        double spacing);
+
+                // Extract cubic interior field subset
+                static std::vector<Vec3> extract_interior_field(
+                        const std::vector<Vec3>& field,
+                        const std::array<int, 3>& shape,
+                        int margin);
+
+                // Compute helicity invariants (H_charge, H_mass, a_mu)
+                static std::tuple<double, double, double> compute_helicity_invariants(
+                        const std::vector<Vec3>& v_sub,
+                        const std::vector<Vec3>& w_sub,
+                        const std::vector<double>& r_sq);
+
+                // High-level method: compute helicity from Fourier block
+                // Returns (H_charge, H_mass, a_mu)
+                static std::tuple<double, double, double> compute_helicity_from_fourier_block(
+                        const FourierBlock& block,
+                        int grid_size = 32,
+                        double spacing = 0.1,
+                        int interior_margin = 8,
+                        int nsamples = 1000);
         };
 
         // Fourier knot representation (from fourier_knot)
@@ -98,6 +139,9 @@ namespace sst {
                 // Parse a .fseries file into blocks. Each block is separated by either a '%' header
                 // or by a blank line. Lines contain 6 doubles: a_x b_x a_y b_y a_z b_z
                 static std::vector<FourierBlock> parse_fseries_multi(const std::string& path);
+                
+                // Parse .fseries content from a string (for embedded files)
+                static std::vector<FourierBlock> parse_fseries_from_string(const std::string& content);
 
                 // Choose the block with the largest number of harmonics
                 static int index_of_largest_block(const std::vector<FourierBlock>& blocks);
@@ -116,6 +160,18 @@ namespace sst {
                 static std::pair<std::vector<Vec3>, std::vector<double>>
                 load_knot(const std::string& path, int nsamples);
 
+                // Structure for loaded knot data
+                struct LoadedKnot {
+                        std::string name;                    // filename without extension
+                        std::vector<Vec3> points;            // evaluated points
+                        std::vector<double> curvature;        // curvature at each point
+                };
+
+                // Load all knots from a list of file paths, return vector of LoadedKnot
+                // Each knot uses the largest block and is evaluated with nsamples points
+                static std::vector<LoadedKnot>
+                load_all_knots(const std::vector<std::string>& paths, int nsamples = 1000);
+
         private:
                 static Vec3 evalPoint(const Block& blk, double s);
         };
@@ -127,6 +183,10 @@ namespace sst {
 
                 void initialize_trefoil_knot(size_t resolution = 400);
                 void initialize_figure8_knot(size_t resolution = 400);
+                
+                // Initialize any knot from .fseries file by identifier (e.g., "3_1", "4_1", "5_1")
+                // Searches in standard locations for knot_fseries directory
+                void initialize_knot_from_name(const std::string& knot_id, size_t resolution = 1000);
 
                 void evolve(double dt, size_t steps);
 
@@ -139,6 +199,7 @@ namespace sst {
                 double circulation;
 
                 void compute_tangents();
+                static std::string find_knot_file(const std::string& knot_id);
         };
 
         inline double compute_writhe(const std::vector<Vec3>& centerline) {
@@ -166,4 +227,4 @@ namespace sst {
 } // namespace sst
 
 
-#endif //SSTCORE_KNOT_DYNAMICS_H
+#endif //SWIRL_STRING_CORE_KNOT_DYNAMICS_H

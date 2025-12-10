@@ -14,14 +14,14 @@ if os.path.exists(build_dir):
     sys.path.insert(0, build_dir)
 
 try:
-    import sstcore
+    import swirl_string_core
     HAS_SST = True
 except ImportError:
     try:
-        import sstbindings as sstcore
+        import sstbindings as swirl_string_core
         HAS_SST = True
     except ImportError:
-        print("ERROR: Could not import sstcore or sstbindings")
+        print("ERROR: Could not import swirl_string_core or sstbindings")
         sys.exit(1)
 
 
@@ -53,7 +53,7 @@ def test_lamb_oseen_velocity():
     
     formula = r"$v_\theta(r,t) = \frac{\Gamma}{2\pi r}\left(1 - e^{-\frac{r^2}{4\nu t}}\right)$"
     
-    result = sstcore.lamb_oseen_velocity(gamma, R, nu, t)
+    result = swirl_string_core.lamb_oseen_velocity(gamma, R, nu, t)
     
     log_test(
         "lamb_oseen_velocity",
@@ -78,7 +78,7 @@ def test_lamb_oseen_vorticity():
     
     formula = r"$\omega(r,t) = \frac{\Gamma}{4\pi\nu t}\exp\left(-\frac{r^2}{4\nu t}\right)$"
     
-    result = sstcore.lamb_oseen_vorticity(gamma, r, nu, t)
+    result = swirl_string_core.lamb_oseen_vorticity(gamma, r, nu, t)
     
     log_test(
         "lamb_oseen_vorticity",
@@ -103,7 +103,7 @@ def test_hill_streamfunction():
     
     formula = r"$\psi(r,z) = A r^2 (R^2 - r^2 - z^2)$ (inside sphere)"
     
-    result = sstcore.hill_streamfunction(A, r, z, R)
+    result = swirl_string_core.hill_streamfunction(A, r, z, R)
     
     log_test(
         "hill_streamfunction",
@@ -128,7 +128,7 @@ def test_hill_vorticity():
     
     formula = r"$\omega(r,z) = 2A (R^2 - 2r^2 - z^2)$ (inside sphere)"
     
-    result = sstcore.hill_vorticity(A, r, z, R)
+    result = swirl_string_core.hill_vorticity(A, r, z, R)
     
     log_test(
         "hill_vorticity",
@@ -151,7 +151,7 @@ def test_hill_circulation():
     
     formula = r"$\Gamma = \int \omega \, dA = \frac{8\pi A R^4}{15}$"
     
-    result = sstcore.hill_circulation(A, R)
+    result = swirl_string_core.hill_circulation(A, R)
     
     log_test(
         "hill_circulation",
@@ -172,7 +172,7 @@ def test_hill_velocity():
     
     formula = r"$U = \frac{\Gamma}{4\pi R}$"
     
-    result = sstcore.hill_velocity(gamma, R)
+    result = swirl_string_core.hill_velocity(gamma, R)
     
     log_test(
         "hill_velocity",
@@ -201,4 +201,3 @@ if __name__ == "__main__":
     print("\n" + "="*80)
     print("ALL TESTS COMPLETED")
     print("="*80)
-

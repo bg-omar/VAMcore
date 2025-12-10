@@ -14,14 +14,14 @@ if os.path.exists(build_dir):
     sys.path.insert(0, build_dir)
 
 try:
-    import sstcore
+    import swirl_string_core
     HAS_SST = True
 except ImportError:
     try:
-        import sstbindings as sstcore
+        import sstbindings as swirl_string_core
         HAS_SST = True
     except ImportError:
-        print("ERROR: Could not import sstcore or sstbindings")
+        print("ERROR: Could not import swirl_string_core or sstbindings")
         sys.exit(1)
 
 
@@ -84,7 +84,7 @@ def test_biot_savart_velocity():
     
     formula = r"$\mathbf{v}(\mathbf{r}) = \frac{\Gamma}{4\pi}\int\frac{d\mathbf{l}\times(\mathbf{r}-\mathbf{r}')}{|\mathbf{r}-\mathbf{r}'|^3}$"
     
-    result = sstcore.biot_savart_velocity(r, filament_points, tangent_vectors, circulation)
+    result = swirl_string_core.biot_savart_velocity(r, filament_points, tangent_vectors, circulation)
     
     log_test(
         "biot_savart_velocity",
@@ -118,7 +118,7 @@ def test_biot_savart_velocity_grid():
     
     formula = r"$\mathbf{v}(\mathbf{r}_i) = \frac{\Gamma}{4\pi}\sum_{segments}\frac{d\mathbf{l}\times(\mathbf{r}_i-\mathbf{r}_{mid})}{|\mathbf{r}_i-\mathbf{r}_{mid}|^3}$"
     
-    result = sstcore.biot_savart_velocity_grid(polyline, grid)
+    result = swirl_string_core.biot_savart_velocity_grid(polyline, grid)
     
     log_test(
         "biot_savart_velocity_grid",
@@ -150,7 +150,7 @@ def test_biot_savart_compute_velocity():
     
     formula = r"$\mathbf{v}(\mathbf{r}) = \frac{1}{4\pi}\int\frac{d\mathbf{l}\times(\mathbf{r}-\mathbf{r}')}{|\mathbf{r}-\mathbf{r}'|^3}$"
     
-    result = sstcore.BiotSavart.compute_velocity(curve, grid_points)
+    result = swirl_string_core.BiotSavart.compute_velocity(curve, grid_points)
     
     log_test(
         "BiotSavart.compute_velocity",
@@ -185,7 +185,7 @@ def test_biot_savart_compute_vorticity():
     
     formula = r"$\boldsymbol{\omega} = \nabla \times \mathbf{v}$"
     
-    result = sstcore.BiotSavart.compute_vorticity(velocity, shape, spacing)
+    result = swirl_string_core.BiotSavart.compute_vorticity(velocity, shape, spacing)
     
     log_test(
         "BiotSavart.compute_vorticity",
@@ -210,7 +210,7 @@ def test_biot_savart_extract_interior():
     
     formula = r"$\mathbf{f}_{int} = \mathbf{f}[margin:N-margin, margin:M-margin, margin:L-margin]$"
     
-    result = sstcore.BiotSavart.extract_interior(field, shape, margin)
+    result = swirl_string_core.BiotSavart.extract_interior(field, shape, margin)
     
     log_test(
         "BiotSavart.extract_interior",
@@ -234,7 +234,7 @@ def test_biot_savart_compute_invariants():
     
     formula = r"$H_{charge}, H_{mass}, a_\mu = \text{invariants}(\mathbf{v}, \boldsymbol{\omega}, r^2)$"
     
-    result = sstcore.BiotSavart.compute_invariants(v_sub, w_sub, r_sq)
+    result = swirl_string_core.BiotSavart.compute_invariants(v_sub, w_sub, r_sq)
     
     log_test(
         "BiotSavart.compute_invariants",
@@ -264,4 +264,3 @@ if __name__ == "__main__":
     print("\n" + "="*80)
     print("ALL TESTS COMPLETED")
     print("="*80)
-

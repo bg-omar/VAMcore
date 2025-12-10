@@ -1,8 +1,8 @@
 # ./examples/knot_pd_and_volume_example.py
 #!/usr/bin/env python3
 """
-Example: build a simple 3D knot curve, extract a PD via sstbindings.pd_from_curve,
-then compute (or attempt) the hyperbolic volume via sstbindings.hyperbolic_volume_from_pd.
+Example: build a simple 3D knot curve, extract a PD via swirl_string_core.pd_from_curve,
+then compute (or attempt) the hyperbolic volume via swirl_string_core.hyperbolic_volume_from_pd.
 
 Notes
   • If the native C++ hyperbolic solver is not built, the binding delegates to
@@ -22,7 +22,7 @@ except Exception:
 
 try:
     # Provided by your PyBind11 module
-    from sstbindings import pd_from_curve, hyperbolic_volume_from_pd
+    from swirl_string_core import pd_from_curve, hyperbolic_volume_from_pd
 except Exception as e:
     raise SystemExit(
         "ERROR: Could not import 'sstcore'. Build & install the module first.\n"

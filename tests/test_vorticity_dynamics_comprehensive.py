@@ -14,14 +14,14 @@ if os.path.exists(build_dir):
     sys.path.insert(0, build_dir)
 
 try:
-    import sstcore
+    import swirl_string_core
     HAS_SST = True
 except ImportError:
     try:
-        import sstbindings as sstcore
+        import sstbindings as swirl_string_core
         HAS_SST = True
     except ImportError:
-        print("ERROR: Could not import sstcore or sstbindings")
+        print("ERROR: Could not import swirl_string_core or sstbindings")
         sys.exit(1)
 
 
@@ -67,7 +67,7 @@ def test_vorticity_z_2D():
     
     formula = r"$\omega_z = \frac{\partial v}{\partial x} - \frac{\partial u}{\partial y}$"
     
-    result = sstcore.vorticity_z_2D(dv_dx, du_dy)
+    result = swirl_string_core.vorticity_z_2D(dv_dx, du_dy)
     
     log_test(
         "vorticity_z_2D",
@@ -88,7 +88,7 @@ def test_local_circulation_density():
     
     formula = r"$\text{Circulation density} = \frac{\partial v}{\partial x} - \frac{\partial u}{\partial y}$ (via Stokes' theorem)"
     
-    result = sstcore.local_circulation_density(dv_dx, du_dy)
+    result = swirl_string_core.local_circulation_density(dv_dx, du_dy)
     
     log_test(
         "local_circulation_density",
@@ -108,7 +108,7 @@ def test_solid_body_rotation_vorticity():
     
     formula = r"$\omega = 2\Omega$"
     
-    result = sstcore.solid_body_rotation_vorticity(omega)
+    result = swirl_string_core.solid_body_rotation_vorticity(omega)
     
     log_test(
         "solid_body_rotation_vorticity",
@@ -127,7 +127,7 @@ def test_couette_vorticity():
     
     formula = r"$\omega = -\alpha$"
     
-    result = sstcore.couette_vorticity(alpha)
+    result = swirl_string_core.couette_vorticity(alpha)
     
     log_test(
         "couette_vorticity",
@@ -148,7 +148,7 @@ def test_crocco_relation():
     
     formula = r"$\mathbf{v} \times \boldsymbol{\omega} = \frac{\nabla p}{\rho} - \nabla H$"
     
-    result = sstcore.crocco_relation(vorticity, rho, pressure_gradient)
+    result = swirl_string_core.crocco_relation(vorticity, rho, pressure_gradient)
     
     log_test(
         "crocco_relation",
@@ -173,7 +173,7 @@ def test_compute_vorticity():
     
     formula = r"$\omega_z = \frac{\partial v}{\partial x} - \frac{\partial u}{\partial y}$ (2D field)"
     
-    result = sstcore.compute_vorticity(u, v, nx, ny, dx, dy)
+    result = swirl_string_core.compute_vorticity(u, v, nx, ny, dx, dy)
     
     log_test(
         "compute_vorticity",
@@ -202,7 +202,7 @@ def test_rotating_frame_rhs():
     
     formula = r"$\frac{D\mathbf{v}}{Dt} = \mathbf{v} \times \boldsymbol{\omega} + \nabla\phi + \frac{\nabla p}{\rho} + 2\mathbf{v} \times \boldsymbol{\Omega}$"
     
-    result = sstcore.rotating_frame_rhs(velocity, vorticity, grad_phi, grad_p, omega, rho)
+    result = swirl_string_core.rotating_frame_rhs(velocity, vorticity, grad_phi, grad_p, omega, rho)
     
     log_test(
         "rotating_frame_rhs",
@@ -230,7 +230,7 @@ def test_crocco_gradient():
     
     formula = r"$\nabla H = \mathbf{v} \times \boldsymbol{\omega} + \nabla\phi + \frac{\nabla p}{\rho}$"
     
-    result = sstcore.crocco_gradient(velocity, vorticity, grad_phi, grad_p, rho)
+    result = swirl_string_core.crocco_gradient(velocity, vorticity, grad_phi, grad_p, rho)
     
     log_test(
         "crocco_gradient",
@@ -255,7 +255,7 @@ def test_baroclinic_term():
     
     formula = r"$\frac{\nabla\rho \times \nabla p}{\rho^2}$"
     
-    result = sstcore.baroclinic_term(grad_rho, grad_p, rho)
+    result = swirl_string_core.baroclinic_term(grad_rho, grad_p, rho)
     
     log_test(
         "baroclinic_term",
@@ -285,7 +285,7 @@ def test_compute_vorticity_rhs():
     
     formula = r"$\frac{D\boldsymbol{\omega}}{Dt} = (\boldsymbol{\omega} \cdot \nabla)\mathbf{v} - \boldsymbol{\omega}(\nabla \cdot \mathbf{v}) + \frac{\nabla\rho \times \nabla p}{\rho^2}$"
     
-    result = sstcore.compute_vorticity_rhs(omega, grad_u, div_u, grad_rho, grad_p, rho)
+    result = swirl_string_core.compute_vorticity_rhs(omega, grad_u, div_u, grad_rho, grad_p, rho)
     
     log_test(
         "compute_vorticity_rhs",
@@ -322,4 +322,3 @@ if __name__ == "__main__":
     print("\n" + "="*80)
     print("ALL TESTS COMPLETED")
     print("="*80)
-

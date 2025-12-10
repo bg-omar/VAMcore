@@ -34,4 +34,4 @@ If you encounter an ImportError:
 - Make sure the `.pyd` file matches your Python version and architecture (64-bit)
 - Recompile using CMake and pybind11 if necessary for other OS
 
--- SSTcore Team
+-- Swirl_String_core Team

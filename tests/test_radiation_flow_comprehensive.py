@@ -14,14 +14,14 @@ if os.path.exists(build_dir):
     sys.path.insert(0, build_dir)
 
 try:
-    import sstcore
+    import swirl_string_core
     HAS_SST = True
 except ImportError:
     try:
-        import sstbindings as sstcore
+        import sstbindings as swirl_string_core
         HAS_SST = True
     except ImportError:
-        print("ERROR: Could not import sstcore or sstbindings")
+        print("ERROR: Could not import swirl_string_core or sstbindings")
         sys.exit(1)
 
 
@@ -82,7 +82,7 @@ def test_van_der_pol_dx():
     formula = r"$\frac{dx}{dt} = y$ (Van der Pol oscillator)"
     
     try:
-        result = sstcore.van_der_pol_dx(x, y, mu)
+        result = swirl_string_core.van_der_pol_dx(x, y, mu)
         
         log_test(
             "van_der_pol_dx",
@@ -98,7 +98,7 @@ def test_van_der_pol_dx():
     except TypeError:
         # Try without mu
         try:
-            result = sstcore.van_der_pol_dx(x, y)
+            result = swirl_string_core.van_der_pol_dx(x, y)
             log_test(
                 "van_der_pol_dx",
                 formula,
@@ -131,7 +131,7 @@ def test_van_der_pol_dy():
     formula = r"$\frac{dy}{dt} = \mu(1-x^2)y - x$ (Van der Pol oscillator)"
     
     try:
-        result = sstcore.van_der_pol_dy(x, y, mu)
+        result = swirl_string_core.van_der_pol_dy(x, y, mu)
         
         log_test(
             "van_der_pol_dy",
@@ -147,7 +147,7 @@ def test_van_der_pol_dy():
     except TypeError:
         # Try without mu
         try:
-            result = sstcore.van_der_pol_dy(x, y)
+            result = swirl_string_core.van_der_pol_dy(x, y)
             log_test(
                 "van_der_pol_dy",
                 formula,
@@ -182,4 +182,3 @@ if __name__ == "__main__":
     print("\n" + "="*80)
     print("ALL TESTS COMPLETED")
     print("="*80)
-

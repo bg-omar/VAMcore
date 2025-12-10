@@ -2,8 +2,8 @@
 // Created by mr on 3/22/2025.
 //
 
-#ifndef SSTCORE_TIMEFIELD_H
-#define SSTCORE_TIMEFIELD_H
+#ifndef SWIRL_STRING_CORE_TIMEFIELD_H
+#define SWIRL_STRING_CORE_TIMEFIELD_H
 
 
 // include/potential_timefield.hpp
@@ -58,4 +58,4 @@ namespace sst {
 } // namespace sst
 
 
-#endif //SSTCORE_TIMEFIELD_H
+#endif //SWIRL_STRING_CORE_TIMEFIELD_H
