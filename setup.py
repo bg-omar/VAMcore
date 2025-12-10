@@ -9,7 +9,7 @@ import subprocess
 import tempfile
 import shutil
 
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 
 # Custom build_ext to generate embedded files during build
 class CustomBuildExt(build_ext):

@@ -5,7 +5,7 @@
 set -e
 
 VERSION="0.1.0"
-PYTHON_VERSIONS=("cp37" "cp38" "cp39" "cp310" "cp311" "cp312" "cp313")
+PYTHON_VERSIONS=("cp39" "cp310" "cp311" "cp312" "cp313")
 
 echo "Building Linux wheels for swirl-string-core ${VERSION}"
 
