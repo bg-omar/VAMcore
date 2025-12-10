@@ -9,7 +9,7 @@ import subprocess
 import tempfile
 import shutil
 
-__version__ = "0.1.0"
+__version__ = "0.1.2"
 
 # Custom build_ext to generate embedded files during build
 class CustomBuildExt(build_ext):
@@ -42,6 +42,19 @@ class CustomBuildExt(build_ext):
                     print(f"Added source file: {rel_source}")
         else:
             print("Warning: Embedded knot files not generated, building without embedded knots")
+        
+        # Add compiler-specific flags for better compatibility (apply to all extensions)
+        for ext in self.extensions:
+            if sys.platform != "win32":
+                # Linux/Unix: Use GCC/Clang flags
+                if not hasattr(ext, 'extra_compile_args') or ext.extra_compile_args is None:
+                    ext.extra_compile_args = []
+                # Add flags if not already present
+                if '-std=c++20' not in ext.extra_compile_args:
+                    ext.extra_compile_args.extend(['-std=c++20', '-O3', '-fPIC'])
+                # Suppress some warnings that might cause issues
+                if '-Wno-deprecated-declarations' not in ext.extra_compile_args:
+                    ext.extra_compile_args.append('-Wno-deprecated-declarations')
         
         # Now build extensions
         super().build_extensions()
@@ -146,12 +159,10 @@ binding_files = glob.glob("src_bindings/py_*.cpp")
 # The generated header directory will be added by CustomBuildExt
 include_dirs = ["src", pybind11.get_include()]
 
-# C++ standard - use 20 for MSVC compatibility (23 not fully supported yet)
+# C++ standard - use 20 for better compatibility across platforms
+# C++23 is not fully supported on all compilers (especially older GCC versions)
 import sys
-if sys.platform == "win32":
-    cxx_std = 20  # MSVC doesn't fully support C++23 yet
-else:
-    cxx_std = 23
+cxx_std = 20  # Use C++20 for maximum compatibility
 
 # Main module: swirl_string_core
 ext_modules = [

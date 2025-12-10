@@ -2,6 +2,18 @@
 
 This guide walks you through publishing the `swirl-string-core` package to PyPI.
 
+## Important: Python Version Compatibility
+
+**Pybind11 extensions are compiled for specific Python versions.** A wheel built for Python 3.12 will NOT work with Python 3.11 or 3.13.
+
+You need to build separate wheels for each Python version you want to support:
+- Python 3.7, 3.8, 3.9, 3.10, 3.11, 3.12, 3.13
+- Platforms: Linux, macOS, Windows
+
+**Recommended**: Use the GitHub Actions workflow (`.github/workflows/build-wheels.yml`) to automatically build wheels for all platforms and Python versions.
+
+See `BUILDING_WHEELS.md` for detailed instructions.
+
 ## Prerequisites
 
 1. **PyPI Account**: Create an account at https://pypi.org/account/register/
