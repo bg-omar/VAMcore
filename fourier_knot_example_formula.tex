@@ -1,0 +1,35 @@
+%! Author = mr
+%! Date = 8/8/2025
+
+% Preamble
+\documentclass[11pt]{article}
+
+% Packages
+\usepackage{amsmath}
+
+% Document
+\begin{document}
+
+% fourier_knot_notes.tex
+    \section*{Fourier-knot representation and curvature}
+
+    Let $s\in[0,2\pi]$. For a block of coefficients
+    $\mathcal{C}=\{a_x,b_x,a_y,b_y,a_z,b_z\}_{n=1}^{N}$, the curve is
+    \[
+        \mathbf{r}(s)=
+        \begin{pmatrix}
+            \sum_{n=1}^{N}\big(a_{x,n}\cos ns + b_{x,n}\sin ns\big)\\
+            \sum_{n=1}^{N}\big(a_{y,n}\cos ns + b_{y,n}\sin ns\big)\\
+            \sum_{n=1}^{N}\big(a_{z,n}\cos ns + b_{z,n}\sin ns\big)
+        \end{pmatrix}.
+    \]
+    For discrete samples $\{\mathbf{r}_i\}_{i=1}^{M}$ with uniform spacing,
+    let $\mathbf{r}'_i$ and $\mathbf{r}''_i$ be central differences. The curvature is
+    \[
+        \kappa_i=\frac{\|\mathbf{r}'_i\times \mathbf{r}''_i\|}
+        {\|\mathbf{r}'_i\|^{3}+\varepsilon},\qquad \varepsilon>0 \text{ small}.
+    \]
+    We select the block with maximal $N$ (most harmonics) per file.
+
+
+\end{document}

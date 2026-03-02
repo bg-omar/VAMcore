@@ -6,9 +6,9 @@
 #define SWIRL_STRING_CORE_KNOT_DYNAMICS_H
 
 #include "../include/vec3_utils.h"
-#include "constants.h"
+#include "SST_Constants.h"
 #ifndef M_PI
-#define M_PI pi
+#define M_PI SST::Constants::pi
 #endif
 // include/knot_dynamics.hpp
 #pragma once

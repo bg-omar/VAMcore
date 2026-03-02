@@ -1,7 +1,8 @@
-import time
+import os
 import sys
 import math
 import pandas as pd
+from datetime import datetime
 # Tabel uit de afbeelding (Standard Model overzicht)
 particles = [
     # Quarks (generaties I, II, III)
@@ -89,6 +90,14 @@ def evaluate_particle(knot_id, M0_calibration, collect=False):
     particle.relax(iterations=1500, timestep=0.005)
     L_tot = particle.get_dimless_ropelength()
 
+    # Relativistische metrieken (Helicity, Swirl-Clock tijdsdilatie)
+    try:
+        metrics = particle.compute_relativistic_metrics()
+        print(f"│ 🌀 Heliciteit (H): {metrics.helicity:.4e}")
+        print(f"│ ⏱️ Swirl-Klok Factor (S_t): {metrics.core_time_dilation:.6f}")
+    except AttributeError:
+        pass  # rebuild module to access relativistic metrics
+
     # 2. SST-59 THEOREMA: Pas de analytische theorie toe op de fysieke meetwaarde
     amplification = (4.0 / alpha_fs) ** props['G']
     braid_suppression = props['k'] ** -1.5
@@ -129,6 +138,14 @@ if __name__ == "__main__":
     e_particle.relax(iterations=1500, timestep=0.005)
     L_tot_electron = e_particle.get_dimless_ropelength()
 
+    # Haal de relativiteit-metrieken op
+    try:
+        metrics = e_particle.compute_relativistic_metrics()
+        print(f"[+] Heliciteit (H): {metrics.helicity:.4e}")
+        print(f"[+] Swirl-Klok Factor (S_t): {metrics.core_time_dilation:.6f}")
+    except AttributeError:
+        pass
+
     # Bereken M0 zodat het elektron EXACT 0.51099895 MeV weegt
     b_supp = electron_props['k'] ** -1.5
     g_supp = phi0 ** -electron_props['g']
@@ -168,3 +185,19 @@ if __name__ == "__main__":
     print("=" * 80)
     df_pdg = pd.DataFrame(particles)
     print(df_pdg.to_string(index=False))
+
+    # Write results to file
+    os.makedirs("output", exist_ok=True)
+    out_base = os.path.join("output", f"eval_ab_initio_{datetime.now():%Y%m%d_%H%M%S}")
+    if not df_sst.empty:
+        df_sst.to_csv(f"{out_base}_sst_results.csv", index=False)
+    df_pdg.to_csv(f"{out_base}_pdg_reference.csv", index=False)
+    with open(f"{out_base}_summary.txt", "w", encoding="utf-8") as f:
+        f.write("SST Invariant Master Mass - Evaluation Results\n")
+        f.write("=" * 80 + "\n\n")
+        if not df_sst.empty:
+            f.write("SST vs PDG:\n")
+            f.write(df_sst.to_string(index=False) + "\n\n")
+        f.write("PDG Reference:\n")
+        f.write(df_pdg.to_string(index=False) + "\n")
+    print(f"\n[+] Results saved to {out_base}_*.csv and {out_base}_summary.txt")

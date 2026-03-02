@@ -1,6 +1,6 @@
 #include "knot_dynamics.h"
 #include "biot_savart.h"
-#include "constants.h"
+#include "SST_Constants.h"
 #include <cmath>
 #include <random>
 #include <numeric>
@@ -31,7 +31,7 @@ namespace sst {
                                 W += dot(cross(t1, t2), r) / (r_norm * r_norm * r_norm);
                         }
                 }
-                return W / (2.0 * sst::pi);
+                return W / (2.0 * SST::Constants::pi);
         }
 
         int KnotDynamics::compute_linking_number(const std::vector<Vec3>& X, const std::vector<Vec3>& Y) {
@@ -49,7 +49,7 @@ namespace sst {
                                 Lk += dot(cross(dx, dy), r) / (r_norm * r_norm * r_norm);
                         }
                 }
-                return static_cast<int>(std::round(Lk / (4.0 * sst::pi)));
+                return static_cast<int>(std::round(Lk / (4.0 * SST::Constants::pi)));
         }
 
         double KnotDynamics::compute_twist(const std::vector<Vec3>& T, const std::vector<Vec3>& B) {
@@ -60,7 +60,7 @@ namespace sst {
                         Vec3 dB_ds = {dB[0]/2.0, dB[1]/2.0, dB[2]/2.0};
                         Tw += dot(cross(T[i], dB_ds), B[i]);
                 }
-                return Tw / (2.0 * sst::pi);
+                return Tw / (2.0 * SST::Constants::pi);
         }
 
         double KnotDynamics::compute_centerline_helicity(const std::vector<Vec3>& curve,

@@ -1,7 +1,7 @@
 # Swirl String Theory (SST) Core Library Reference
 **Version:** 2.0.0 (Auto-Compiled) | **Generated:** 2025-11-21
 
-This document is **automatically compiled** from the C++ Source Code (`src_bindings/`).
+This document is **automatically compiled** from the C++ Source Code (`src/`).
 Equations marked with [Canon] are rigorously verified against the SST Protocol.
 
 ---

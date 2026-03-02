@@ -256,7 +256,7 @@ src_files = [
 # Don't add here to avoid path issues during sdist
 
 # Get all binding files
-binding_files = glob.glob("src_bindings/py_*.cpp")
+binding_files = glob.glob("src/*_py.cpp")
 
 # Include directories
 # For sdist builds, paths are relative to the extracted source directory
@@ -272,7 +272,7 @@ cxx_std = 20  # Use C++20 for maximum compatibility
 ext_modules = [
     Pybind11Extension(
         "swirl_string_core",
-        sources=["src_bindings/module_sst.cpp"] + binding_files + src_files,
+        sources=["src/module_sst.cpp"] + binding_files + src_files,
         include_dirs=include_dirs,
         cxx_std=cxx_std,
         define_macros=[('VERSION_INFO', __version__), ('KNOT_FILES_EMBEDDED_H', '1')],
@@ -281,7 +281,7 @@ ext_modules = [
     # Backwards compatibility module
     Pybind11Extension(
         "sstbindings",
-        sources=["src_bindings/module_sstbindings.cpp"] + binding_files + src_files,
+        sources=["src/module_sstbindings.cpp"] + binding_files + src_files,
         include_dirs=include_dirs,
         cxx_std=cxx_std,
         define_macros=[('VERSION_INFO', __version__), ('KNOT_FILES_EMBEDDED_H', '1')],

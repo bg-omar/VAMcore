@@ -30,6 +30,9 @@
 /cmake-build-relwithdebinfo-mingw/
 /extern/
 
+# Example output files
+/examples/output/
+
 # Python packaging artifacts
 /dist/
 /*.egg-info/

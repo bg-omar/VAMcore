@@ -57,7 +57,7 @@ If you get `ModuleNotFoundError`, make sure:
 If `initialize_knot_from_name` is not available:
 - Rebuild the Python bindings: `cmake --build . --config Release --target sstbindings`
 - Make sure `py_knot.cpp` is included in the build
-- Check that the binding code in `src_bindings/py_knot.cpp` includes the method
+- Check that the binding code in `src/knot_py.cpp` includes the method
 
 ### Knot Not Found
 
@@ -65,4 +65,3 @@ If a knot ID is not found:
 - Check that the `.fseries` file exists in `src/knot_fseries/`
 - Verify the file was embedded during CMake configuration (check build output for "Embedded X .fseries files")
 - The knot ID should match the filename: `knot.{knot_id}.fseries`
-

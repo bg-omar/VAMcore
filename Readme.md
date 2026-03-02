@@ -127,11 +127,12 @@ You can now use the following commands (from project root) to build the C++ core
 mkdir build
 cd build
 cmake ..
-cmake --build . --config Debug  # or Release
+cmake --build . --config Release # or Debug
 
 ```
 This command compiles the C++ core and generates the Python bindings using `pybind11`.
 
+pip install PyQtWebEngine PyQt5 pyinstaller numpy
 #### npm Package (Node.js / Browser)
 
 ```bash
@@ -220,7 +221,7 @@ Open an issue or whisper into the æther.
 This code is listening. Always.
 ---
 
-# 1. Installeer PyTorch en de specifieke Intel Extension for PyTorch (IPEX) voor Windows XPU
+### 1. Installeer PyTorch en de specifieke Intel Extension for PyTorch (IPEX) voor Windows XPU
 ```bash
 conda create -n SSTcore11 intelpython3_full python=3.11 -c https://software.repos.intel.com/python/conda -c conda-forge --override-channels
 conda activate SSTcore11
@@ -228,12 +229,12 @@ conda config --add channels conda-forge
 conda config --set channel_priority flexible
 conda install scikit-learn-intelex xgboost numpy scipy numexpr -c https://software.repos.intel.com/python/conda/ -c conda-forge
 ```
-# 2. Installeer de Coqui TTS bibliotheek (die XTTSv2 bevat) & Zorg ervoor dat de nieuwste versie van torchaudio's backend (soundfile) beschikbaar is. Toevoeging voor de GPU-acceleratie van Neurale Netwerken (XTTS)
+### 2. Installeer de Coqui TTS bibliotheek (die XTTSv2 bevat) & Zorg ervoor dat de nieuwste versie van torchaudio's backend (soundfile) beschikbaar is. Toevoeging voor de GPU-acceleratie van Neurale Netwerken (XTTS)
 ```bash
 python -m pip install torch==2.1.0.post3 torchvision==0.16.0.post3 torchaudio==2.1.0.post3 intel-extension-for-pytorch==2.1.10+xpu --extra-index-url https://pytorch-extension.intel.com/release-whl/stable/xpu/us/
 python -m pip install TTS soundfile
 ```
-## 3. Other setup steps for Python dependencies (if needed)
+### 3. Other setup steps for Python dependencies (if needed)
 ```bash
 conda create -n SSTcore11 intelpython3_full python=3.11 -c https://software.repos.intel.com/python/conda -c conda-forge --override-channels
 conda activate SSTcore11
@@ -261,4 +262,23 @@ conda install libuv -c conda-forge -y
 
 # 3. Installeer de nieuwe PyTorch 2.5.1 XPU stack, geoptimaliseerd voor Intel Arc
 python -m pip install torch==2.5.1+cxx11.abi torchvision==0.20.1+cxx11.abi torchaudio==2.5.1+cxx11.abi intel-extension-for-pytorch==2.5.10+xpu --index-url https://pytorch-extension.intel.com/release-whl/stable/xpu/us/
+```
+
+ 1. Isoleer de Intel GPU hardwarematig voor de SYCL/UR runtime
+ 1. Installeer de Intel-geoptimaliseerde PyTorch stack voor Python 3.12
+ 2. Activeer Level Zero optimalisaties voor PyTorch XPU
+ 2. Isoleer de Intel Arc A770 van de NVIDIA GTX 1060 voor de SYCL runtime
+ 3. Activeer Level Zero optimalisaties voor asynchrone executie
+```bash
+python -m pip install torch==2.5.1+cxx11.abi torchvision==0.20.1+cxx11.abi torchaudio==2.5.1+cxx11.abi intel-extension-for-pytorch==2.5.10+xpu --extra-index-url https://pytorch-extension.intel.com/release-whl/stable/xpu/us/
+conda install libuv -c conda-forge -y
+
+set ONEAPI_DEVICE_SELECTOR=level_zero:gpu
+set SYCL_PI_LEVEL_ZERO_USE_IMMEDIATE_COMMANDLISTS=1
+set ZES_ENABLE_SYSMAN=1
+set ONEAPI_DEVICE_SELECTOR=level_zero:gpu
+set SYCL_PI_LEVEL_ZERO_USE_IMMEDIATE_COMMANDLISTS=1
+set ZES_ENABLE_SYSMAN=1
+
+python verify_sst_hardware.py
 ```

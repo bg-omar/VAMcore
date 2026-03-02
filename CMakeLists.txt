@@ -62,6 +62,7 @@ add_library(swirl_string_core_lib STATIC
         src/field_kernels.cpp
         src/frenet_helicity.cpp
         src/potential_timefield.cpp
+        src/magnus_integrator.cpp
         src/hyperbolic_volume.cpp
         src/knot_dynamics.cpp
         src/radiation_flow.cpp
@@ -72,7 +73,6 @@ add_library(swirl_string_core_lib STATIC
         src/vorticity_dynamics.cpp
         src/sst_gravity.cpp
         ${CMAKE_BINARY_DIR}/generated/knot_files_embedded.cpp
-        include/ab_initio_mass.h
 )
 
 target_include_directories(swirl_string_core_lib PUBLIC 
@@ -84,46 +84,49 @@ target_include_directories(swirl_string_core_lib PUBLIC
 # pybind11 will automatically use .pyd on Windows and .so on Linux/Mac
 
 # Main module: swirl_string_core
-pybind11_add_module(swirl_string_core src_bindings/module_sst.cpp)
+pybind11_add_module(swirl_string_core src/module_sst.cpp)
 target_sources(swirl_string_core PRIVATE
-        src_bindings/py_ab_initio.cpp
-        src_bindings/py_biot_savart.cpp
-        src_bindings/py_field_kernels.cpp
-        src_bindings/py_field_ops.cpp
-        src_bindings/py_fluid_dynamics.cpp
-        src_bindings/py_knot.cpp
-        src_bindings/py_frenet_helicity.cpp
-        src_bindings/py_potential_timefield.cpp
-        src_bindings/py_hyperbolic_volume.cpp
-        src_bindings/py_radiation_flow.cpp
-        src_bindings/py_swirl_field.cpp
-        src_bindings/py_thermo_dynamics.cpp
-        src_bindings/py_time_evolution.cpp
-        src_bindings/py_vortex_ring.cpp
-        src_bindings/py_vorticity_dynamics.cpp
-        src_bindings/py_sst_gravity.cpp)
+        src/ab_initio_mass_py.cpp
+        src/biot_savart_py.cpp
+        src/field_kernels_py.cpp
+        src/field_ops_py.cpp
+        src/fluid_dynamics_py.cpp
+        src/magnus_integrator_py.cpp
+        src/knot_dynamics_py.cpp
+        src/frenet_helicity_py.cpp
+        src/potential_timefield_py.cpp
+        src/hyperbolic_volume_py.cpp
+        src/radiation_flow_py.cpp
+        src/swirl_field_py.cpp
+        src/thermo_dynamics_py.cpp
+        src/time_evolution_py.cpp
+        src/vortex_ring_py.cpp
+        src/vorticity_dynamics_py.cpp
+        src/sst_gravity_py.cpp)
 
 target_link_libraries(swirl_string_core PRIVATE swirl_string_core_lib)
 target_include_directories(swirl_string_core PRIVATE extern/pybind11/include)
 
 # Backwards compatibility module: sstbindings
-pybind11_add_module(sstbindings src_bindings/module_sstbindings.cpp)
+pybind11_add_module(sstbindings src/module_sstbindings.cpp)
 target_sources(sstbindings PRIVATE
-        src_bindings/py_biot_savart.cpp
-        src_bindings/py_field_kernels.cpp
-        src_bindings/py_field_ops.cpp
-        src_bindings/py_fluid_dynamics.cpp
-        src_bindings/py_knot.cpp
-        src_bindings/py_frenet_helicity.cpp
-        src_bindings/py_potential_timefield.cpp
-        src_bindings/py_hyperbolic_volume.cpp
-        src_bindings/py_radiation_flow.cpp
-        src_bindings/py_swirl_field.cpp
-        src_bindings/py_thermo_dynamics.cpp
-        src_bindings/py_time_evolution.cpp
-        src_bindings/py_vortex_ring.cpp
-        src_bindings/py_vorticity_dynamics.cpp
-        src_bindings/py_sst_gravity.cpp)
+        src/ab_initio_mass_py.cpp
+        src/biot_savart_py.cpp
+        src/field_kernels_py.cpp
+        src/field_ops_py.cpp
+        src/fluid_dynamics_py.cpp
+        src/magnus_integrator_py.cpp
+        src/knot_dynamics_py.cpp
+        src/frenet_helicity_py.cpp
+        src/potential_timefield_py.cpp
+        src/hyperbolic_volume_py.cpp
+        src/radiation_flow_py.cpp
+        src/swirl_field_py.cpp
+        src/thermo_dynamics_py.cpp
+        src/time_evolution_py.cpp
+        src/vortex_ring_py.cpp
+        src/vorticity_dynamics_py.cpp
+        src/sst_gravity_py.cpp)
 
 target_link_libraries(sstbindings PRIVATE swirl_string_core_lib)
 target_include_directories(sstbindings PRIVATE extern/pybind11/include)
@@ -171,22 +174,22 @@ if(NODE_EXECUTABLE)
     if(NODE_ADDON_API_INCLUDE_NORM AND EXISTS "${NODE_ADDON_API_INCLUDE_NORM}")
         # Build Node.js native addon
         add_library(swirl_string_core_node SHARED
-            src_bindings/node/module_node.cpp
-            src_bindings/node/node_biot_savart.cpp
-            src_bindings/node/node_field_kernels.cpp
-            src_bindings/node/node_field_ops.cpp
-            src_bindings/node/node_fluid_dynamics.cpp
-            src_bindings/node/node_knot.cpp
-            src_bindings/node/node_frenet_helicity.cpp
-            src_bindings/node/node_potential_timefield.cpp
-            src_bindings/node/node_hyperbolic_volume.cpp
-            src_bindings/node/node_radiation_flow.cpp
-            src_bindings/node/node_swirl_field.cpp
-            src_bindings/node/node_thermo_dynamics.cpp
-            src_bindings/node/node_time_evolution.cpp
-            src_bindings/node/node_vortex_ring.cpp
-            src_bindings/node/node_vorticity_dynamics.cpp
-            src_bindings/node/node_sst_gravity.cpp
+            src/node/module_node.cpp
+            src/node/node_biot_savart.cpp
+            src/node/node_field_kernels.cpp
+            src/node/node_field_ops.cpp
+            src/node/node_fluid_dynamics.cpp
+            src/node/node_knot.cpp
+            src/node/node_frenet_helicity.cpp
+            src/node/node_potential_timefield.cpp
+            src/node/node_hyperbolic_volume.cpp
+            src/node/node_radiation_flow.cpp
+            src/node/node_swirl_field.cpp
+            src/node/node_thermo_dynamics.cpp
+            src/node/node_time_evolution.cpp
+            src/node/node_vortex_ring.cpp
+            src/node/node_vorticity_dynamics.cpp
+            src/node/node_sst_gravity.cpp
             src/biot_savart.cpp
             src/fluid_dynamics.cpp
             src/field_kernels.cpp
@@ -289,7 +292,7 @@ install(TARGETS swirl_string_core_lib swirl_string_core sstbindings
 install(DIRECTORY include/ DESTINATION include)
 
 # Install knot data files for distribution
-install(DIRECTORY src/knot_fseries/ 
+install(DIRECTORY src/knot_fseries/
         DESTINATION share/swirl_string_core/knot_fseries
         FILES_MATCHING PATTERN "*.fseries" PATTERN "*.short")
 
@@ -312,7 +315,7 @@ add_custom_command(TARGET swirl_string_core POST_BUILD
         ${CMAKE_SOURCE_DIR}/../SwirlStringTheory/$<TARGET_FILE_NAME:swirl_string_core>
         COMMAND ${CMAKE_COMMAND} -E copy
         $<TARGET_FILE:swirl_string_core>
-        ${CMAKE_SOURCE_DIR}/../SwirlStringTheory/SST_Mathematical_Proof_Python/$<TARGET_FILE_NAME:swirl_string_core>
+        ${CMAKE_SOURCE_DIR}/Front-End/$<TARGET_FILE_NAME:swirl_string_core>
         COMMENT "Copied swirl_string_core module to project root, examples/, and ../SwirlStringTheory/ for easy import"
 )
 
@@ -326,6 +329,6 @@ add_custom_command(TARGET sstbindings POST_BUILD
         ${CMAKE_SOURCE_DIR}/examples/$<TARGET_FILE_NAME:sstbindings>
         COMMAND ${CMAKE_COMMAND} -E copy
         $<TARGET_FILE:sstbindings>
-        ${CMAKE_SOURCE_DIR}/../SwirlStringTheory/SST_Mathematical_Proof_Python/$<TARGET_FILE_NAME:sstbindings>
+        ${CMAKE_SOURCE_DIR}/Front-End/$<TARGET_FILE_NAME:sstbindings>
         COMMENT "Copied sstbindings module (backwards compatibility) to project root, examples/, and ../SwirlStringTheory/ for easy import"
 )
