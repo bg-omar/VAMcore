@@ -10,6 +10,8 @@ using sst::FourierKnot;
 using sst::Vec3;
 using sst::KnotDynamics;
 using sst::VortexKnotSystem;
+using IdealABBlock = sst::FourierKnot::IdealABBlock;
+using IdealABComponent = sst::FourierKnot::IdealABComponent;
 
 static void _check_1d_same_len(const py::array &a, const py::array &b, const char* name){
   if(a.ndim()!=1 || b.ndim()!=1 || a.shape(0)!=b.shape(0))
@@ -43,6 +45,23 @@ void bind_knot(py::module_& m) {
       .def_readwrite("a_z", &FourierBlock::a_z)
       .def_readwrite("b_z", &FourierBlock::b_z);
 
+  py::class_<IdealABComponent>(m, "IdealABComponent")
+      .def(py::init<>())
+      .def_readwrite("component_index", &IdealABComponent::component_index)
+      .def_readwrite("A0", &IdealABComponent::A0)
+      .def_readwrite("B0", &IdealABComponent::B0)
+      .def_readwrite("fourier", &IdealABComponent::fourier);
+
+  py::class_<IdealABBlock>(m, "IdealABBlock")
+      .def(py::init<>())
+      .def_readwrite("id", &IdealABBlock::id)
+      .def_readwrite("conway", &IdealABBlock::conway)
+      .def_readwrite("L", &IdealABBlock::L)
+      .def_readwrite("D", &IdealABBlock::D)
+      .def_readwrite("n", &IdealABBlock::n)
+      .def_readwrite("components", &IdealABBlock::components)
+      .def_readwrite("fourier", &IdealABBlock::fourier);
+
   py::class_<FourierKnot>(m, "fourier_knot")
       .def(py::init<>())
       .def("loadBlocks", &FourierKnot::loadBlocks)
@@ -55,12 +74,69 @@ void bind_knot(py::module_& m) {
   m.def("parse_fseries_multi", &FourierKnot::parse_fseries_multi,
         py::arg("path"), "Parse a .fseries file into Fourier blocks.");
 
+  m.def("parse_ideal_txt_multi", &FourierKnot::parse_ideal_txt_multi,
+        py::arg("path"), "Parse an ideal.txt-style file into IdealABBlock entries.");
+
+  m.def("parse_ideal_txt_from_string", &FourierKnot::parse_ideal_txt_from_string,
+        py::arg("content"), "Parse ideal.txt-style content string into IdealABBlock entries.");
+
+  m.def("index_of_ideal_id", &FourierKnot::index_of_ideal_id,
+        py::arg("blocks"), py::arg("id"),
+        "Return index of IdealABBlock with given id, or -1 if not found.");
+
   m.def("index_of_largest_block", &FourierKnot::index_of_largest_block,
         py::arg("blocks"), "Return index of block with most harmonics.");
 
   m.def("evaluate_fourier_block", &FourierKnot::evaluate,
         py::arg("block"), py::arg("s"),
         "Evaluate r(s) for the given Fourier block.");
+
+  m.def("evaluate_with_derivatives",
+        &FourierKnot::evaluate_with_derivatives,
+        py::arg("block"), py::arg("s"),
+        "Evaluate Fourier block and its first three derivatives at parameter s.");
+
+  m.def("curvature_exact",
+        &FourierKnot::curvature_exact,
+        py::arg("block"), py::arg("s"), py::arg("eps") = 1e-12,
+        "Compute exact curvature from Fourier coefficients at sample parameters.");
+
+  m.def("length_exact",
+        &FourierKnot::length_exact,
+        py::arg("block"), py::arg("nsamples") = 4096,
+        "Compute exact length of Fourier curve by sampling.");
+
+  m.def("bending_energy_exact",
+        &FourierKnot::bending_energy_exact,
+        py::arg("block"), py::arg("nsamples") = 4096, py::arg("eps") = 1e-12,
+        "Compute bending energy integral of Fourier curve.");
+
+  m.def("mode_energies",
+        &FourierKnot::mode_energies,
+        py::arg("block"),
+        "Compute per-mode energy from Fourier coefficients.");
+
+  m.def("min_self_distance_sampled",
+        &FourierKnot::min_self_distance_sampled,
+        py::arg("points"), py::arg("exclude_window") = 4,
+        "Compute minimum self-distance of a closed polygonal curve.");
+
+  m.def("min_self_distance_exactish",
+        &FourierKnot::min_self_distance_exactish,
+        py::arg("block"), py::arg("nsamples") = 2048, py::arg("exclude_window") = 4,
+        "Estimate minimum self-distance of Fourier curve via sampling.");
+
+  py::class_<FourierKnot::GeometricDescriptors>(m, "GeometricDescriptors")
+      .def_readonly("L", &FourierKnot::GeometricDescriptors::L)
+      .def_readonly("bending_energy", &FourierKnot::GeometricDescriptors::bending_energy)
+      .def_readonly("min_self_distance", &FourierKnot::GeometricDescriptors::min_self_distance)
+      .def_readonly("writhe", &FourierKnot::GeometricDescriptors::writhe)
+      .def_readonly("mode_energy", &FourierKnot::GeometricDescriptors::mode_energy);
+
+  m.def("describe_fourier_block",
+        &FourierKnot::describe_fourier_block,
+        py::arg("block"), py::arg("nsamples") = 2048, py::arg("exclude_window") = 4,
+        "Compute geometric descriptors (length, bending energy, self-distance, writhe, mode energies) for a Fourier block.");
 
   m.def("fourier_knot_eval",
         [](py::array_t<double, py::array::c_style | py::array::forcecast> a_x,
@@ -266,6 +342,102 @@ Compute a PD code from a closed 3D polygonal curve.
         },
         py::arg("points"), py::arg("eps") = 1e-8,
         R"pbdoc(Compute discrete curvature from points.)pbdoc");
+  m.def("get_embedded_ideal_files", &sst::get_embedded_ideal_files,
+        "Return embedded ideal*.txt resources as {relative_name: content}.");
+
+  m.def("load_embedded_ideal_text", &sst::load_embedded_ideal_text,
+        py::arg("name") = "ideal.txt",
+        "Load embedded ideal text resource from library (basename fallback supported).");
+
+  m.def("parse_embedded_ideal_txt",
+        [](const std::string& name) {
+            return sst::FourierKnot::parse_ideal_txt_from_string(sst::load_embedded_ideal_text(name));
+        },
+        py::arg("name") = "ideal.txt",
+        "Parse embedded ideal*.txt resource into AB blocks.");
+
+  m.def("parse_embedded_ideal_ab_by_id",
+        [](const std::string& ab_id, const std::string& name) {
+            return sst::FourierKnot::parse_ideal_ab_by_id_from_embedded(ab_id, name);
+        },
+        py::arg("ab_id"), py::arg("name") = "ideal.txt",
+        "Parse a single AB block by Id from an embedded ideal*.txt resource.");
+
+  m.def("format_ideal_ab_header",
+        &sst::FourierKnot::format_ideal_ab_header,
+        py::arg("ab"),
+        "Format AB metadata as: AB Id=\"...\" Conway=\"...\" L=\"...\" D=\"...\" n=\"...\"");
+
+  // Embedded .fseries registry from compiled resources
+  m.def("get_embedded_knot_files", &sst::get_embedded_knot_files,
+        "Return embedded .fseries resources as {knot_id: file_content}.");
+
+  // Parse .fseries content directly from a string (if not already exposed)
+  m.def("parse_fseries_from_string", &sst::FourierKnot::parse_fseries_from_string,
+        py::arg("content"),
+        "Parse .fseries content string into Fourier blocks.");
+
+  // Convenience: load embedded knot id -> select largest Fourier block
+  m.def("load_embedded_knot_block",
+        [](const std::string& knot_id) {
+            auto files = sst::get_embedded_knot_files();
+            auto it = files.find(knot_id);
+            if (it == files.end()) {
+                throw std::runtime_error("Embedded knot id not found: " + knot_id);
+            }
+            auto blocks = sst::FourierKnot::parse_fseries_from_string(it->second);
+            int idx = sst::FourierKnot::index_of_largest_block(blocks);
+            if (idx < 0) throw std::runtime_error("No Fourier block found in embedded knot: " + knot_id);
+            return blocks[(size_t)idx];
+        },
+        py::arg("knot_id"),
+        "Load embedded knot by id and return its largest Fourier block.");
+
+  m.def("evaluate_ideal_component",
+        [](const IdealABComponent& comp,
+           py::array_t<double, py::array::c_style | py::array::forcecast> s_arr) {
+          if (s_arr.ndim() != 1) throw std::invalid_argument("s must be 1D");
+          std::vector<double> s;
+          s.reserve(static_cast<size_t>(s_arr.shape(0)));
+          auto sraw = s_arr.unchecked<1>();
+          for (py::ssize_t i = 0; i < s_arr.shape(0); ++i) s.push_back(sraw(i));
+          auto pts = sst::FourierKnot::evaluate_ideal_component(comp, s);
+          py::array_t<double> out({(py::ssize_t)pts.size(), (py::ssize_t)3});
+          auto o = out.mutable_unchecked<2>();
+          for (size_t i = 0; i < pts.size(); ++i) {
+              o((py::ssize_t)i, 0) = pts[i][0];
+              o((py::ssize_t)i, 1) = pts[i][1];
+              o((py::ssize_t)i, 2) = pts[i][2];
+          }
+          return out;
+        },
+        py::arg("component"), py::arg("s"),
+        "Evaluate a single ideal AB component (includes I=0 offset).");
+
+  m.def("evaluate_ideal_ab_components",
+        [](const IdealABBlock& ab,
+           py::array_t<double, py::array::c_style | py::array::forcecast> s_arr) {
+          if (s_arr.ndim() != 1) throw std::invalid_argument("s must be 1D");
+          std::vector<double> s;
+          s.reserve(static_cast<size_t>(s_arr.shape(0)));
+          auto sraw = s_arr.unchecked<1>();
+          for (py::ssize_t i = 0; i < s_arr.shape(0); ++i) s.push_back(sraw(i));
+          auto all = sst::FourierKnot::evaluate_ideal_ab_components(ab, s);
+          py::list result;
+          for (const auto& pts : all) {
+              py::array_t<double> out({(py::ssize_t)pts.size(), (py::ssize_t)3});
+              auto o = out.mutable_unchecked<2>();
+              for (size_t i = 0; i < pts.size(); ++i) {
+                  o((py::ssize_t)i, 0) = pts[i][0];
+                  o((py::ssize_t)i, 1) = pts[i][1];
+                  o((py::ssize_t)i, 2) = pts[i][2];
+              }
+              result.append(std::move(out));
+          }
+          return result;
+        },
+        py::arg("ab"), py::arg("s"),
+        "Evaluate all components of an ideal AB block.");
 
   py::class_<FourierKnot::LoadedKnot>(m, "LoadedKnot")
       .def_readonly("name", &FourierKnot::LoadedKnot::name)

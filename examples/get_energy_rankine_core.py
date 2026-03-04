@@ -1,7 +1,7 @@
 import numpy as np
 from dataclasses import dataclass
 from math import pi
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
 
 # ============================================================
@@ -29,6 +29,36 @@ def core_internal_energy_per_length(c: SSTConstants) -> float:
     """
     Gamma = circulation_from_sst(c)
     return c.rho_f * Gamma * Gamma / (16.0 * pi)
+
+
+def local_outer_match_energy(
+    rho_f: float,
+    Gamma: float,
+    L: float,
+    a_core: float,
+    s_cut_local_m: Optional[float],
+    c_rankine_outer: float = 0.0,
+) -> float:
+    r"""
+    Local asymptotic matching term for the OUTER filament contribution after
+    removing a local arc-length strip of half-width s_cut_local_m.
+
+    Hook form:
+        E_local_match = (rho_f * Gamma^2 / (4*pi)) * L * [ ln(s_cut_local_m / a_core) + c_rankine_outer ]
+
+    Notes
+    -----
+    - This is the local logarithmic add-back term (outer/local asymptotics).
+    - The exact constant c_rankine_outer depends on the matching convention and core model.
+    - The exact Rankine INTERNAL core energy is handled separately via E_core.
+    """
+    if s_cut_local_m is None:
+        raise ValueError("s_cut_local_m must be provided for local matching.")
+    if s_cut_local_m <= a_core:
+        raise ValueError("Need s_cut_local_m > a_core for logarithmic local matching.")
+
+    pref = rho_f * Gamma * Gamma / (4.0 * np.pi)
+    return pref * L * (np.log(s_cut_local_m / a_core) + c_rankine_outer)
 
 
 # ============================================================
@@ -158,15 +188,15 @@ def min_nonlocal_distance(X: np.ndarray, skip_neighbors: int = 3) -> float:
 # Regularized nonlocal energy integral
 # ============================================================
 def nonlocal_energy_regularized(
-    rho_f: float,
-    Gamma: float,
-    X: np.ndarray,
-    t_hat: np.ndarray,
-    ds: np.ndarray,
-    delta: float,
-    exclude_diagonal: bool = True,
-    exclude_neighbors: int = 0,
-    debug: bool = False,
+        rho_f: float,
+        Gamma: float,
+        X: np.ndarray,
+        t_hat: np.ndarray,
+        ds: np.ndarray,
+        delta: float,
+        exclude_diagonal: bool = True,
+        exclude_neighbors: int = 0,
+        debug: bool = False,
 ) -> float:
     r"""
     Discrete quadrature for the regularized nonlocal filament energy:
@@ -291,12 +321,14 @@ def nonlocal_energy_regularized(
 # ============================================================
 
 def run_trefoil_energy_study(
-        R: float,
-        r: float,
-        N_values: List[int],
-        delta_values: List[float],
-        constants: SSTConstants = SSTConstants(),
-        skip_neighbor_report_N: int = 2048,
+    R: float,
+    r: float,
+    N_values: List[int],
+    delta_values: List[float],
+    constants: SSTConstants = SSTConstants(),
+    skip_neighbor_report_N: int = 2048,
+    s_cut_local_m: Optional[float] = None,  # physical local-strip half-width in arc length [m]
+    m_local_min: int = 1,                  # fallback minimum neighbor count
 ) -> Dict[str, object]:
     """
     Computes geometry + energy table.
@@ -324,15 +356,18 @@ def run_trefoil_energy_study(
 
         E_core = ecore_per_len * L
 
-        # Average arc-length spacing (for choosing local strip width)
+        # Average arc-length spacing
         ds_avg = L / N
 
         for delta in delta_values:
-            # Local-strip exclusion width in index space.
-            # Use a conservative factor so the numerical nonlocal piece is truly nonlocal.
-            # You can tune factor_local_strip = 1.0, 2.0, 3.0 during convergence tests.
-            factor_local_strip = 2.0
-            exclude_neighbors = max(1, int(np.ceil(factor_local_strip * delta / ds_avg)))
+            # Choose local-strip exclusion by PHYSICAL arc-length width (preferred).
+            # This keeps the excluded local region fixed as N changes.
+            if s_cut_local_m is not None:
+                exclude_neighbors = max(m_local_min, int(np.ceil(s_cut_local_m / ds_avg)))
+            else:
+                # fallback behavior (old style)
+                factor_local_strip = 2.0
+                exclude_neighbors = max(m_local_min, int(np.ceil(factor_local_strip * delta / ds_avg)))
 
             E_nonlocal = nonlocal_energy_regularized(
                 rho_f=c.rho_f,
@@ -346,7 +381,24 @@ def run_trefoil_energy_study(
                 debug=(N == N_values[-1]),  # prints only for largest N per delta
             )
 
+            # Local asymptotic add-back (outer/local logarithmic matching term)
+            # c_rankine_outer is left as an explicit hook parameter (currently zero).
+            E_local_match = 0.0
+            if s_cut_local_m is not None:
+                E_local_match = local_outer_match_energy(
+                    rho_f=c.rho_f,
+                    Gamma=Gamma,
+                    L=L,
+                    a_core=c.r_c,
+                    s_cut_local_m=s_cut_local_m,
+                    c_rankine_outer=0.0,   # TODO: set once matching convention is fixed
+                )
+
+            # Partial = exact core + numerical nonlocal only (old quantity)
             E_partial = E_core + E_nonlocal
+
+            # Total estimate = exact core + nonlocal numerical + local logarithmic add-back
+            E_total_est = E_partial + E_local_match
 
             results.append({
                 "N": N,
@@ -357,7 +409,9 @@ def run_trefoil_energy_study(
                 "exclude_neighbors": exclude_neighbors,
                 "E_core_J": E_core,
                 "E_nonlocal_reg_J": E_nonlocal,
+                "E_local_match_J": E_local_match,
                 "E_partial_J": E_partial,
+                "E_total_est_J": E_total_est,
             })
 
     return {
@@ -384,6 +438,7 @@ def run_trefoil_energy_study(
             "E_partial_J = E_core_J + E_nonlocal_reg_J only.",
             "For asymptotic highest-precision total energy, add local matching correction E_local_match(delta, a) for Rankine core.",
             "Use convergence in N and delta; validate against circular ring limit.",
+            f"s_cut_local_m = {s_cut_local_m!r} (physical arc-length local-strip cutoff; if None, uses delta-based fallback)",
         ],
     }
 
@@ -411,7 +466,7 @@ def pretty_print_report(report: Dict[str, object]) -> None:
     print("\n=== Energy convergence table (partial: core + regularized nonlocal) ===")
     header = (
         f"{'N':>6} {'delta [m]':>14} {'ds_avg [m]':>14} {'m_loc':>8} {'L [m]':>14} "
-        f"{'E_core [J]':>18} {'E_nonlocal_reg [J]':>22} {'E_partial [J]':>18}"
+        f"{'E_core [J]':>14} {'E_nonlocal [J]':>16} {'E_local_match [J]':>18} {'E_total_est [J]':>18}"
     )
     print(header)
     print("-" * len(header))
@@ -422,9 +477,10 @@ def pretty_print_report(report: Dict[str, object]) -> None:
             f"{row['ds_avg_m']:14.6e} "
             f"{row['exclude_neighbors']:8d} "
             f"{row['L_m']:14.6e} "
-            f"{row['E_core_J']:18.10e} "
-            f"{row['E_nonlocal_reg_J']:22.10e} "
-            f"{row['E_partial_J']:18.10e}"
+            f"{row['E_core_J']:14.6e} "
+            f"{row['E_nonlocal_reg_J']:16.6e} "
+            f"{row['E_local_match_J']:18.6e} "
+            f"{row['E_total_est_J']:18.6e}"
         )
 
     print("\nNotes:")
@@ -432,35 +488,197 @@ def pretty_print_report(report: Dict[str, object]) -> None:
         print(f" - {note}")
 
 
+def run_s_cut_sweep(
+    R: float,
+    r: float,
+    N_values: List[int],
+    delta_values: List[float],
+    s_cut_values: List[float],
+    constants: SSTConstants = SSTConstants(),
+) -> List[Dict[str, object]]:
+    """
+    Run multiple studies for different physical local-strip cutoffs s_cut_local_m.
+    Returns a list of reports (one per s_cut).
+    """
+    reports = []
+    for s_cut in s_cut_values:
+        report = run_trefoil_energy_study(
+            R=R,
+            r=r,
+            N_values=N_values,
+            delta_values=delta_values,
+            constants=constants,
+            s_cut_local_m=s_cut,
+            m_local_min=1,
+        )
+        reports.append(report)
+    return reports
+
+
+def pretty_print_s_cut_comparison(reports: List[Dict[str, object]], delta_pick: Optional[float] = None) -> None:
+    """
+    Compact table comparing E_nonlocal_reg across multiple s_cut_local_m values.
+
+    Assumes each report contains rows for multiple N and delta values.
+    If delta_pick is None, uses the first delta encountered in each report.
+    """
+    print("\n=== Comparison across physical local-strip cutoffs s_cut_local_m ===")
+
+    # Build a normalized structure: one row per (s_cut, N) using chosen delta
+    rows_out = []
+    for rep in reports:
+        table = rep["table"]
+        notes = rep.get("notes", [])
+        s_cut_val = None
+        for note in notes:
+            if isinstance(note, str) and note.startswith("s_cut_local_m = "):
+                # crude parse
+                s_cut_val = note.split("=", 1)[1].split("(")[0].strip()
+                break
+
+        # choose delta
+        available_deltas = sorted({row["delta_m"] for row in table})
+        dsel = available_deltas[0] if delta_pick is None else delta_pick
+
+        for row in table:
+            if np.isclose(row["delta_m"], dsel, rtol=0.0, atol=0.0):
+                rows_out.append({
+                    "s_cut_local_m": s_cut_val,
+                    "N": row["N"],
+                    "m_loc": row["exclude_neighbors"],
+                    "ds_avg_m": row["ds_avg_m"],
+                    "E_nonlocal_reg_J": row["E_nonlocal_reg_J"],
+                    "E_local_match_J": row.get("E_local_match_J", np.nan),
+                    "E_total_est_J": row.get("E_total_est_J", np.nan),
+                    "E_partial_J": row["E_partial_J"],
+                })
+
+    # sort by s_cut then N
+    def parse_scut(s):
+        try:
+            return float(s)
+        except Exception:
+            return np.nan
+
+    rows_out.sort(key=lambda x: (parse_scut(x["s_cut_local_m"]), x["N"]))
+
+    header = (
+        f"{'s_cut_local [m]':>16} {'N':>6} {'m_loc':>8} {'ds_avg [m]':>14} "
+        f"{'E_nonlocal [J]':>16} {'E_local_match [J]':>18} {'E_total_est [J]':>18}"
+    )
+    print(header)
+    print("-" * len(header))
+    for r0 in rows_out:
+        print(
+            f"{r0['s_cut_local_m']:>16} "
+            f"{r0['N']:6d} "
+            f"{r0['m_loc']:8d} "
+            f"{r0['ds_avg_m']:14.6e} "
+            f"{r0['E_nonlocal_reg_J']:16.6e} "
+            f"{r0['E_local_match_J']:18.6e} "
+            f"{r0['E_total_est_J']:18.6e}"
+        )
+
+
+def estimate_energy_from_reports(
+    reports: List[Dict[str, object]],
+    N_min: int = 1024,
+    s_cut_min: float = 2.0e-11,
+    s_cut_max: float = 5.0e-11,
+    delta_pick: float = 1.0e-13,
+) -> Dict[str, float]:
+    """
+    Build a pragmatic numerical estimate for E_total_est from a selected convergence window.
+
+    Strategy:
+    - collect rows with N >= N_min
+    - collect only s_cut_local in [s_cut_min, s_cut_max]
+    - collect only chosen delta row (they are identical in current regime)
+    - report mean / std / min / max / half-range
+    """
+    selected = []
+
+    def parse_scut_from_notes(rep):
+        for note in rep.get("notes", []):
+            if isinstance(note, str) and note.startswith("s_cut_local_m = "):
+                try:
+                    txt = note.split("=", 1)[1].split("(")[0].strip()
+                    return float(txt)
+                except Exception:
+                    return np.nan
+        return np.nan
+
+    for rep in reports:
+        s_cut = parse_scut_from_notes(rep)
+        if not np.isfinite(s_cut):
+            continue
+        if not (s_cut_min <= s_cut <= s_cut_max):
+            continue
+
+        for row in rep["table"]:
+            if row["N"] < N_min:
+                continue
+            if not np.isclose(row["delta_m"], delta_pick, rtol=0.0, atol=0.0):
+                continue
+            selected.append(float(row["E_total_est_J"]))
+
+    if len(selected) == 0:
+        raise ValueError("No rows selected for estimate. Adjust N/s_cut/delta filters.")
+
+    arr = np.array(selected, dtype=float)
+    return {
+        "count": float(arr.size),
+        "E_mean_J": float(np.mean(arr)),
+        "E_std_J": float(np.std(arr, ddof=1)) if arr.size > 1 else 0.0,
+        "E_min_J": float(np.min(arr)),
+        "E_max_J": float(np.max(arr)),
+        "E_half_range_J": float(0.5 * (np.max(arr) - np.min(arr))),
+    }
+
+
 if __name__ == "__main__":
-    # ------------------------------------------------------------
-    # USER INPUTS (must be set to define the actual trefoil embedding)
-    # ------------------------------------------------------------
-    # IMPORTANT: energy is not determined by topology alone.
-    # You must choose geometric scale R, r [meters].
-    #
-    # Example only:
-    # Set a trefoil size much larger than r_c so thin-core asymptotics applies.
-    R = 1.0e-9   # m  (example major radius)
-    r = 3.0e-10  # m  (example minor radius)
+    R = 1.0e-9
+    r = 3.0e-10
 
     c = SSTConstants()
-    a = c.r_c
 
-    # Choose delta such that a << delta << geometric scales
-    delta_values = [
-        1.0e-13,
-        3.0e-13,
-        1.0e-12,
+    delta_values = [1.0e-13, 3.0e-13, 1.0e-12]
+    N_values = [256, 512, 1024, 2048]
+
+    # Sweep physical local-strip widths (arc length)
+    s_cut_values = [
+        1.0e-11,
+        2.0e-11,
+        5.0e-11,
+        1.0e-10,
     ]
 
-    N_values = [256, 512, 1024]
-
-    report = run_trefoil_energy_study(
+    reports = run_s_cut_sweep(
         R=R,
         r=r,
         N_values=N_values,
         delta_values=delta_values,
+        s_cut_values=s_cut_values,
         constants=c,
     )
-    pretty_print_report(report)
+
+    # Print full report for the last (largest) s_cut if desired
+    pretty_print_report(reports[-1])
+
+    # Print comparison table across all s_cut values
+    pretty_print_s_cut_comparison(reports, delta_pick=1.0e-13)
+
+    est = estimate_energy_from_reports(
+        reports,
+        N_min=1024,
+        s_cut_min=2.0e-11,
+        s_cut_max=5.0e-11,
+        delta_pick=1.0e-13,
+    )
+    print("\n=== Provisional corrected energy estimate (numerical window) ===")
+    print(f"count        = {est['count']:.0f}")
+    print(f"E_mean       = {est['E_mean_J']:.10e} J")
+    print(f"E_std        = {est['E_std_J']:.10e} J")
+    print(f"E_min        = {est['E_min_J']:.10e} J")
+    print(f"E_max        = {est['E_max_J']:.10e} J")
+    print(f"half-range   = {est['E_half_range_J']:.10e} J")

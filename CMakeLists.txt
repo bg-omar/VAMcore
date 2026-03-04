@@ -25,6 +25,11 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     set(IS_MACOS TRUE)
 endif()
 
+# === Runtime resource directories ===
+set(SST_RESOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources")
+set(SST_KNOT_FSERIES_DIR "${SST_RESOURCES_DIR}/knot_fseries")
+set(SST_KNOTS_FOURIER_DIR "${SST_RESOURCES_DIR}/Knots_FourierSeries")
+
 # Optimization flags for scientific calculation
 if(MSVC)
     # Only apply /O2 in Release mode (Debug uses /RTC1 which is incompatible)
@@ -79,6 +84,11 @@ target_include_directories(swirl_string_core_lib PUBLIC
         src
         ${CMAKE_BINARY_DIR}/generated
 )
+target_compile_definitions(swirl_string_core_lib PRIVATE
+    SST_DEFAULT_RESOURCE_SUBDIR="share/swirl_string_core/resources"
+    SST_DEFAULT_KNOT_FSERIES_SUBDIR="share/swirl_string_core/resources/knot_fseries"
+    SST_DEFAULT_KNOTS_FOURIER_SUBDIR="share/swirl_string_core/resources/Knots_FourierSeries"
+)
 
 # Python bindings
 # pybind11 will automatically use .pyd on Windows and .so on Linux/Mac
@@ -106,6 +116,11 @@ target_sources(swirl_string_core PRIVATE
 
 target_link_libraries(swirl_string_core PRIVATE swirl_string_core_lib)
 target_include_directories(swirl_string_core PRIVATE extern/pybind11/include)
+target_compile_definitions(swirl_string_core PRIVATE
+    SST_DEFAULT_RESOURCE_SUBDIR="share/swirl_string_core/resources"
+    SST_DEFAULT_KNOT_FSERIES_SUBDIR="share/swirl_string_core/resources/knot_fseries"
+    SST_DEFAULT_KNOTS_FOURIER_SUBDIR="share/swirl_string_core/resources/Knots_FourierSeries"
+)
 
 # Backwards compatibility module: sstbindings
 pybind11_add_module(sstbindings src/module_sstbindings.cpp)
@@ -130,6 +145,11 @@ target_sources(sstbindings PRIVATE
 
 target_link_libraries(sstbindings PRIVATE swirl_string_core_lib)
 target_include_directories(sstbindings PRIVATE extern/pybind11/include)
+target_compile_definitions(sstbindings PRIVATE
+    SST_DEFAULT_RESOURCE_SUBDIR="share/swirl_string_core/resources"
+    SST_DEFAULT_KNOT_FSERIES_SUBDIR="share/swirl_string_core/resources/knot_fseries"
+    SST_DEFAULT_KNOTS_FOURIER_SUBDIR="share/swirl_string_core/resources/Knots_FourierSeries"
+)
 
 # Linux-specific linker settings
 if(IS_LINUX)
@@ -141,6 +161,24 @@ if(IS_LINUX)
         LINK_FLAGS "-Wl,--no-undefined"
     )
 endif()
+
+# Copy runtime resources into build tree for local runs (examples/tests/python)
+if(EXISTS "${SST_RESOURCES_DIR}")
+    add_custom_target(copy_sst_resources ALL
+        COMMAND ${CMAKE_COMMAND} -E make_directory
+                "${CMAKE_BINARY_DIR}/share/swirl_string_core/resources"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+                "${SST_RESOURCES_DIR}"
+                "${CMAKE_BINARY_DIR}/share/swirl_string_core/resources"
+        COMMENT "Copying SST runtime resources to build tree"
+    )
+    add_dependencies(swirl_string_core copy_sst_resources)
+    add_dependencies(swirl_string_core_lib copy_sst_resources)
+    if(TARGET sstbindings)
+        add_dependencies(sstbindings copy_sst_resources)
+    endif()
+endif()
+
 add_executable(test_frenet tests/test_frenet_helicity.cpp)
 target_link_libraries(test_frenet PRIVATE swirl_string_core_lib)
 
@@ -169,6 +207,22 @@ if(NODE_EXECUTABLE)
     if(NODE_ADDON_API_INCLUDE_DIR)
         file(TO_CMAKE_PATH "${NODE_ADDON_API_INCLUDE_DIR}" NODE_ADDON_API_INCLUDE_NORM)
         string(REPLACE "\"" "" NODE_ADDON_API_INCLUDE_NORM "${NODE_ADDON_API_INCLUDE_NORM}")
+    endif()
+
+    # Node.js core headers (node_api.h) - required by node-addon-api's napi.h
+    set(NODE_CORE_INCLUDE_DIR "" CACHE PATH "Path to Node.js core include directory (optional override)")
+    if(NOT NODE_CORE_INCLUDE_DIR)
+        execute_process(
+            COMMAND ${NODE_EXECUTABLE} -p "require('path').join(require('path').dirname(process.execPath), '..', 'include', 'node')"
+            OUTPUT_VARIABLE NODE_CORE_INCLUDE_RAW
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+            ERROR_QUIET
+        )
+        set(NODE_CORE_INCLUDE_DIR "${NODE_CORE_INCLUDE_RAW}")
+    endif()
+    if(NODE_CORE_INCLUDE_DIR)
+        file(TO_CMAKE_PATH "${NODE_CORE_INCLUDE_DIR}" NODE_CORE_INCLUDE_NORM)
+        string(REPLACE "\"" "" NODE_CORE_INCLUDE_NORM "${NODE_CORE_INCLUDE_NORM}")
     endif()
 
     if(NODE_ADDON_API_INCLUDE_NORM AND EXISTS "${NODE_ADDON_API_INCLUDE_NORM}")
@@ -208,6 +262,7 @@ if(NODE_EXECUTABLE)
         )
         
         target_include_directories(swirl_string_core_node PRIVATE
+            ${NODE_CORE_INCLUDE_NORM}
             ${NODE_ADDON_API_INCLUDE_NORM}
             src
             include
@@ -291,44 +346,27 @@ install(TARGETS swirl_string_core_lib swirl_string_core sstbindings
         RUNTIME DESTINATION bin)
 install(DIRECTORY include/ DESTINATION include)
 
-# Install knot data files for distribution
-install(DIRECTORY src/knot_fseries/
-        DESTINATION share/swirl_string_core/knot_fseries
-        FILES_MATCHING PATTERN "*.fseries" PATTERN "*.short")
+# Install all runtime knot resources (ideal databases + fseries + metadata)
+if(EXISTS "${SST_RESOURCES_DIR}")
+    install(DIRECTORY "${SST_RESOURCES_DIR}/"
+            DESTINATION share/swirl_string_core/resources)
+endif()
 
-# === ✅ AUTO-COPY PYBIND MODULE TO PROJECT ROOT ===
-# After swirl_string_core is built, copy it to ${CMAKE_SOURCE_DIR}
-# So you can easily import it from Python scripts in the root directory
+# === ✅ AUTO-COPY PYBIND MODULE TO PROJECT ROOT (best-effort) ===
+# Copy to project root, examples/, tests/, ../SwirlStringTheory/ for easy import.
+# Copy failures (e.g. .pyd locked by running Python) do not fail the build.
 
 add_custom_command(TARGET swirl_string_core POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy
-        $<TARGET_FILE:swirl_string_core>
-        ${CMAKE_SOURCE_DIR}/$<TARGET_FILE_NAME:swirl_string_core>
-        COMMAND ${CMAKE_COMMAND} -E copy
-        $<TARGET_FILE:swirl_string_core>
-        ${CMAKE_SOURCE_DIR}/examples/$<TARGET_FILE_NAME:swirl_string_core>
-        COMMAND ${CMAKE_COMMAND} -E copy
-        $<TARGET_FILE:swirl_string_core>
-        ${CMAKE_SOURCE_DIR}/tests/$<TARGET_FILE_NAME:swirl_string_core>
-        COMMAND ${CMAKE_COMMAND} -E copy
-        $<TARGET_FILE:swirl_string_core>
-        ${CMAKE_SOURCE_DIR}/../SwirlStringTheory/$<TARGET_FILE_NAME:swirl_string_core>
-        COMMAND ${CMAKE_COMMAND} -E copy
-        $<TARGET_FILE:swirl_string_core>
-        ${CMAKE_SOURCE_DIR}/Front-End/$<TARGET_FILE_NAME:swirl_string_core>
-        COMMENT "Copied swirl_string_core module to project root, examples/, and ../SwirlStringTheory/ for easy import"
+        COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/copy_pyd_fallback.cmake
+        -DSOURCE=$<TARGET_FILE:swirl_string_core>
+        -DPROJECT_ROOT=${CMAKE_SOURCE_DIR}
+        COMMENT "Copying swirl_string_core module for easy import (best-effort)"
 )
 
-# Also copy sstbindings for backwards compatibility
+# Also copy sstbindings for backwards compatibility (best-effort)
 add_custom_command(TARGET sstbindings POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy
-        $<TARGET_FILE:sstbindings>
-        ${CMAKE_SOURCE_DIR}/$<TARGET_FILE_NAME:sstbindings>
-        COMMAND ${CMAKE_COMMAND} -E copy
-        $<TARGET_FILE:sstbindings>
-        ${CMAKE_SOURCE_DIR}/examples/$<TARGET_FILE_NAME:sstbindings>
-        COMMAND ${CMAKE_COMMAND} -E copy
-        $<TARGET_FILE:sstbindings>
-        ${CMAKE_SOURCE_DIR}/Front-End/$<TARGET_FILE_NAME:sstbindings>
-        COMMENT "Copied sstbindings module (backwards compatibility) to project root, examples/, and ../SwirlStringTheory/ for easy import"
+        COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/copy_pyd_fallback.cmake
+        -DSOURCE=$<TARGET_FILE:sstbindings>
+        -DPROJECT_ROOT=${CMAKE_SOURCE_DIR}
+        COMMENT "Copying sstbindings module for easy import (best-effort)"
 )

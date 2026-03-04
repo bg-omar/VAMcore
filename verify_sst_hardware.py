@@ -53,20 +53,19 @@ def compute_sst_tensors(device):
         print("Sla XPU tensor test over vanwege ontbrekende GPU configuratie.")
         return
 
-    print(f"Toewijzen van fysieke constanten aan {device}...")
+    print(f"Toewijzen van fysieke constanten aan {device} (FP32 precisie)...")
 
     # Constanten (SST Canon)
     c_val = 299792458.0  # m/s
     rho_f_val = 7.0e-7   # kg m^-3 (effectieve vloeistofdichtheid)
     v_swirl_val = 1.09384563e6  # m s^-1 (karakteristieke swirl speed)
 
-    # Tensor allocatie op de Arc A770
+    # Tensor allocatie op de Arc A770 in FP32
     try:
-        c = torch.tensor(c_val, dtype=torch.float64, device=device)
-        rho_f = torch.tensor(rho_f_val, dtype=torch.float64, device=device)
-        v_swirl = torch.tensor(v_swirl_val, dtype=torch.float64, device=device)
+        c = torch.tensor(c_val, dtype=torch.float32, device=device)
+        rho_f = torch.tensor(rho_f_val, dtype=torch.float32, device=device)
+        v_swirl = torch.tensor(v_swirl_val, dtype=torch.float32, device=device)
 
-        # Berekening van Swirl-energiedichtheid en mass-equivalent
         t_start = time.time()
 
         # rho_E = 0.5 * rho_f * v_swirl^2
@@ -75,7 +74,6 @@ def compute_sst_tensors(device):
         # rho_m = rho_E / c^2
         rho_m = rho_E / (c ** 2)
 
-        # Forceer synchronisatie om executietijd accuraat te meten
         if device.type == "xpu":
             torch.xpu.synchronize()
 
@@ -84,7 +82,7 @@ def compute_sst_tensors(device):
         print(f"Tensor bewerkingen succesvol uitgevoerd op {device} in {t_delta:.2f} \u03bcs.")
         print(f"-> Berekende Swirl-energiedichtheid (\u03c1_E): {rho_E.item():.4e} J/m^3")
         print(f"-> Berekende Mass-equivalente dichtheid (\u03c1_m): {rho_m.item():.4e} kg/m^3")
-        print("\n[Status] De hardware is gereed voor zowel grootschalige SST-simulaties als XTTS-inferentie.")
+        print("\n[Status] De hardware is volledig operationeel.")
 
     except Exception as e:
         print(f"[Fout] Tensor bewerking op XPU gefaald: {e}")

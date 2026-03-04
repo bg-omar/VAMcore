@@ -115,6 +115,32 @@ private:
   Vec3 induced_velocity_bs_surrogate(const Vec3& p, std::size_t f_center,
                                      std::size_t i_center, double exclusion_len_m) const;
 };
-}
+
+/**
+ * @brief Batch evaluator for the SST_MASTER_DICTIONARY.
+ * Automates the mass derivation for all known topological states.
+ */
+class ZooEvaluator {
+public:
+    struct Result {
+        std::string identifier;
+        double mass_mev;
+        double bridge_b;
+        int genus_g;
+    };
+
+    /**
+     * @brief Evaluates all entries in the SST_MASTER_DICTIONARY using
+     * the Golden NLS functional.
+     */
+    static std::vector<Result> evaluate_all_golden_nls();
+
+    /**
+     * @brief Returns the Golden NLS mass for a specific dictionary entry.
+     */
+    static double get_entry_mass(const std::string& identifier);
+};
+
+} // namespace sst
 
 #endif // SWIRL_STRING_CORE_AB_INITIO_MASS_H

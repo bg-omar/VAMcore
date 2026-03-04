@@ -175,14 +175,14 @@ def generate_embedded_knot_files():
     header_file = os.path.join(src_dir, "knot_files_embedded.h")
     source_file = os.path.join(build_temp, "knot_files_embedded.cpp")
 
-    knot_fseries_dir = os.path.join(base_dir, "src", "knot_fseries")
+    knot_fseries_dir = os.path.join(base_dir, "resources", "knot_fseries")
     fseries_files = (
         glob.glob(os.path.join(knot_fseries_dir, "*.fseries"))
         if os.path.exists(knot_fseries_dir)
         else []
     )
     
-    # Generate header file
+    # Generate header file (must match knot_dynamics.h: get_embedded_knot_files + get_embedded_ideal_files)
     with open(header_file, 'w', encoding='utf-8') as f:
         f.write("// Auto-generated header - do not edit manually\n")
         f.write("#ifndef KNOT_FILES_EMBEDDED_H\n")
@@ -191,6 +191,7 @@ def generate_embedded_knot_files():
         f.write("#include <string>\n\n")
         f.write("namespace sst {\n")
         f.write("    std::map<std::string, std::string> get_embedded_knot_files();\n")
+        f.write("    std::map<std::string, std::string> get_embedded_ideal_files();\n")
         f.write("}\n\n")
         f.write("#endif // KNOT_FILES_EMBEDDED_H\n")
     
@@ -226,6 +227,10 @@ def generate_embedded_knot_files():
         
         f.write("\n    return files;\n")
         f.write("}\n\n")
+        f.write("std::map<std::string, std::string> get_embedded_ideal_files() {\n")
+        f.write("    std::map<std::string, std::string> files;\n")
+        f.write("    return files;\n")
+        f.write("}\n\n")
         f.write("} // namespace sst\n")
     
     print(f"Generated embedded knot files: {len(fseries_files)} .fseries files embedded")
@@ -234,13 +239,15 @@ def generate_embedded_knot_files():
 # Generate embedded files before building
 header_file, source_file = generate_embedded_knot_files()
 
-# Get all source files
+# Get all source files (must match CMakeLists swirl_string_core_lib)
 src_files = [
+    "src/ab_initio_mass.cpp",
     "src/biot_savart.cpp",
     "src/fluid_dynamics.cpp",
     "src/field_kernels.cpp",
     "src/frenet_helicity.cpp",
     "src/potential_timefield.cpp",
+    "src/magnus_integrator.cpp",
     "src/hyperbolic_volume.cpp",
     "src/knot_dynamics.cpp",
     "src/radiation_flow.cpp",
@@ -323,7 +330,7 @@ setup(
         "build_ext": CustomBuildExt
     },
     zip_safe=False,
-    python_requires=">=3.7",
+    python_requires=">=3.9",
     packages=find_packages(),
     include_package_data=True,
     # Data files installed to share/swirl_string_core/knot_fseries/ for CMake compatibility

@@ -9,6 +9,7 @@ from gui_tabs.tab_ab_initio import TabAbInitio
 from gui_tabs.tab_hydrogen import TabHydrogen
 from gui_tabs.tab_theory import TabTheory
 from gui_tabs.tab_ab_initio_sweep import TabAbInitioSweep
+from gui_tabs.tab_mass_sweep import TabMassSweep
 
 
 
@@ -46,8 +47,8 @@ class SSTDashboard(QMainWindow):
 
         # Instantieer en voeg de modulaire tabs toe
         self.tabs.addTab(TabAbInitio(), "Ab Initio Mass")
-        # Instantieer en voeg de modulaire tabs toe
         self.tabs.addTab(TabAbInitioSweep(), "Full Ab Initio Sweep")
+        self.tabs.addTab(TabMassSweep(), "Mass Sweep (Embedded)")
         self.tabs.addTab(TabHydrogen(), "Hydrogen Spectrum")
         self.tabs.addTab(TabTheory(), "Theory & Equations")
 

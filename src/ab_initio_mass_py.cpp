@@ -72,5 +72,16 @@ void bind_ab_initio(py::module_& m) {
             return py_filaments;
         }, "Export the 3D coordinates of all present vortex rings.");
 
+    // ZooEvaluator: batch Golden NLS mass from SST_MASTER_DICTIONARY
+    py::class_<ZooEvaluator::Result>(m, "ZooResult")
+        .def_readonly("identifier", &ZooEvaluator::Result::identifier)
+        .def_readonly("mass_mev", &ZooEvaluator::Result::mass_mev)
+        .def_readonly("bridge_b", &ZooEvaluator::Result::bridge_b)
+        .def_readonly("genus_g", &ZooEvaluator::Result::genus_g);
 
+    py::class_<ZooEvaluator>(m, "ZooEvaluator")
+        .def_static("evaluate_all_golden_nls", &ZooEvaluator::evaluate_all_golden_nls,
+            "Run ab initio Golden NLS mass evaluation for the entire SST Master Dictionary.")
+        .def_static("get_entry_mass", &ZooEvaluator::get_entry_mass,
+            py::arg("identifier"), "Get the mass of a specific knot by its dictionary ID.");
 }

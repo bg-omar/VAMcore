@@ -1,7 +1,9 @@
 #include "ab_initio_mass.h"
+#include "../include/SST_Constants.h"
+#include "../include/SST_Master_Dictionary.h"
+#include "knot_files_embedded.h"
 #include "biot_savart.h"
 #include "frenet_helicity.h"
-#include "knot_files_embedded.h"
 #include "potential_timefield.h"
 #include <algorithm>
 #include <chrono>
@@ -560,6 +562,38 @@ namespace sst {
         std::cout << "    rho_core = " << calc_rho_core << " kg/m^3\n";
         std::cout << "    rho_E    = " << calc_rho_E << " J/m^3\n";
         std::cout << "==================================================================\n\n";
+    }
+
+    // -------------------------------------------------------------------------
+    // ZooEvaluator: batch Golden NLS mass from SST_MASTER_DICTIONARY
+    // -------------------------------------------------------------------------
+    std::vector<ZooEvaluator::Result> ZooEvaluator::evaluate_all_golden_nls() {
+        std::vector<Result> results;
+
+        const long double prefactor = SST::Constants::get_mass_prefactor();
+        const double MeV_J = 1.602176634e-13;
+        const long double c2 = SST::Constants::C_VACUUM * SST::Constants::C_VACUUM;
+
+        for (const auto& [name, inv] : SST_MASTER_DICTIONARY) {
+            long double mass_kg = prefactor * inv.b * std::pow(SST::Constants::PHI, -2 * inv.g);
+            double mass_mev = static_cast<double>((mass_kg * c2) / MeV_J);
+            results.push_back({name, mass_mev, inv.b, inv.g});
+        }
+        return results;
+    }
+
+    double ZooEvaluator::get_entry_mass(const std::string& identifier) {
+        if (SST_MASTER_DICTIONARY.find(identifier) == SST_MASTER_DICTIONARY.end()) {
+            return -1.0;
+        }
+
+        auto inv = SST_MASTER_DICTIONARY.at(identifier);
+        long double prefactor = SST::Constants::get_mass_prefactor();
+        const double MeV_J = 1.602176634e-13;
+        const long double c2 = SST::Constants::C_VACUUM * SST::Constants::C_VACUUM;
+
+        long double mass_kg = prefactor * inv.b * std::pow(SST::Constants::PHI, -2 * inv.g);
+        return static_cast<double>((mass_kg * c2) / MeV_J);
     }
 
 }
