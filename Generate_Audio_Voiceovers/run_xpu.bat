@@ -10,7 +10,7 @@ set ZES_ENABLE_SYSMAN=1
 
 echo === [C] Starten van Hardware Validatie ===
 ::python verify_sst_hardware.py
-python xtts_pipeline.py
+::python xtts_pipeline.py
 ::python audio_prep.py
-
+python xtts_long_synthesis.py
 pause

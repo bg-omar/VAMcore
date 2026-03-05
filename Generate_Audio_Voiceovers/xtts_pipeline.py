@@ -24,7 +24,7 @@ RUWE_AUDIO_IN    = "ruwe_opname.wav"
 GEFILTERDE_AUDIO = "temp_referentie.wav"
 AUDIO_UIT        = "mijn_ai_stem.wav"
 TAAL             = "en"
-TEKST            = "The beige hue on the waters of the loch impressed all, including the French queen, before she heard that symphony again."
+TEKST            = "Katy is the baddest doggo on the block. She can do anything she wants, and everyone loves her for it."
 
 TEMPERATUUR      = 0.75
 SNELHEID         = 1.0
