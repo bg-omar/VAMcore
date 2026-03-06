@@ -93,8 +93,7 @@ onemkl-sycl-dft==2025.3.0
 onemkl-sycl-lapack==2025.3.0
 onemkl-sycl-rng==2025.3.0
 onemkl-sycl-sparse==2025.3.0
-packaging @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_packaging_1769093650/work
-pandas==1.5.3
+pandas>=2.0.0
 pillow==12.1.1
 platformdirs==4.9.2
 pooch==1.9.0
