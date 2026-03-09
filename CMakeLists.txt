@@ -285,7 +285,8 @@ if(NODE_EXECUTABLE)
     # Require both node-addon-api and Node core include dir (with node_api.h) to enable addon
     if(NODE_ADDON_API_INCLUDE_NORM AND EXISTS "${NODE_ADDON_API_INCLUDE_NORM}"
        AND NODE_CORE_INCLUDE_NORM AND EXISTS "${NODE_CORE_HEADER}")
-        # Find node.lib (Windows) so N-API symbols resolve at link time
+        # Find node.lib (Windows) so N-API symbols resolve at link time. On Windows the addon
+        # is only built when node.lib is found; otherwise linking would fail with unresolved napi_*.
         set(NODE_LIBRARY "" CACHE FILEPATH "Path to node.lib (Windows). Auto-detected if not set.")
         if(IS_WINDOWS AND NOT NODE_LIBRARY)
             execute_process(
@@ -304,8 +305,23 @@ if(NODE_EXECUTABLE)
                     endif()
                 endforeach()
             endif()
+            # Fallback: node-gyp cache (e.g. C:/Users/.../AppData/Local/node-gyp/Cache/24.14.0/win32/x64/node.lib)
+            if(NOT NODE_LIBRARY AND NODE_CORE_INCLUDE_NORM)
+                get_filename_component(NODE_GYP_CACHE "${NODE_CORE_INCLUDE_NORM}/../.." ABSOLUTE)
+                foreach(CANDIDATE
+                    "${NODE_GYP_CACHE}/win32/x64/node.lib"
+                    "${NODE_GYP_CACHE}/x64/node.lib"
+                    "${NODE_GYP_CACHE}/node.lib"
+                )
+                    if(EXISTS "${CANDIDATE}")
+                        set(NODE_LIBRARY "${CANDIDATE}")
+                        message(STATUS "Node library from node-gyp cache: ${NODE_LIBRARY}")
+                        break()
+                    endif()
+                endforeach()
+            endif()
             if(NOT NODE_LIBRARY)
-                message(STATUS "node.lib not found next to node.exe; Node addon may fail to link. Set -DNODE_LIBRARY=<path>/node.lib")
+                message(STATUS "node.lib not found; skipping Node.js addon. Set -DNODE_LIBRARY=<path>/node.lib or run 'node-gyp install' to build the addon.")
             else()
                 message(STATUS "Node library for addon: ${NODE_LIBRARY}")
             endif()
@@ -313,6 +329,14 @@ if(NODE_EXECUTABLE)
             # Linux/macOS: no node.lib; symbols come from the loader when Node loads the .node
             set(NODE_LIBRARY "")
         endif()
+
+        # On Windows, only build the Node addon when we have node.lib (required for linking)
+        set(BUILD_SSTCORE_NODE TRUE)
+        if(IS_WINDOWS AND NOT NODE_LIBRARY)
+            set(BUILD_SSTCORE_NODE FALSE)
+        endif()
+
+        if(BUILD_SSTCORE_NODE)
         # Build Node.js native addon
         add_library(sstcore_node SHARED
             src/node/module_node.cpp
@@ -392,6 +416,9 @@ if(NODE_EXECUTABLE)
         
         set(HAVE_SSTCORE_NODE ON CACHE BOOL "Node.js addon target is available")
         message(STATUS "Node.js native addon build enabled")
+        else()
+            set(HAVE_SSTCORE_NODE OFF CACHE BOOL "Node.js addon target is available")
+        endif()
     else()
         if(NOT NODE_ADDON_API_INCLUDE_NORM OR NOT EXISTS "${NODE_ADDON_API_INCLUDE_NORM}")
             message(STATUS "node-addon-api not found or include dir invalid, skipping Node.js addon build")
