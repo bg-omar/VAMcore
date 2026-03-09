@@ -18,7 +18,7 @@ import random
 import statistics
 
 try:
-    import swirl_string_core as sst
+    import sstcore as sst
 except ImportError:
     import sstbindings as sst
 

@@ -4,12 +4,13 @@
 #include "sst_integrator.h"
 
 namespace py = pybind11;
+using namespace sst;
 
 void bind_sst_integrator(py::module_& m) {
     m.def("compute_sst_mass",
           [](const std::vector<std::array<double, 3>>& points, double chi_spin) {
               double m_core = 0.0, m_fluid = 0.0;
-              sst::compute_sst_mass(points, chi_spin, m_core, m_fluid);
+              compute_sst_mass(points, chi_spin, m_core, m_fluid);
               return py::make_tuple(m_core, m_fluid);
           },
           py::arg("points"),

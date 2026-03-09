@@ -1,11 +1,15 @@
-#pragma once
+#ifndef SWIRL_STRING_CORE_SST_EXTENSIONS_H
+#define SWIRL_STRING_CORE_SST_EXTENSIONS_H
 
+#pragma once
 #include <map>
 #include <optional>
 #include <string>
 #include <vector>
 
 #include "../include/vec3_utils.h"
+
+namespace sst {
 
 namespace sstext {
 
@@ -125,3 +129,7 @@ std::map<std::string, double> compare_fseries_files(
 );
 
 } // namespace sstext
+
+} // namespace sst
+
+#endif // SWIRL_STRING_CORE_SST_EXTENSIONS_H

@@ -4,7 +4,7 @@ import os
 import sys
 
 try:
-    import swirl_string_core as sstcore
+    import sstcore
 except ImportError:
     import sstbindings as sstcore
 

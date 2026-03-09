@@ -18,13 +18,16 @@ if str(_parent) not in sys.path:
     sys.path.insert(0, str(_parent))
 
 try:
-    import swirl_string_core as sstcore
+    import sstcore
 except ImportError:
-    import sstbindings as sstcore
+    try:
+        import swirl_string_core as sstcore  # backward compatibility
+    except ImportError:
+        import sstbindings as sstcore
 
 if not getattr(sstcore, "compute_sst_mass", None):
     print(
-        "ERROR: This build of swirl_string_core has no 'compute_sst_mass'.\n"
+        "ERROR: This build of sstcore has no 'compute_sst_mass'.\n"
         "Reinstall from source so the SST integrator bindings are included:\n"
         "  cd C:\\workspace\\projects\\SSTcore\n"
         "  pip install -e .\n"

@@ -1,4 +1,4 @@
-# setup.py for Swirl_String_core pip package
+# setup.py for SSTcore pip package
 from setuptools import setup, Extension, find_packages
 from setuptools.command.build import build
 from pybind11.setup_helpers import Pybind11Extension, build_ext
@@ -11,7 +11,7 @@ import tempfile
 import shutil
 import sys
 
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 base_dir = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -253,7 +253,7 @@ def generate_embedded_knot_files():
 # Generate embedded files before building
 header_file, source_file = generate_embedded_knot_files()
 
-# Get all source files (must match CMakeLists swirl_string_core_lib)
+# Get all source files (must match CMakeLists sstcore_lib)
 src_files = [
     "src/ab_initio_mass.cpp",
     "src/biot_savart.cpp",
@@ -291,10 +291,10 @@ include_dirs = ["src", pybind11.get_include()]
 import sys
 cxx_std = 20  # Use C++20 for maximum compatibility
 
-# Main module: swirl_string_core
+# Main module: sstcore
 ext_modules = [
     Pybind11Extension(
-        "swirl_string_core",
+        "sstcore",
         sources=["src/module_sst.cpp"] + binding_files + src_files,
         include_dirs=include_dirs,
         cxx_std=cxx_std,
@@ -336,11 +336,11 @@ if os.path.exists("Readme.md"):
         long_description = f.read()
 
 setup(
-    name="swirl-string-core",
+    name="sstcore",
     version=__version__,
     author="Omar Iskandarani",
     author_email="info@omariskandarani.com",
-    description="Swirl String Theory Canonical Core - High-performance C++ library for knot dynamics, vortex systems, and fluid mechanics",
+    description="SSTcore - Swirl String Theory Canonical Core. High-performance C++ library for knot dynamics, vortex systems, and fluid mechanics",
     long_description=long_description,
     long_description_content_type="text/markdown",
     license="CC BY-NC 4.0",
@@ -357,17 +357,30 @@ setup(
     },
     zip_safe=False,
     python_requires=">=3.9",
-    packages=find_packages(),
+    packages=find_packages() + ["SSTcore"],
+    package_dir={"SSTcore": "."},
+    py_modules=["swirl_string_core"],  # backward compat: import swirl_string_core -> same as sstcore
     include_package_data=True,
-    # Data files installed to share/swirl_string_core/knot_fseries/ for CMake compatibility
+    # Data files installed to share/sstcore/knot_fseries/ for CMake compatibility
     # Also accessible via package_data for pip install
     data_files=(
-        ([('share/swirl_string_core/knot_fseries', fseries_files)] if fseries_files else [])
+        ([('share/sstcore/knot_fseries', fseries_files)] if fseries_files else [])
         + resource_data_files
     ),
     # Package data for pip installs (accessible via importlib.resources)
     package_data={
-        '': ['src/knot_fseries/**/*.fseries', 'src/knot_fseries/**/*.short'],
+        '': [
+            'resources/knot_fseries/**/*.fseries',
+            'resources/knot_fseries/**/*.short',
+            'resources/Knots_FourierSeries/**/*.fseries',
+            'resources/Knots_FourierSeries/**/*.short',
+            'resources/ideal.txt',
+            'resources/ideal_11a.txt',
+            'resources/ideal_11n.txt',
+            'resources/idealLinks.txt',
+            'resources/idealLinks_10a.txt',
+            'resources/idealLinks_10n.txt',
+        ],
     },
     install_requires=[
         "pybind11>=2.6.0",

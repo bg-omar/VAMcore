@@ -6,12 +6,12 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 
 try:
-    import swirl_string_core as ssc
+    import sstcore as ssc
 except ImportError:
     try:
         import sstbindings as ssc
     except ImportError as e:
-        print("ERROR: Could not import swirl_string_core or sstbindings.")
+        print("ERROR: Could not import sstcore or sstbindings.")
         print("Build the pybind module first.")
         raise e
 
@@ -35,11 +35,11 @@ def candidate_ideal_paths():
         os.path.join("resources", "ideal.txt"),
         os.path.join("resources", "Knots_FourierSeries", "ideal.txt"),
         os.path.join("src", "Knots_FourierSeries", "ideal.txt"),
-        os.path.join(root, "build", "share", "swirl_string_core", "resources", "ideal.txt"),
-        os.path.join(root, "build", "share", "swirl_string_core", "resources", "Knots_FourierSeries", "ideal.txt"),
+        os.path.join(root, "build", "share", "sstcore", "resources", "ideal.txt"),
+        os.path.join(root, "build", "share", "sstcore", "resources", "Knots_FourierSeries", "ideal.txt"),
     ])
     # Pip/install
-    for sub in ("share/swirl_string_core/resources/ideal.txt", "share/swirl_string_core/resources/Knots_FourierSeries/ideal.txt"):
+    for sub in ("share/sstcore/resources/ideal.txt", "share/sstcore/resources/Knots_FourierSeries/ideal.txt"):
         candidates.append(os.path.join(sys.prefix, sub.replace("/", os.sep)))
     return candidates
 

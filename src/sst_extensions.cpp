@@ -10,6 +10,8 @@
 #include "../src/knot_dynamics.h"
 #include "../src/biot_savart.h"
 
+namespace sst {
+
 namespace sstext {
 namespace fs = std::filesystem;
 
@@ -377,3 +379,5 @@ std::map<std::string, double> compare_fseries_files(
 }
 
 } // namespace sstext
+
+} // namespace sst

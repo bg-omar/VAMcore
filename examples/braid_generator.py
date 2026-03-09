@@ -97,7 +97,7 @@ class BraidTo3D:
 # --- TEST THE NEW ENGINE ---
 if __name__ == "__main__":
     try:
-        import swirl_string_core as sstcore
+        import sstcore
     except ImportError:
         import sstbindings as sstcore
 

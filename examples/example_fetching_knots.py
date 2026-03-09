@@ -258,17 +258,17 @@ def main():
             for b in blocks[:3]:
                 print(f"      Id={b['id']}  Conway={b['conway']}  L={b['L']}  D={b['D']}  n={b['n']}")
 
-    # --- 5. Optional: use swirl_string_core for ideal ---
+    # --- 5. Optional: use sstcore for ideal ---
     try:
-        import swirl_string_core as ssc
+        import sstcore as ssc
         if ideal_path and hasattr(ssc, "parse_ideal_txt_multi"):
             blocks_cpp = ssc.parse_ideal_txt_multi(str(ideal_path))
-            print(f"\n[5] swirl_string_core.parse_ideal_txt_multi: {len(blocks_cpp)} blocks")
+            print(f"\n[5] sstcore.parse_ideal_txt_multi: {len(blocks_cpp)} blocks")
             if blocks_cpp:
                 first = blocks_cpp[0]
                 print(f"    First: id={getattr(first,'id',first)}  L={getattr(first,'L',None)}  D={getattr(first,'D',None)}")
     except ImportError:
-        print("\n[5] swirl_string_core not available (optional for full ideal parsing).")
+        print("\n[5] sstcore not available (optional for full ideal parsing).")
 
     # --- 6. Knot counts by crossing (for overnight sweep planning) ---
     if HAS_SSTCORE:

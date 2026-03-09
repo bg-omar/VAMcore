@@ -435,14 +435,24 @@ def evaluate_ab_curve(ab, s):
 
 
 def compute_geom(block, s):
+    """Geometry for a Fourier block: kappa(s), L, E_bend, mode_E. Uses C++ describe_fourier_block when available (one call instead of three)."""
     out = {"kappa": None, "L": np.nan, "E_bend": np.nan, "mode_E": np.array([])}
     if hasattr(ssc, "curvature_exact"):
         out["kappa"] = np.array(ssc.curvature_exact(block, s.tolist(), 1e-12), dtype=float)
-    if hasattr(ssc, "length_exact"):
+    # Prefer one C++ call for L, E_bend, mode_E (knot_dynamics_py: describe_fourier_block)
+    if hasattr(ssc, "describe_fourier_block"):
+        try:
+            desc = ssc.describe_fourier_block(block, 4096, 4)
+            out["L"] = float(desc.L)
+            out["E_bend"] = float(desc.bending_energy)
+            out["mode_E"] = np.array(desc.mode_energy, dtype=float)
+        except Exception:
+            pass
+    if np.isnan(out["L"]) and hasattr(ssc, "length_exact"):
         out["L"] = float(ssc.length_exact(block, 4096))
-    if hasattr(ssc, "bending_energy_exact"):
+    if np.isnan(out["E_bend"]) and hasattr(ssc, "bending_energy_exact"):
         out["E_bend"] = float(ssc.bending_energy_exact(block, 4096, 1e-12))
-    if hasattr(ssc, "mode_energies"):
+    if len(out["mode_E"]) == 0 and hasattr(ssc, "mode_energies"):
         out["mode_E"] = np.array(ssc.mode_energies(block), dtype=float)
     return out
 

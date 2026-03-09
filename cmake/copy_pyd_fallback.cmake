@@ -1,5 +1,6 @@
 # copy_pyd_fallback.cmake
 # Run at build time: copy SOURCE to PROJECT_ROOT, examples/, tests/, SwirlStringTheory/, SwirlStringTheory/papers/SST-31_Canon/, SST_Dashboard/.
+# SOURCE is typically sstcore.*.pyd or sstbindings.*.pyd.
 # Never fails the build; warns if a copy fails (e.g. file locked by Python).
 # Invoke: cmake -P copy_pyd_fallback.cmake -DSOURCE=<path> -DPROJECT_ROOT=<path> [-DBUILD_DIR=<path>]
 # If SOURCE is empty, tries BUILD_DIR/Release/*.pyd and BUILD_DIR/*.pyd (for multi-config generators).
@@ -68,5 +69,5 @@ foreach(DEST IN LISTS DESTS)
 endforeach()
 
 if(COPIED GREATER 0)
-  message(STATUS "Copied swirl_string_core module to ${COPIED} location(s) for easy import")
+  message(STATUS "Copied sstcore module to ${COPIED} location(s) for easy import")
 endif()

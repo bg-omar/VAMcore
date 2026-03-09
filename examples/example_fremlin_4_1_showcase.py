@@ -9,9 +9,9 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 
 try:
-    import swirl_string_core as ssc
+    import sstcore as ssc
 except ImportError:
-    print("ERROR: build/install swirl_string_core first.")
+    print("ERROR: build/install sstcore first.")
     raise
 
 try:
@@ -177,7 +177,7 @@ def format_ab_header(ab):
     return f'AB Id="{ab_id}" Conway="{conway}" L="{L}" D="{D}" n="{n}"'
 
 
-def get_ideal_ab(ab_id, embedded_name="ideal_database.txt"):
+def get_ideal_ab(ab_id, embedded_name="ideal.txt"):
     if hasattr(ssc, "parse_embedded_ideal_ab_by_id"):
         return ssc.parse_embedded_ideal_ab_by_id(ab_id, embedded_name)
     if hasattr(ssc, "parse_embedded_ideal_txt"):
@@ -188,7 +188,7 @@ def get_ideal_ab(ab_id, embedded_name="ideal_database.txt"):
     raise RuntimeError(f"Cannot load ideal AB {ab_id!r} (API or resource missing)")
 
 
-def list_ideal_ab_ids(embedded_name="ideal_database.txt"):
+def list_ideal_ab_ids(embedded_name="ideal.txt"):
     """Sorted list of AB ids from embedded ideal resource."""
     if hasattr(ssc, "parse_embedded_ideal_txt"):
         try:
@@ -394,7 +394,7 @@ def main(path=None):
     D = descriptors(block)
 
     # Load embedded ideal 4:1:1 for comparison
-    EMBEDDED_IDEAL_NAME = "ideal_database.txt"
+    EMBEDDED_IDEAL_NAME = "ideal.txt"
     if not hasattr(ssc, "parse_embedded_ideal_ab_by_id"):
         EMBEDDED_IDEAL_NAME = "ideal.txt"
     try:
@@ -572,7 +572,7 @@ class FremlinShowcaseWindow(QMainWindow):
 
     def _load_dropdown_data(self):
         # AB IDs from embedded ideal
-        self._embedded_ideal_name = "ideal_database.txt"
+        self._embedded_ideal_name = "ideal.txt"
         ideal_ids = list_ideal_ab_ids(self._embedded_ideal_name)
         if not ideal_ids:
             self._embedded_ideal_name = "ideal.txt"

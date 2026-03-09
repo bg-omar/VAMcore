@@ -1,4 +1,4 @@
-import swirl_string_core as sstbindings
+import sstcore as sstbindings
 import time
 
 # De Catalogus beheert de vaste topologische invarianten

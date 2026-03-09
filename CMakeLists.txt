@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.23)
-project(swirl_string_core LANGUAGES CXX)
+project(SSTcore LANGUAGES CXX)
 
 # Ensure C++ compiler is set
 if(NOT CMAKE_CXX_COMPILER)
@@ -60,7 +60,7 @@ add_custom_target(knot_files_embedded ALL
 )
 
 # Core SST library sources
-add_library(swirl_string_core_lib STATIC
+add_library(sstcore_lib STATIC
         src/ab_initio_mass.cpp
         src/biot_savart.cpp
         src/fluid_dynamics.cpp
@@ -82,23 +82,23 @@ add_library(swirl_string_core_lib STATIC
         ${CMAKE_BINARY_DIR}/generated/knot_files_embedded.cpp
 )
 
-target_include_directories(swirl_string_core_lib PUBLIC 
+target_include_directories(sstcore_lib PUBLIC 
         src
         ${CMAKE_BINARY_DIR}/generated
         ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
-target_compile_definitions(swirl_string_core_lib PRIVATE
-    SST_DEFAULT_RESOURCE_SUBDIR="share/swirl_string_core/resources"
-    SST_DEFAULT_KNOT_FSERIES_SUBDIR="share/swirl_string_core/resources/knot_fseries"
-    SST_DEFAULT_KNOTS_FOURIER_SUBDIR="share/swirl_string_core/resources/Knots_FourierSeries"
+target_compile_definitions(sstcore_lib PRIVATE
+    SST_DEFAULT_RESOURCE_SUBDIR="share/sstcore/resources"
+    SST_DEFAULT_KNOT_FSERIES_SUBDIR="share/sstcore/resources/knot_fseries"
+    SST_DEFAULT_KNOTS_FOURIER_SUBDIR="share/sstcore/resources/Knots_FourierSeries"
 )
 
 # Python bindings
 # pybind11 will automatically use .pyd on Windows and .so on Linux/Mac
 
-# Main module: swirl_string_core
-pybind11_add_module(swirl_string_core src/module_sst.cpp)
-target_sources(swirl_string_core PRIVATE
+# Main module: sstcore
+pybind11_add_module(sstcore src/module_sst.cpp)
+target_sources(sstcore PRIVATE
         src/ab_initio_mass_py.cpp
         src/biot_savart_py.cpp
         src/field_kernels_py.cpp
@@ -119,12 +119,12 @@ target_sources(swirl_string_core PRIVATE
         src/sst_extensions_py.cpp
         src/sst_integrator_py.cpp)
 
-target_link_libraries(swirl_string_core PRIVATE swirl_string_core_lib)
-target_include_directories(swirl_string_core PRIVATE extern/pybind11/include)
-target_compile_definitions(swirl_string_core PRIVATE
-    SST_DEFAULT_RESOURCE_SUBDIR="share/swirl_string_core/resources"
-    SST_DEFAULT_KNOT_FSERIES_SUBDIR="share/swirl_string_core/resources/knot_fseries"
-    SST_DEFAULT_KNOTS_FOURIER_SUBDIR="share/swirl_string_core/resources/Knots_FourierSeries"
+target_link_libraries(sstcore PRIVATE sstcore_lib)
+target_include_directories(sstcore PRIVATE extern/pybind11/include)
+target_compile_definitions(sstcore PRIVATE
+    SST_DEFAULT_RESOURCE_SUBDIR="share/sstcore/resources"
+    SST_DEFAULT_KNOT_FSERIES_SUBDIR="share/sstcore/resources/knot_fseries"
+    SST_DEFAULT_KNOTS_FOURIER_SUBDIR="share/sstcore/resources/Knots_FourierSeries"
 )
 
 # Backwards compatibility module: sstbindings
@@ -150,18 +150,18 @@ target_sources(sstbindings PRIVATE
         src/sst_extensions_py.cpp
         src/sst_integrator_py.cpp)
 
-target_link_libraries(sstbindings PRIVATE swirl_string_core_lib)
+target_link_libraries(sstbindings PRIVATE sstcore_lib)
 target_include_directories(sstbindings PRIVATE extern/pybind11/include)
 target_compile_definitions(sstbindings PRIVATE
-    SST_DEFAULT_RESOURCE_SUBDIR="share/swirl_string_core/resources"
-    SST_DEFAULT_KNOT_FSERIES_SUBDIR="share/swirl_string_core/resources/knot_fseries"
-    SST_DEFAULT_KNOTS_FOURIER_SUBDIR="share/swirl_string_core/resources/Knots_FourierSeries"
+    SST_DEFAULT_RESOURCE_SUBDIR="share/sstcore/resources"
+    SST_DEFAULT_KNOT_FSERIES_SUBDIR="share/sstcore/resources/knot_fseries"
+    SST_DEFAULT_KNOTS_FOURIER_SUBDIR="share/sstcore/resources/Knots_FourierSeries"
 )
 
 # Linux-specific linker settings
 if(IS_LINUX)
     # Ensure proper linking on Linux
-    set_target_properties(swirl_string_core PROPERTIES
+    set_target_properties(sstcore PROPERTIES
         LINK_FLAGS "-Wl,--no-undefined"
     )
     set_target_properties(sstbindings PROPERTIES
@@ -173,24 +173,24 @@ endif()
 if(EXISTS "${SST_RESOURCES_DIR}")
     add_custom_target(copy_sst_resources ALL
         COMMAND ${CMAKE_COMMAND} -E make_directory
-                "${CMAKE_BINARY_DIR}/share/swirl_string_core/resources"
+                "${CMAKE_BINARY_DIR}/share/sstcore/resources"
         COMMAND ${CMAKE_COMMAND} -E copy_directory
                 "${SST_RESOURCES_DIR}"
-                "${CMAKE_BINARY_DIR}/share/swirl_string_core/resources"
+                "${CMAKE_BINARY_DIR}/share/sstcore/resources"
         COMMENT "Copying SST runtime resources to build tree"
     )
-    add_dependencies(swirl_string_core copy_sst_resources)
-    add_dependencies(swirl_string_core_lib copy_sst_resources)
+    add_dependencies(sstcore copy_sst_resources)
+    add_dependencies(sstcore_lib copy_sst_resources)
     if(TARGET sstbindings)
         add_dependencies(sstbindings copy_sst_resources)
     endif()
 endif()
 
 add_executable(test_frenet tests/test_frenet_helicity.cpp)
-target_link_libraries(test_frenet PRIVATE swirl_string_core_lib)
+target_link_libraries(test_frenet PRIVATE sstcore_lib)
 
 add_executable(test_sst_integrator tests/test_sst_integrator.cpp)
-target_link_libraries(test_sst_integrator PRIVATE swirl_string_core_lib)
+target_link_libraries(test_sst_integrator PRIVATE sstcore_lib)
 
 # Standalone examples/atoms (optional; requires GLFW3. Set -DSST_BUILD_ATOMS=ON and provide glfw3/GLEW/OpenGL.)
 set(SST_BUILD_ATOMS OFF CACHE BOOL "Build examples/atoms (requires GLFW3, GLEW, OpenGL)")
@@ -314,7 +314,7 @@ if(NODE_EXECUTABLE)
             set(NODE_LIBRARY "")
         endif()
         # Build Node.js native addon
-        add_library(swirl_string_core_node SHARED
+        add_library(sstcore_node SHARED
             src/node/module_node.cpp
             src/node/node_biot_savart.cpp
             src/node/node_field_kernels.cpp
@@ -350,7 +350,7 @@ if(NODE_EXECUTABLE)
             ${CMAKE_BINARY_DIR}/generated/knot_files_embedded.cpp
         )
         
-        target_include_directories(swirl_string_core_node PRIVATE
+        target_include_directories(sstcore_node PRIVATE
             ${NODE_CORE_INCLUDE_NORM}
             ${NODE_ADDON_API_INCLUDE_NORM}
             src
@@ -358,39 +358,39 @@ if(NODE_EXECUTABLE)
             ${CMAKE_BINARY_DIR}/generated
         )
         if(NODE_LIBRARY)
-            target_link_libraries(swirl_string_core_node PRIVATE "${NODE_LIBRARY}")
+            target_link_libraries(sstcore_node PRIVATE "${NODE_LIBRARY}")
         endif()
         
         # Set C++ standard (use 20 for better compatibility with node-gyp)
-        set_target_properties(swirl_string_core_node PROPERTIES
+        set_target_properties(sstcore_node PROPERTIES
             CXX_STANDARD 20
             CXX_STANDARD_REQUIRED ON
         )
         
         if(IS_WINDOWS)
-            set_target_properties(swirl_string_core_node PROPERTIES
+            set_target_properties(sstcore_node PROPERTIES
                 PREFIX ""
                 SUFFIX ".node"
             )
         else()
-            set_target_properties(swirl_string_core_node PROPERTIES
+            set_target_properties(sstcore_node PROPERTIES
                 PREFIX ""
                 SUFFIX ".node"
             )
         endif()
         
         # Ensure generated files are created before building
-        add_dependencies(swirl_string_core_node knot_files_embedded)
+        add_dependencies(sstcore_node knot_files_embedded)
         
         # Copy the built .node file to build/Release for node-gyp compatibility
-        add_custom_command(TARGET swirl_string_core_node POST_BUILD
+        add_custom_command(TARGET sstcore_node POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy
-            $<TARGET_FILE:swirl_string_core_node>
-            ${CMAKE_BINARY_DIR}/Release/swirl_string_core.node
+            $<TARGET_FILE:sstcore_node>
+            ${CMAKE_BINARY_DIR}/Release/sstcore.node
             COMMENT "Copying Node.js addon to build/Release"
         )
         
-        set(HAVE_SWIRL_STRING_CORE_NODE ON CACHE BOOL "Node.js addon target is available")
+        set(HAVE_SSTCORE_NODE ON CACHE BOOL "Node.js addon target is available")
         message(STATUS "Node.js native addon build enabled")
     else()
         if(NOT NODE_ADDON_API_INCLUDE_NORM OR NOT EXISTS "${NODE_ADDON_API_INCLUDE_NORM}")
@@ -398,7 +398,7 @@ if(NODE_EXECUTABLE)
         else()
             message(STATUS "Node.js core headers (node_api.h) not found at ${NODE_CORE_INCLUDE_NORM}, skipping Node.js addon build. Install Node.js with 'Install native build tools' or set NODE_CORE_INCLUDE_DIR.")
         endif()
-        set(HAVE_SWIRL_STRING_CORE_NODE OFF CACHE BOOL "Node.js addon target is available")
+        set(HAVE_SSTCORE_NODE OFF CACHE BOOL "Node.js addon target is available")
     endif()
 endif()
 
@@ -411,19 +411,19 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "Emscripten" OR EMSCRIPTEN)
     # For now, we'll create a placeholder target
     # Full WASM implementation requires Emscripten-specific bindings
     
-    add_library(swirl_string_core_wasm STATIC
+    add_library(sstcore_wasm STATIC
         # WASM sources will go here
         # src_bindings/wasm/module_wasm.cpp
         # ... other WASM bindings
     )
     
     # Emscripten-specific flags
-    target_compile_options(swirl_string_core_wasm PRIVATE
+    target_compile_options(sstcore_wasm PRIVATE
         -O3
         -s WASM=1
         -s EXPORT_ES6=1
         -s MODULARIZE=1
-        -s EXPORT_NAME="createSwirlStringCoreModule"
+        -s EXPORT_NAME="createSSTcoreModule"
     )
     
     message(STATUS "WASM build target created (requires Emscripten bindings)")
@@ -433,7 +433,7 @@ endif()
 
 
 # Install targets
-install(TARGETS swirl_string_core_lib swirl_string_core sstbindings
+install(TARGETS sstcore_lib sstcore sstbindings
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib
         RUNTIME DESTINATION bin)
@@ -442,7 +442,7 @@ install(DIRECTORY include/ DESTINATION include)
 # Install all runtime knot resources (ideal databases + fseries + metadata)
 if(EXISTS "${SST_RESOURCES_DIR}")
     install(DIRECTORY "${SST_RESOURCES_DIR}/"
-            DESTINATION share/swirl_string_core/resources)
+            DESTINATION share/sstcore/resources)
 endif()
 
 # === ✅ AUTO-COPY PYBIND MODULE TO PROJECT ROOT (best-effort) ===
@@ -452,23 +452,23 @@ endif()
 set(SWIRL_THEORY_DIR "${CMAKE_SOURCE_DIR}/../SwirlStringTheory")
 set(SST_DASHBOARD_DIR "${CMAKE_SOURCE_DIR}/../SST_Dashboard")
 
-add_custom_command(TARGET swirl_string_core POST_BUILD
+add_custom_command(TARGET sstcore POST_BUILD
         COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/copy_pyd_fallback.cmake
-        -DSOURCE=$<TARGET_FILE:swirl_string_core>
+        -DSOURCE=$<TARGET_FILE:sstcore>
         -DPROJECT_ROOT=${CMAKE_SOURCE_DIR}
         -DBUILD_DIR=${CMAKE_BINARY_DIR}
         COMMAND ${CMAKE_COMMAND} -E make_directory "${SWIRL_THEORY_DIR}"
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        $<TARGET_FILE:swirl_string_core>
-        "${SWIRL_THEORY_DIR}/$<TARGET_FILE_NAME:swirl_string_core>"
+        $<TARGET_FILE:sstcore>
+        "${SWIRL_THEORY_DIR}/$<TARGET_FILE_NAME:sstcore>"
         COMMAND ${CMAKE_COMMAND} -E make_directory "${SST_DASHBOARD_DIR}"
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        $<TARGET_FILE:swirl_string_core>
-        "${SST_DASHBOARD_DIR}/$<TARGET_FILE_NAME:swirl_string_core>"
-        COMMENT "Copying swirl_string_core module for easy import (best-effort)"
+        $<TARGET_FILE:sstcore>
+        "${SST_DASHBOARD_DIR}/$<TARGET_FILE_NAME:sstcore>"
+        COMMENT "Copying sstcore module for easy import (best-effort)"
 )
 
-# Also copy sstbindings for backwards compatibility (best-effort)
+# Also copy sstcore when building sstbindings (same binary, different name for backwards compatibility)
 add_custom_command(TARGET sstbindings POST_BUILD
         COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/copy_pyd_fallback.cmake
         -DSOURCE=$<TARGET_FILE:sstbindings>
@@ -476,11 +476,11 @@ add_custom_command(TARGET sstbindings POST_BUILD
         -DBUILD_DIR=${CMAKE_BINARY_DIR}
         COMMAND ${CMAKE_COMMAND} -E make_directory "${SWIRL_THEORY_DIR}"
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        $<TARGET_FILE:swirl_string_core>
-        "${SWIRL_THEORY_DIR}/$<TARGET_FILE_NAME:swirl_string_core>"
+        $<TARGET_FILE:sstcore>
+        "${SWIRL_THEORY_DIR}/$<TARGET_FILE_NAME:sstcore>"
         COMMAND ${CMAKE_COMMAND} -E make_directory "${SST_DASHBOARD_DIR}"
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        $<TARGET_FILE:swirl_string_core>
-        "${SST_DASHBOARD_DIR}/$<TARGET_FILE_NAME:swirl_string_core>"
-        COMMENT "Copying sstbindings module for easy import (best-effort)"
+        $<TARGET_FILE:sstcore>
+        "${SST_DASHBOARD_DIR}/$<TARGET_FILE_NAME:sstcore>"
+        COMMENT "Copying sstcore/sstbindings for easy import (best-effort)"
 )

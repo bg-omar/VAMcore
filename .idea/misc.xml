@@ -14,6 +14,7 @@
       <file path="$PROJECT_DIR$/extern" />
     </libraryRoots>
     <excludeRoots>
+      <file path="$PROJECT_DIR$/cmake-build-debug-mingw" />
       <file path="$PROJECT_DIR$/emsdk" />
       <file path="$PROJECT_DIR$/extern/pybind11" />
     </excludeRoots>

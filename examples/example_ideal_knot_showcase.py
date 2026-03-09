@@ -4,9 +4,9 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
 
 try:
-    import swirl_string_core as ssc
+    import sstcore as ssc
 except ImportError:
-    print("ERROR: Could not import swirl_string_core. Build/install the pybind module first.")
+    print("ERROR: Could not import sstcore. Build/install the pybind module first.")
     raise
 
 

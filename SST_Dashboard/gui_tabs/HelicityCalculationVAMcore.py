@@ -15,7 +15,7 @@ from sst_exports import get_exports_dir
 
 # --- SSTCORE bindings (with safe fallbacks if module is missing) ---
 try:
-    from sstbindings import biot_savart_velocity_grid, curl3d_central
+    from sstcore import biot_savart_velocity_grid, curl3d_central
     HAVE_SST = True
 except Exception:
     HAVE_SST = False

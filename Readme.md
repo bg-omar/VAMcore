@@ -1,6 +1,6 @@
-# ⚙️ Swirl_String_core: Hybrid Benchmark Engine for the Swirl-String Theory
+# ⚙️ SSTcore: Hybrid Benchmark Engine for the Swirl-String Theory
 
-Welcome to **Swirl_String_core**, the computational backbone for the Swirl-String Theory (SST).  
+Welcome to **SSTcore**, the computational backbone for the Swirl-String Theory (SST).  
 This hybrid C++/Python engine is designed to benchmark field-based gravity, time dilation, and EM swirl-field dynamics using modern numerical methods and a large helping of theoretical audacity. This repository contains the core engine, simulation scripts, and visualizations to explore the swirling depths of æther dynamics.
 We build the C++ SST-Bindings first, and then we can import it into benchmark Python code. When using the C++  SST-bindings to do hard calculations we can run / render Python simulations 10-100x faster.
 
@@ -15,7 +15,7 @@ We build the C++ SST-Bindings first, and then we can import it into benchmark Py
   For visualization, parameter sweeps, and interactive experiments using `matplotlib`, `numpy`, and `PyBind11` integration.
 
 - 📦 **npm Package**  
-  Available for Node.js and browser (WebAssembly) via `npm install swirl-string-core`. Perfect for Angular and other JavaScript/TypeScript applications.
+  Available for Node.js and browser (WebAssembly) via `npm install sstcore`. Perfect for Angular and other JavaScript/TypeScript applications.
 
 - 🧲 **EM Field Simulations**  
   Supports generation and animation of **rotating 3-phase bivort** electric and magnetic field structures.
@@ -32,7 +32,7 @@ We build the C++ SST-Bindings first, and then we can import it into benchmark Py
 #### Python Package
 
 ```bash
-pip install swirl-string-core
+pip install sstcore
 ```
 
 **Resources na pip install (via import)**  
@@ -154,7 +154,7 @@ pip install PyQtWebEngine PyQt5 pyinstaller numpy
 #### npm Package (Node.js / Browser)
 
 ```bash
-npm install swirl-string-core
+npm install sstcore
 ```
 
 See [README_NPM.md](README_NPM.md) for detailed usage instructions.
