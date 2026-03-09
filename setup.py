@@ -12,6 +12,20 @@ import shutil
 import sys
 
 __version__ = "0.2.0"
+base_dir = os.path.dirname(os.path.abspath(__file__))
+
+
+def _relative_path(path, base=base_dir):
+    """Return path relative to base with forward slashes (setuptools data_files requirement). Never returns absolute paths."""
+    p = os.path.normpath(os.path.abspath(path))
+    b = os.path.normpath(os.path.abspath(base))
+    try:
+        rel = os.path.relpath(p, b)
+    except ValueError:
+        return None
+    if os.path.isabs(rel):
+        return None
+    return rel.replace(os.sep, "/")
 
 # Custom build_ext to generate embedded files during build
 class CustomBuildExt(build_ext):
@@ -257,6 +271,8 @@ src_files = [
     "src/vortex_ring.cpp",
     "src/vorticity_dynamics.cpp",
     "src/sst_gravity.cpp",
+    "src/sst_extensions.cpp",
+    "src/sst_integrator.cpp",
 ]
 
 # Generated embedded files will be added by CustomBuildExt during build
@@ -297,11 +313,21 @@ ext_modules = [
 ]
 
 # Get all .fseries files for package data (for fallback access)
+# Use relative paths with / so setuptools never sees absolute paths
 fseries_files = []
-for root, dirs, files in os.walk("src/knot_fseries"):
+for root, dirs, files in os.walk("resources/knot_fseries"):
     for file in files:
         if file.endswith(('.fseries', '.short')):
-            fseries_files.append(os.path.join(root, file))
+            full = os.path.join(base_dir, root, file)
+            rel = _relative_path(full)
+            if rel:
+                fseries_files.append(rel)
+
+# Do not install resources/ via data_files: on Windows, setuptools/wheel rejects
+# data_files when it resolves paths (raises "setup script specifies an absolute path").
+# Keep resource_data_files empty so the wheel builds. Use the project's resources/
+# directory at runtime if needed (e.g. via path relative to package or env).
+resource_data_files = []
 
 # Read long description
 long_description = ""
@@ -335,9 +361,10 @@ setup(
     include_package_data=True,
     # Data files installed to share/swirl_string_core/knot_fseries/ for CMake compatibility
     # Also accessible via package_data for pip install
-    data_files=[
-        ('share/swirl_string_core/knot_fseries', fseries_files),
-    ] if fseries_files else [],
+    data_files=(
+        ([('share/swirl_string_core/knot_fseries', fseries_files)] if fseries_files else [])
+        + resource_data_files
+    ),
     # Package data for pip installs (accessible via importlib.resources)
     package_data={
         '': ['src/knot_fseries/**/*.fseries', 'src/knot_fseries/**/*.short'],

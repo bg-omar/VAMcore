@@ -22,33 +22,29 @@
 \begin{document}
 
 
-    \begin{tikzpicture}[use Hobby shortcut]
-    \coordinate (P1) at (-0.25, 2);
-    \coordinate (P2) at (-1.50, 0.50);
-    \coordinate (P3) at (-1.50, 0);
-    \coordinate (P4) at (0.50, -1);
-    \coordinate (P5) at (1, -0.75);
-    \coordinate (P6) at (1.25, 1.25);
-    \coordinate (P7) at (0.75, 1.75);
-    \coordinate (P8) at (-0.75, 1.75);
-    \coordinate (P9) at (-1.25, 1.25);
-    \coordinate (P10) at (-1, -0.75);
-    \coordinate (P11) at (-0.50, -1);
-    \coordinate (P12) at (1.50, 0);
-    \coordinate (P13) at (1.50, 0.50);
-    \coordinate (P14) at (0.25, 2);
+        \begin{tikzpicture}[use Hobby shortcut]
+    \coordinate (P1) at (0, 2);
+    \coordinate (P2) at (-1, 1);
+    \coordinate (P3) at (-1, 0);
+    \coordinate (P4) at (1, -1);
+    \coordinate (P5) at (2, 0);
+    \coordinate (P6) at (0, 0.75);
+    \coordinate (P7) at (-2, 0);
+    \coordinate (P8) at (-1, -1);
+    \coordinate (P9) at (1, 0);
+    \coordinate (P10) at (1, 1);
 
     \begin{knot}[
         consider self intersections,
         clip width=5pt, clip radius=3pt,
         ignore endpoint intersections=false,
-        flip crossing/.list={2,4,6,8,10,12,14,16,18},
+        flip crossing/.list={2,4,6,8,10,12,14},
         % ----draft mode=crossings % uncomment to see numbers
     ]
     \strand
-    ([closed] P1)..(P2)..(P3)..(P4)..(P5)..(P6)..(P7)..(P8)..(P9)..(P10)..(P11)..(P12)..(P13)..(P14);
+    ([closed] P1)..(P2)..(P3)..(P4)..(P5)..(P6)..(P7)..(P8)..(P9)..(P10);
     \end{knot}
-    \SSTGuidesPoints{P}{14}
+    \SSTGuidesPoints{P}{10}
     \end{tikzpicture}
 
 

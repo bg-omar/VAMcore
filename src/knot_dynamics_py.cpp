@@ -363,6 +363,11 @@ Compute a PD code from a closed 3D polygonal curve.
         py::arg("ab_id"), py::arg("name") = "ideal.txt",
         "Parse a single AB block by Id from an embedded ideal*.txt resource.");
 
+  m.def("parse_ideal_ab_by_id_from_string",
+        &sst::FourierKnot::parse_ideal_ab_by_id_from_string,
+        py::arg("content"), py::arg("ab_id"),
+        "Parse a single AB block by Id from ideal.txt-style content string.");
+
   m.def("format_ideal_ab_header",
         &sst::FourierKnot::format_ideal_ab_header,
         py::arg("ab"),

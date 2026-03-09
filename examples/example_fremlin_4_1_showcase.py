@@ -25,14 +25,18 @@ except ImportError:
 
 
 def _candidate_fseries_roots():
+    """Portable: script-relative and env only (no absolute paths)."""
+    here = os.path.abspath(os.path.dirname(__file__))
+    root = os.path.abspath(os.path.join(here, ".."))
     candidates = [
-        r"C:\\workspace\\projects\\SSTcore\\resources\\Knots_FourierSeries",
-        r"C:\\workspace\\projects\\SSTcore\\src\\Knots_FourierSeries",
+        os.environ.get("SSTCORE_RESOURCES", "").rstrip(os.sep) + os.sep + "Knots_FourierSeries" if os.environ.get("SSTCORE_RESOURCES") else "",
+        os.path.join(root, "resources", "Knots_FourierSeries"),
+        os.path.join(root, "src", "Knots_FourierSeries"),
         os.path.join("resources", "Knots_FourierSeries"),
         os.path.join("src", "Knots_FourierSeries"),
     ]
     for p in candidates:
-        if os.path.isdir(p):
+        if p and os.path.isdir(p):
             return p
     return None
 

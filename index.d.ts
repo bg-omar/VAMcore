@@ -190,8 +190,8 @@ export interface SwirlStringCore {
     vortexRingAvailable?: boolean;
     vorticityDynamicsAvailable?: boolean;
     sstGravityAvailable?: boolean;
+    sstExtensionsAvailable?: boolean;
 }
 
 declare const swirlStringCore: SwirlStringCore;
 export default swirlStringCore;
-

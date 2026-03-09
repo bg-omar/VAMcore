@@ -22,7 +22,8 @@ void bind_time_evolution(py::module_& m);
 void bind_vortex_ring(py::module_& m);
 void bind_vorticity_dynamics(py::module_& m);
 void bind_sst_gravity(py::module_& m);
-
+void bind_sst_integrator(py::module_& m);
+void bind_extensions(py::module_& m);
 
 
 PYBIND11_MODULE(sstbindings, m) {
@@ -43,6 +44,8 @@ PYBIND11_MODULE(sstbindings, m) {
   bind_vortex_ring(m);
   bind_vorticity_dynamics(m);
   bind_sst_gravity(m);
+  bind_sst_integrator(m);
+  bind_extensions(m);
 
  // module-wide listing utility
     m.def(

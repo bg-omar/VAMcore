@@ -77,12 +77,15 @@ add_library(swirl_string_core_lib STATIC
         src/vortex_ring.cpp
         src/vorticity_dynamics.cpp
         src/sst_gravity.cpp
+        src/sst_extensions.cpp
+        src/sst_integrator.cpp
         ${CMAKE_BINARY_DIR}/generated/knot_files_embedded.cpp
 )
 
 target_include_directories(swirl_string_core_lib PUBLIC 
         src
         ${CMAKE_BINARY_DIR}/generated
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 target_compile_definitions(swirl_string_core_lib PRIVATE
     SST_DEFAULT_RESOURCE_SUBDIR="share/swirl_string_core/resources"
@@ -112,7 +115,9 @@ target_sources(swirl_string_core PRIVATE
         src/time_evolution_py.cpp
         src/vortex_ring_py.cpp
         src/vorticity_dynamics_py.cpp
-        src/sst_gravity_py.cpp)
+        src/sst_gravity_py.cpp
+        src/sst_extensions_py.cpp
+        src/sst_integrator_py.cpp)
 
 target_link_libraries(swirl_string_core PRIVATE swirl_string_core_lib)
 target_include_directories(swirl_string_core PRIVATE extern/pybind11/include)
@@ -141,7 +146,9 @@ target_sources(sstbindings PRIVATE
         src/time_evolution_py.cpp
         src/vortex_ring_py.cpp
         src/vorticity_dynamics_py.cpp
-        src/sst_gravity_py.cpp)
+        src/sst_gravity_py.cpp
+        src/sst_extensions_py.cpp
+        src/sst_integrator_py.cpp)
 
 target_link_libraries(sstbindings PRIVATE swirl_string_core_lib)
 target_include_directories(sstbindings PRIVATE extern/pybind11/include)
@@ -182,6 +189,17 @@ endif()
 add_executable(test_frenet tests/test_frenet_helicity.cpp)
 target_link_libraries(test_frenet PRIVATE swirl_string_core_lib)
 
+add_executable(test_sst_integrator tests/test_sst_integrator.cpp)
+target_link_libraries(test_sst_integrator PRIVATE swirl_string_core_lib)
+
+# Standalone examples/atoms (optional; requires GLFW3. Set -DSST_BUILD_ATOMS=ON and provide glfw3/GLEW/OpenGL.)
+set(SST_BUILD_ATOMS OFF CACHE BOOL "Build examples/atoms (requires GLFW3, GLEW, OpenGL)")
+if(SST_BUILD_ATOMS)
+    add_subdirectory(examples/atoms)
+else()
+    message(STATUS "Skipping examples/atoms (set SST_BUILD_ATOMS=ON and install GLFW3 to build)")
+endif()
+
 # === Node.js Native Addon Build ===
 # Check if node-addon-api is available
 find_program(NODE_EXECUTABLE NAMES node)
@@ -210,10 +228,11 @@ if(NODE_EXECUTABLE)
     endif()
 
     # Node.js core headers (node_api.h) - required by node-addon-api's napi.h
+    # Prefer: 1) NODE_CORE_INCLUDE_DIR override, 2) <node_install>/include/node, 3) node-gyp cache
     set(NODE_CORE_INCLUDE_DIR "" CACHE PATH "Path to Node.js core include directory (optional override)")
     if(NOT NODE_CORE_INCLUDE_DIR)
         execute_process(
-            COMMAND ${NODE_EXECUTABLE} -p "require('path').join(require('path').dirname(process.execPath), '..', 'include', 'node')"
+            COMMAND ${NODE_EXECUTABLE} -p "require('path').join(require('path').dirname(process.execPath), 'include', 'node')"
             OUTPUT_VARIABLE NODE_CORE_INCLUDE_RAW
             OUTPUT_STRIP_TRAILING_WHITESPACE
             ERROR_QUIET
@@ -225,7 +244,75 @@ if(NODE_EXECUTABLE)
         string(REPLACE "\"" "" NODE_CORE_INCLUDE_NORM "${NODE_CORE_INCLUDE_NORM}")
     endif()
 
-    if(NODE_ADDON_API_INCLUDE_NORM AND EXISTS "${NODE_ADDON_API_INCLUDE_NORM}")
+    # Fallback: node-gyp cache (e.g. after "node-gyp install") when Node install has no include/
+    set(NODE_CORE_HEADER "${NODE_CORE_INCLUDE_NORM}/node_api.h")
+    if(NODE_CORE_INCLUDE_NORM AND NOT EXISTS "${NODE_CORE_HEADER}")
+        execute_process(
+            COMMAND ${NODE_EXECUTABLE} -p "process.versions.node"
+            OUTPUT_VARIABLE NODE_VERSION_RAW
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+            ERROR_QUIET
+        )
+        if(NODE_VERSION_RAW)
+            string(STRIP "${NODE_VERSION_RAW}" NODE_VERSION_RAW)
+            if(IS_WINDOWS)
+                execute_process(
+                    COMMAND ${NODE_EXECUTABLE} -p "require('path').join(process.env.LOCALAPPDATA || '', 'node-gyp', 'Cache', process.versions.node, 'include', 'node')"
+                    OUTPUT_VARIABLE NODE_GYP_INCLUDE_RAW
+                    OUTPUT_STRIP_TRAILING_WHITESPACE
+                    ERROR_QUIET
+                )
+            else()
+                execute_process(
+                    COMMAND ${NODE_EXECUTABLE} -p "require('path').join(process.env.HOME || '', '.node-gyp', process.versions.node, 'include', 'node')"
+                    OUTPUT_VARIABLE NODE_GYP_INCLUDE_RAW
+                    OUTPUT_STRIP_TRAILING_WHITESPACE
+                    ERROR_QUIET
+                )
+            endif()
+            if(NODE_GYP_INCLUDE_RAW)
+                file(TO_CMAKE_PATH "${NODE_GYP_INCLUDE_RAW}" NODE_GYP_INCLUDE_NORM)
+                string(REPLACE "\"" "" NODE_GYP_INCLUDE_NORM "${NODE_GYP_INCLUDE_NORM}")
+                if(EXISTS "${NODE_GYP_INCLUDE_NORM}/node_api.h")
+                    set(NODE_CORE_INCLUDE_NORM "${NODE_GYP_INCLUDE_NORM}")
+                    set(NODE_CORE_HEADER "${NODE_CORE_INCLUDE_NORM}/node_api.h")
+                    message(STATUS "Using Node.js headers from node-gyp cache: ${NODE_CORE_INCLUDE_NORM}")
+                endif()
+            endif()
+        endif()
+    endif()
+
+    # Require both node-addon-api and Node core include dir (with node_api.h) to enable addon
+    if(NODE_ADDON_API_INCLUDE_NORM AND EXISTS "${NODE_ADDON_API_INCLUDE_NORM}"
+       AND NODE_CORE_INCLUDE_NORM AND EXISTS "${NODE_CORE_HEADER}")
+        # Find node.lib (Windows) so N-API symbols resolve at link time
+        set(NODE_LIBRARY "" CACHE FILEPATH "Path to node.lib (Windows). Auto-detected if not set.")
+        if(IS_WINDOWS AND NOT NODE_LIBRARY)
+            execute_process(
+                COMMAND ${NODE_EXECUTABLE} -p "require('path').dirname(process.execPath)"
+                OUTPUT_VARIABLE NODE_DIR_RAW
+                OUTPUT_STRIP_TRAILING_WHITESPACE
+                ERROR_QUIET
+            )
+            if(NODE_DIR_RAW)
+                file(TO_CMAKE_PATH "${NODE_DIR_RAW}" NODE_DIR)
+                string(REPLACE "\"" "" NODE_DIR "${NODE_DIR}")
+                foreach(SUFFIX "/node.lib" "/lib/node.lib")
+                    if(EXISTS "${NODE_DIR}${SUFFIX}")
+                        set(NODE_LIBRARY "${NODE_DIR}${SUFFIX}")
+                        break()
+                    endif()
+                endforeach()
+            endif()
+            if(NOT NODE_LIBRARY)
+                message(STATUS "node.lib not found next to node.exe; Node addon may fail to link. Set -DNODE_LIBRARY=<path>/node.lib")
+            else()
+                message(STATUS "Node library for addon: ${NODE_LIBRARY}")
+            endif()
+        elseif(NOT IS_WINDOWS)
+            # Linux/macOS: no node.lib; symbols come from the loader when Node loads the .node
+            set(NODE_LIBRARY "")
+        endif()
         # Build Node.js native addon
         add_library(swirl_string_core_node SHARED
             src/node/module_node.cpp
@@ -244,6 +331,7 @@ if(NODE_EXECUTABLE)
             src/node/node_vortex_ring.cpp
             src/node/node_vorticity_dynamics.cpp
             src/node/node_sst_gravity.cpp
+            src/node/node_sst_extensions.cpp
             src/biot_savart.cpp
             src/fluid_dynamics.cpp
             src/field_kernels.cpp
@@ -258,6 +346,7 @@ if(NODE_EXECUTABLE)
             src/vortex_ring.cpp
             src/vorticity_dynamics.cpp
             src/sst_gravity.cpp
+            src/sst_extensions.cpp
             ${CMAKE_BINARY_DIR}/generated/knot_files_embedded.cpp
         )
         
@@ -268,9 +357,9 @@ if(NODE_EXECUTABLE)
             include
             ${CMAKE_BINARY_DIR}/generated
         )
-        
-        # Link against the core library (but we're including all sources, so this may not be needed)
-        # target_link_libraries(swirl_string_core_node PRIVATE swirl_string_core_lib)
+        if(NODE_LIBRARY)
+            target_link_libraries(swirl_string_core_node PRIVATE "${NODE_LIBRARY}")
+        endif()
         
         # Set C++ standard (use 20 for better compatibility with node-gyp)
         set_target_properties(swirl_string_core_node PROPERTIES
@@ -304,7 +393,11 @@ if(NODE_EXECUTABLE)
         set(HAVE_SWIRL_STRING_CORE_NODE ON CACHE BOOL "Node.js addon target is available")
         message(STATUS "Node.js native addon build enabled")
     else()
-        message(STATUS "node-addon-api not found or include dir invalid, skipping Node.js addon build")
+        if(NOT NODE_ADDON_API_INCLUDE_NORM OR NOT EXISTS "${NODE_ADDON_API_INCLUDE_NORM}")
+            message(STATUS "node-addon-api not found or include dir invalid, skipping Node.js addon build")
+        else()
+            message(STATUS "Node.js core headers (node_api.h) not found at ${NODE_CORE_INCLUDE_NORM}, skipping Node.js addon build. Install Node.js with 'Install native build tools' or set NODE_CORE_INCLUDE_DIR.")
+        endif()
         set(HAVE_SWIRL_STRING_CORE_NODE OFF CACHE BOOL "Node.js addon target is available")
     endif()
 endif()
@@ -353,13 +446,25 @@ if(EXISTS "${SST_RESOURCES_DIR}")
 endif()
 
 # === ✅ AUTO-COPY PYBIND MODULE TO PROJECT ROOT (best-effort) ===
-# Copy to project root, examples/, tests/, ../SwirlStringTheory/ for easy import.
+# Copy to project root, examples/, tests/, ../SwirlStringTheory/, ../SST_Dashboard/ for easy import.
 # Copy failures (e.g. .pyd locked by running Python) do not fail the build.
+
+set(SWIRL_THEORY_DIR "${CMAKE_SOURCE_DIR}/../SwirlStringTheory")
+set(SST_DASHBOARD_DIR "${CMAKE_SOURCE_DIR}/../SST_Dashboard")
 
 add_custom_command(TARGET swirl_string_core POST_BUILD
         COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/copy_pyd_fallback.cmake
         -DSOURCE=$<TARGET_FILE:swirl_string_core>
         -DPROJECT_ROOT=${CMAKE_SOURCE_DIR}
+        -DBUILD_DIR=${CMAKE_BINARY_DIR}
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${SWIRL_THEORY_DIR}"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        $<TARGET_FILE:swirl_string_core>
+        "${SWIRL_THEORY_DIR}/$<TARGET_FILE_NAME:swirl_string_core>"
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${SST_DASHBOARD_DIR}"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        $<TARGET_FILE:swirl_string_core>
+        "${SST_DASHBOARD_DIR}/$<TARGET_FILE_NAME:swirl_string_core>"
         COMMENT "Copying swirl_string_core module for easy import (best-effort)"
 )
 
@@ -368,5 +473,14 @@ add_custom_command(TARGET sstbindings POST_BUILD
         COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/copy_pyd_fallback.cmake
         -DSOURCE=$<TARGET_FILE:sstbindings>
         -DPROJECT_ROOT=${CMAKE_SOURCE_DIR}
+        -DBUILD_DIR=${CMAKE_BINARY_DIR}
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${SWIRL_THEORY_DIR}"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        $<TARGET_FILE:swirl_string_core>
+        "${SWIRL_THEORY_DIR}/$<TARGET_FILE_NAME:swirl_string_core>"
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${SST_DASHBOARD_DIR}"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        $<TARGET_FILE:swirl_string_core>
+        "${SST_DASHBOARD_DIR}/$<TARGET_FILE_NAME:swirl_string_core>"
         COMMENT "Copying sstbindings module for easy import (best-effort)"
 )

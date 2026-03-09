@@ -1,0 +1,300 @@
+%! Author = Omar Iskandarani
+%! Date = 2/23/2026
+%! Affiliation = Independent Researcher, Groningen, The Netherlands
+%! License = © 2025 Omar Iskandarani. All rights reserved. This manuscript is made available for academic reading and citation only. No republication, redistribution, or derivative works are permitted without explicit written permission from the author. Contact: info@omariskandarani.com
+%! ORCID = 0009-0006-1686-3961
+%! DOI = 10.5281/zenodo.xxx
+
+\newcommand{\paperdoi}{10.5281/zenodo.xxx}
+\newcommand{\papertitle}{Topologische Relaxatie en Fourier-projectie van Swirl-String Inbeddingen\\
+(SST Canon: afleiding en implementatie van het relaxatie-algoritme)}
+
+%=========================================
+% % PREAMBLE, PACKAGES AND DOCUMENT CONFIGURATION
+%=========================================
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsfonts,bm}
+\usepackage{siunitx}
+\usepackage[hidelinks]{hyperref}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+\usepackage{physics}
+\usepackage{listings}
+\usepackage{caption}
+
+
+\newcommand{\VolH}[1]{\operatorname{Vol}_{\!\mathbb{H}}(#1)}
+\newcommand{\swirlarrowcw}{\mathchoice{\mkern-2mu\scriptstyle\boldsymbol{\circlearrowright}}{\mkern-2mu\scriptstyle\boldsymbol{\circlearrowright}}{\mkern-2mu\scriptscriptstyle\boldsymbol{\circlearrowright}}{\mkern-2mu\scriptscriptstyle\boldsymbol{\circlearrowright}}}
+
+
+
+% swirl arrows (context-aware)
+\newcommand{\swirlarrow}{\mkern-2mu\scriptscriptstyle\boldsymbol{\circlearrowleft}}
+\newcommand{\vswirl}{\mathbf{v}_{\mkern-2mu\scriptscriptstyle\boldsymbol{\circlearrowleft}}}
+\newcommand{\SwirlClock}{S_{(t)}^{\mkern-2mu\scriptscriptstyle\boldsymbol{\circlearrowleft}}}
+\newcommand{\Fmaxswirl}{F^{\max}_{\mkern-1mu\scriptscriptstyle\boldsymbol{\circlearrowleft}}}
+\newcommand{\Fmax}{F^{\max}_{\mkern-1mu\scriptscriptstyle\boldsymbol{\circlearrowleft}}} 
+\newcommand{\FmaxEM}{F^{\max}_{\mathrm{EM}}}
+\newcommand{\FmaxG}{F_{\mathrm{G}}^{\max}}               % G-like maximal force scale
+\newcommand{\vscore}{v_{\swirlarrow}}                    % shorthand: |v_swirl| at r=r_c
+\newcommand{\vnorm}{\lVert \mathbf{v}_{\mkern-2mu\scriptscriptstyle\boldsymbol{\circlearrowleft}} \rVert}  % swirl speed magnitude
+\newcommand{\rhoF}{\rho_{\!f}}\newcommand{\rhof}{\rho_{\!f}}     % effective fluid density
+\newcommand{\rhoE}{\rho_{\!E}}\newcommand{\rhoe}{\rho_{\!E}}                           % swirl energy density
+\newcommand{\rhoM}{\rho_{\!m}}\newcommand{\rhom}{\rho_{\!m}}                           % mass-equivalent density
+\newcommand{\omegas}{\boldsymbol{\omega}_{\swirlarrow}}  % swirl vorticity
+\newcommand{\Om}{\Omega_{\swirlarrow}}                   % swirl angular frequency profile
+\newcommand{\rc}{r_c}                                    % string core radius (swirl string radius)
+
+
+\newcommand{\titlepageOpen}{
+    \begin{titlepage}
+        \thispagestyle{empty}  \centering
+        \Large \bfseries \papertitle \par \vspace{1cm}
+        {\Large \itshape \textbf{Omar Iskandarani}\textsuperscript{\textbf{*}} \par} \vspace{0.5cm}
+        {\today \par}  \vspace{0.5cm}
+}
+
+\newcommand{\titlepageClose}{
+        \vfill \raggedright \null
+        \begin{picture}(0,0)
+            \put(0,-45){  % Shift 200pt left, 40pt down
+                \begin{minipage}[b]{0.7\textwidth} \footnotesize
+                    \renewcommand{\arraystretch}{1.0} \noindent\rule{\textwidth}{0.4pt} \\[0.5em]
+                    \textsuperscript{\textbf{*}} Independent Researcher, Groningen, The Netherlands \\
+                    Email: \texttt{info@omariskandarani.com} \\
+                    ORCID: \texttt{\href{https://orcid.org/0009-0006-1686-3961}{0009-0006-1686-3961}} \\
+                    DOI: \href{https://doi.org/\paperdoi}{\paperdoi}
+                \end{minipage}
+            }
+        \end{picture}
+    \end{titlepage}
+}
+%=========================================
+% Start Document - Title Page
+%=========================================
+\begin{document}
+    \titlepageOpen
+    \begin{abstract}
+        We formuleren en leiden het iteratieve relaxatie-algoritme af dat in de Swirl-String Theory (SST) Canon wordt gebruikt om een discrete ruimtelijke inbedding van een gesloten filament (``swirl string'') te laten convergeren naar een stabiele, zelf-vermijdende configuratie. Het algoritme combineert (i) reconstructie uit een ideale Fourier-bibliotheek, (ii) booglengte-normalisatie (uniforme parametrisatie), (iii) Hamiltoniaanse energieminimalisatie met een elastische lijntensie-term en een korte-afstands repulsieve drukterm, en (iv) een finale spectrale Fourier-projectie naar het SST \texttt{.fseries}-formaat tot een vaste harmonische orde. We geven de discrete gradi\"entkrachten expliciet, bespreken numerieke stabiliteitscriteria, en beschrijven de beperkingen voor meervoudige componenten (links) waarvoor een multicomponent Hamiltoniaan vereist is.
+    \end{abstract}
+    \titlepageClose
+
+
+
+
+
+        \section{Motivatie en context}
+            Een centrale numerieke stap binnen de SST Canon is het genereren van reproduceerbare, \emph{parametrisch uniforme} inbeddingen van gesloten filamenten die topologische kruisingen vermijden. In SST wordt dit gemotiveerd als een stabiliteitsvoorwaarde: wanneer filamentsegmenten elkaar naderen tot onder een kritieke afsnijgrens, divergeert de lokale energiedichtheid $\rhoE$; een numerieke regularisatie die zelf-intersecties verhindert is dan noodzakelijk. In dit artikel behandelen we die regularisatie als een Hamiltoniaanse energieminimalisatie met twee termen.
+
+            SST-constanten die in de interpretatie worden gebruikt zijn de kernstraal
+            \[
+                \rc = 1.40897017\times 10^{-15}\ \mathrm{m},
+            \]
+            de effectieve flu\"idumdichtheid
+            \[
+                \rhoF = 7.0\times 10^{-7}\ \mathrm{kg\,m^{-3}},
+            \]
+            en de karakteristieke tangenti\"ele swirl-snelheid
+            \[
+                \vswirl = 1.09384563\times 10^{6}\ \mathrm{m\,s^{-1}}.
+            \]
+            In de numeriek-algoritmische laag hieronder fungeren deze vooral als \emph{canonieke schaalankers} (interpretatiekader); de discrete relaxatie zelf werkt op dimensionloze co\"ordinaten tot een expliciete metrische schaalkeuze wordt toegepast.
+
+        \section{Databron: ideale Fourier-co\"effici\"enten}
+            De pipeline start vanuit een referentiebibliotheek (\texttt{Ideal.txt}) met Fourier-co\"effici\"enten $(\mathbf{a}_j,\mathbf{b}_j)$ per harmonische orde $j$ (AB Id). De initi\"ele inbedding wordt opgebouwd op een uniform parametrisch domein $t\in[0,2\pi)$:
+            \begin{equation}
+                \mathbf{r}_{\mathrm{init}}(t)=\sum_{j=1}^{j_{\max}} \Big(\mathbf{a}_{j}\cos(jt)+\mathbf{b}_{j}\sin(jt)\Big),
+                \label{eq:rinit}
+            \end{equation}
+            waar $\mathbf{a}_j=(a_{xj},a_{yj},a_{zj})$ en $\mathbf{b}_j=(b_{xj},b_{yj},b_{zj})$.
+
+            \paragraph{Opmerking (parametrische defect).}
+                De metriek van \eqref{eq:rinit} is in het algemeen niet constant:
+                \[
+                    \abs{\frac{d\mathbf{r}_{\mathrm{init}}}{dt}} \neq \text{const}.
+                \]
+                Zonder correctie leidt dit tot niet-uniforme puntdichtheid langs de lus, wat in SST-interpretatie correspondeert met een variabele effectieve lineaire massadichtheid $\lambda_m$ en daarmee een ongewenste ruimtelijke modulatie van $\rhoE$.
+
+        \section{Booglengte-normalisatie}
+        We reconstrueren eerst discrete punten $\{\mathbf{r}_i\}_{i=1}^{N}$ op uniforme $t$-samples, en herparametriseren vervolgens naar uniforme booglengte.
+
+        Definieer discrete segmenten
+        \[
+            \Delta \mathbf{r}_i = \mathbf{r}_{i+1}-\mathbf{r}_i,\quad
+            \ell_i = \|\Delta \mathbf{r}_i\|,
+        \]
+        met periodieke indexering $\mathbf{r}_{N+1}\equiv \mathbf{r}_1$.
+        De cumulatieve booglengte is
+        \[
+            s_0=0,\qquad s_{i+1}=s_i+\ell_i,\qquad L=s_N.
+        \]
+        Vervolgens interpoleren we $\mathbf{r}(s)$ naar uniforme targets $s_i^\star = iL/N$ (met endpoint-open keuze), zodat uiteindelijk
+        \[
+            \|\mathbf{r}_{i+1}-\mathbf{r}_i\|\approx \frac{L}{N}\equiv \ell_0
+        \]
+        en dus \emph{uniforme discretisatie} geldt.
+
+        \section{Hamiltoniaan: elastische lijntensie + repulsieve drukregularisatie}
+        We defini\"eren een gediscretiseerde Hamiltoniaan
+        \begin{equation}
+            \mathcal{H}[\{\mathbf{r}_i\}] = \mathcal{H}_{\mathrm{el}} + \mathcal{H}_{\mathrm{rep}}.
+            \label{eq:Htotal}
+        \end{equation}
+
+        \subsection{Elastische term}
+            De lijntensie wordt gemodelleerd als een veerpotentiaal die segmentlengtes naar $\ell_0$ trekt:
+            \begin{equation}
+                \mathcal{H}_{\mathrm{el}}
+                =\sum_{i=1}^{N}\frac{1}{2}k\left(\|\mathbf{r}_{i+1}-\mathbf{r}_i\|-\ell_0\right)^2,
+                \label{eq:Hel}
+            \end{equation}
+            waar $k>0$ de ``spring stiffness'' is.
+
+        \subsection{Repulsieve term (zelf-vermijding)}
+            Om zelf-intersecties (en numerieke singulariteiten) te vermijden, gebruiken we een korte-afstands repulsieve term die nabije niet-aangrenzende punten afstoot:
+            \begin{equation}
+                \mathcal{H}_{\mathrm{rep}}
+                =\sum_{i=1}^{N}\ \sum_{\substack{j=1\\ j\notin\{i-1,i,i+1\}}}^{N}
+                \frac{q}{\|\mathbf{r}_i-\mathbf{r}_j\|^{2}},
+                \label{eq:Hrep}
+            \end{equation}
+            met $q>0$ een veldconstante. Deze term is een praktische surrogate voor analytische zelf-energie functionalen (zoals M\"obius-achtige energie\"en) en dient hier primair als regularisatie.
+
+        \section{Gradi\"entafstroming: discrete dynamica}
+        De relaxatie wordt uitgevoerd via gradi\"entafstroming in een artifici\"ele iteratietijd $\tau$:
+        \begin{equation}
+            \frac{\partial \mathbf{r}_i}{\partial \tau} = -\alpha\, \nabla_{\mathbf{r}_i}\mathcal{H},
+            \label{eq:gd}
+        \end{equation}
+        waar $\alpha$ de stapgrootte is.
+
+        \subsection{Gradi\"ent van de elastische term}
+            Definieer $\Delta \mathbf{r}_i = \mathbf{r}_{i+1}-\mathbf{r}_i$ en $\ell_i=\|\Delta \mathbf{r}_i\|$. Dan draagt segment $i$ bij met kracht
+            \[
+                \mathbf{F}_{i\to i} = k(\ell_i-\ell_0)\frac{\Delta \mathbf{r}_i}{\ell_i+\varepsilon},
+            \]
+            en segment $i-1$ draagt bij via $\Delta \mathbf{r}_{i-1}=\mathbf{r}_i-\mathbf{r}_{i-1}$:
+            \[
+                \mathbf{F}_{i-1\to i} = k(\ell_{i-1}-\ell_0)\frac{\mathbf{r}_{i-1}-\mathbf{r}_{i}}{\ell_{i-1}+\varepsilon}.
+            \]
+            Samen:
+            \begin{equation}
+                \nabla_{\mathbf{r}_i}\mathcal{H}_{\mathrm{el}} \;=\; -(\mathbf{F}_{i\to i}+\mathbf{F}_{i-1\to i}).
+                \label{eq:grad_el}
+            \end{equation}
+
+        \subsection{Gradi\"ent van de repulsieve term}
+            Voor $j\neq i$ geldt
+            \[
+                \nabla_{\mathbf{r}_i}\left(\frac{q}{\|\mathbf{r}_i-\mathbf{r}_j\|^{2}}\right)
+                = -\frac{2q}{\|\mathbf{r}_i-\mathbf{r}_j\|^{4}}(\mathbf{r}_i-\mathbf{r}_j),
+            \]
+            dus
+            \begin{equation}
+                \nabla_{\mathbf{r}_i}\mathcal{H}_{\mathrm{rep}}
+                = -\sum_{\substack{j=1\\ j\notin\{i-1,i,i+1\}}}^{N}
+                \frac{2q}{\|\mathbf{r}_i-\mathbf{r}_j\|^{4}}(\mathbf{r}_i-\mathbf{r}_j).
+                \label{eq:grad_rep}
+            \end{equation}
+
+        \subsection{Totale update-regel}
+            Invullen in \eqref{eq:gd} geeft de discrete update die het script implementeert:
+            \begin{equation}
+                \frac{\partial \mathbf{r}_i}{\partial \tau}
+                = -\alpha\Big(\nabla_{\mathbf{r}_i}\mathcal{H}_{\mathrm{el}}+\nabla_{\mathbf{r}_i}\mathcal{H}_{\mathrm{rep}}\Big).
+                \label{eq:update}
+            \end{equation}
+            In stationair evenwicht geldt $\nabla \mathcal{H}\to \mathbf{0}$ en is de booglengte-parametrisatie na een laatste her-normalisatie uniform: $\abs{d\mathbf{r}/ds}\approx 1$.
+
+            \paragraph{Kind-analogie (1 zin).}
+                Je kunt het zien als een elastisch koord dat zichzelf niet mag kruisen: veren houden het koord gelijkmatig strak, en een ``afstotend veld'' duwt stukken uit elkaar zodra ze te dichtbij komen. 🙂
+
+        \section{Automatisering: download, extractie, relaxatie, projectie}
+        De volledige pipeline automatiseert:
+        \begin{enumerate}
+            \item Download/decompressie van \texttt{Ideal.txt.gz}.
+            \item Extractie van AB Id blokken en parsing van Fourier-co\"effici\"enten.
+            \item Reconstructie van $\mathbf{r}_{\mathrm{init}}(t)$ en booglengte-normalisatie.
+            \item Iteratieve relaxatie \eqref{eq:update} met parameters $(k,q,\alpha,\text{iteraties})$.
+            \item Recenteer-operatie (translatie naar nulgemiddelde) om drift te verwijderen.
+            \item Finale booglengte-normalisatie.
+            \item Fourier-projectie naar vaste orde $j_{\mathrm{out}}$ (bijv.\ 50) en export naar \texttt{.fseries}.
+        \end{enumerate}
+
+        \subsection{Fourier-projectie naar \texttt{.fseries}}
+            Met $s\in[0,2\pi)$ uniform gesampled defini\"eren we (discrete) Fourier-co\"effici\"enten per component:
+            \begin{equation}
+                a_j = \frac{2}{N}\sum_{n=1}^{N} x_n\cos(js_n),\qquad
+                b_j = \frac{2}{N}\sum_{n=1}^{N} x_n\sin(js_n),
+                \label{eq:fourier_proj}
+            \end{equation}
+            en analoog voor $y_n,z_n$. Dit levert het SST Canon-bestandsformaat waarin per regel $(a_x,b_x,a_y,b_y,a_z,b_z)$ wordt geschreven voor $j=1,\dots,j_{\mathrm{out}}$.
+
+        \section{Numerieke instellingen en kwaliteitscriteria}
+        De meegeleverde implementatie gebruikt typisch:
+        \[
+            N=300,\quad \text{iteraties}=1500,\quad k=5.0,\quad q=0.05,\quad \alpha=0.005.
+        \]
+        Belangrijke stabiliteitsmaatregelen die in codevorm expliciet zichtbaar zijn:
+        \begin{itemize}
+            \item \textbf{Singulariteits-regularisatie:} toevoeging van kleine $\varepsilon$-termen in delers om deling door nul te voorkomen.
+            \item \textbf{Kracht-clipping:} begrenzing van $\|\nabla \mathcal{H}\|$ (bijv.\ max $5.0$) om numerieke explosies te vermijden.
+            \item \textbf{Uitsluiten van buren:} $j\in\{i-1,i,i+1\}$ wordt uitgesloten uit \eqref{eq:Hrep} om triviale nabije interacties niet te domineren.
+        \end{itemize}
+
+        \paragraph{Complexiteit.}
+            De repulsieve term is $O(N^2)$ per iteratie. Bij $N=300$ en 1500 iteraties blijft dit praktisch, maar opschaling naar grotere $N$ vraagt versnelling (bijv.\ Barnes--Hut of cut-off buurtdetectie).
+
+        \section{Uitbreiding naar knoopfamilies en beperkingen voor links}
+        Voor monocomponente knopen (zoals de twistfamilie $3_1,4_1,5_2,6_1,7_2,8_1,9_2,10_1$ en torusknopen $5_1,7_1,9_1$) past het bovenstaande model direct: $N_c=1$.
+
+        Voor links (bijv.\ Hopf-link, Solomon, Borromeaans) geldt $N_c>1$ met meerdere afzonderlijke filamenten $\mathbf{r}_k(s)$, $k=1,\dots,N_c$. Dan is een multicomponent Hamiltoniaan vereist:
+        \begin{equation}
+            \mathcal{H}_{\mathrm{link}}
+            =\sum_{k=1}^{N_c}\mathcal{H}_{\mathrm{el}}[\mathbf{r}_k]
+            +\sum_{k=1}^{N_c}\sum_{l=1}^{N_c}\mathcal{H}_{\mathrm{rep}}[\mathbf{r}_k,\mathbf{r}_l],
+            \label{eq:Hlink}
+        \end{equation}
+        waarbij (belangrijk) elk filament een \emph{eigen} booglengte-parametrisatie bezit en repulsie ook \emph{tussen} componenten moet worden toegepast. De huidige parser/uitvoer is analytisch ingericht voor $N_c=1$ en vereist uitbreiding om \eqref{eq:Hlink} correct te ondersteunen.
+
+        \section{Conclusie}
+        Het relaxatie-algoritme kan strikt worden opgevat als een Hamiltoniaanse energieminimalisatie met (i) een elastische term die uniforme booglengte afdwingt en (ii) een repulsieve term die zelf-intersecties voorkomt. De combinatie van booglengte-normalisatie, gradi\"entafstroming en finale Fourier-projectie levert een reproduceerbare route van bibliotheekco\"effici\"enten naar SST Canon-\texttt{.fseries} representaties met vaste harmonische orde. Voor links is een multicomponent generalisatie noodzakelijk.
+
+        \bigskip
+        \noindent\textbf{Appendix A: implementatie (samenvatting)}\\
+        De gebruikte Python pipeline voert deze stappen uit: \texttt{prepare\_database()} $\to$ \texttt{extract\_ab\_block()} $\to$ \texttt{parse\_coeffs()} $\to$ reconstructie \eqref{eq:rinit} $\to$ \texttt{normalize\_arclength()} $\to$ iteraties \eqref{eq:update} $\to$ Fourier-projectie \eqref{eq:fourier_proj}.
+
+        \begin{thebibliography}{9}
+
+            \bibitem{NocedalWright2006}
+            J. Nocedal and S. J. Wright (2006),
+            \textit{Numerical Optimization},
+            Springer.
+            (Gradient descent en line-search basis; standaard referentie.)
+
+            \bibitem{FreedmanHeWang1994}
+            M. Freedman, Z.-X. He, and Z. Wang (1994),
+            \textit{M\"obius energy of knots and unknots},
+            Annals of Mathematics \textbf{139}(1), 1--50.
+            \url{https://doi.org/10.2307/2946636}
+
+            \bibitem{CantarellaKusnerSullivan2002}
+            J. Cantarella, R. Kusner, and J. M. Sullivan (2002),
+            \textit{On the minimum ropelength of knots and links},
+            Inventiones Mathematicae \textbf{150}, 257--286.
+            \url{https://doi.org/10.1007/s002220200200}
+
+            \bibitem{KnotAtlas}
+            D. Bar-Natan et al. (ongoing),
+            \textit{The Knot Atlas},
+            \url{https://katlas.org/}
+            (Referentie voor \texttt{Ideal.txt} distributie en AB/rolfsen codering.)
+
+        \end{thebibliography}
+
+
+
+
+\end{document}
