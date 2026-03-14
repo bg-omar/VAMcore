@@ -15,6 +15,13 @@ from sst_exports import get_exports_dir
 
 # --- SSTCORE bindings (with safe fallbacks if module is missing) ---
 try:
+    import swirl_string_core as sstcore
+except ImportError:
+    try:
+        import sstbindings as sstcore
+    except ImportError:
+        sstcore = None
+try:
     from sstcore import biot_savart_velocity_grid, curl3d_central
     HAVE_SST = True
 except Exception:

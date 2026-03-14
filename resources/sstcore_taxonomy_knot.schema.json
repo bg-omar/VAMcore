@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SSTcore Knot Taxonomy Record",
+  "type": "object",
+  "required": ["id", "components", "knot_type", "chirality", "sigma_chi", "source", "compute"],
+  "properties": {
+    "id": {"type": "string"},
+    "components": {"type": "integer", "minimum": 1},
+    "pd_code": {"type": ["string", "null"]},
+    "dt_code": {"type": ["string", "null"]},
+    "is_prime": {"type": ["boolean", "null"]},
+    "knot_type": {"type": "string", "enum": ["torus", "hyperbolic", "satellite", "composite", "unknown"]},
+
+    "vol_hyperbolic": {"type": ["number", "null"], "minimum": 0},
+    "vol_ref": {"type": ["number", "null"], "minimum": 0},
+    "hvol_norm": {"type": ["number", "null"]},
+    "hvol_signed": {"type": ["number", "null"]},
+
+    "chirality": {"type": "string", "enum": ["chiral_left", "chiral_right", "amphichiral", "unknown"]},
+    "sigma_chi": {"type": "integer", "enum": [-1, 0, 1]},
+
+    "features": {
+      "type": "object",
+      "properties": {
+        "C_raw": {"type": ["number", "null"]},
+        "L_rope": {"type": ["number", "null"]},
+        "H_link": {"type": ["number", "null"]},
+        "E_eff": {"type": ["number", "null"]}
+      },
+      "additionalProperties": false
+    },
+
+    "source": {"type": "string", "enum": ["knot_table", "knotplot_export", "snappy", "user_defined"]},
+
+    "compute": {
+      "type": "object",
+      "required": ["mirror_convention"],
+      "properties": {
+        "snappy_version": {"type": ["string", "null"]},
+        "tolerance_volume": {"type": ["number", "null"], "minimum": 0},
+        "triangulation_method": {"type": ["string", "null"]},
+        "mirror_convention": {"type": "string"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

@@ -13,7 +13,7 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtCore import QThread, pyqtSignal, Qt
 
-# Prefer C++ SSTcore backend when available
+# Single C++ backend: used for helicity, canonicalize, and embedded ideal/knots
 using_cxx_backend = False
 sstcore = None
 try:
@@ -26,11 +26,14 @@ except ImportError:
     except ImportError:
         sstcore = None
 
-# Python fallback
+# Python helicity fallback: prefer canonical module, then legacy shim
 try:
-    import HelicityCalculationVAMcore as helicity_mod
+    import sst_helicity as helicity_mod
 except ImportError:
-    helicity_mod = None
+    try:
+        import HelicityCalculationVAMcore as helicity_mod
+    except ImportError:
+        helicity_mod = None
 
 # Matplotlib 3D voor knoop-render (Qt backend)
 try:
@@ -41,14 +44,6 @@ try:
     HAS_MPL = True
 except Exception:
     HAS_MPL = False
-
-try:
-    import swirl_string_core as ssc
-except ImportError:
-    try:
-        import sstbindings as ssc
-    except ImportError:
-        ssc = None
 
 try:
     from sst_exports import get_exports_dir
@@ -65,11 +60,6 @@ def _exports_dir() -> Path:
     d = Path(__file__).resolve().parent.parent / "exports"
     d.mkdir(parents=True, exist_ok=True)
     return d
-
-try:
-    import HelicityCalculationVAMcore as helicity_mod
-except ImportError:
-    helicity_mod = None
 
 try:
     import generate_knot_fseries as _genknot
@@ -197,11 +187,11 @@ def _find_sstcore_resources():
 def _get_ideal_ab_ids_from_core(embedded_name=EMBEDDED_IDEAL_NAME):
     """AB IDs uit SSTcore embedded Ideal (parse_embedded_ideal_txt / load_embedded_ideal_text)."""
     ids = []
-    if ssc is None:
+    if sstcore is None:
         return ids
-    if hasattr(ssc, "parse_embedded_ideal_txt"):
+    if hasattr(sstcore, "parse_embedded_ideal_txt"):
         try:
-            blocks = ssc.parse_embedded_ideal_txt(embedded_name)
+            blocks = sstcore.parse_embedded_ideal_txt(embedded_name)
             for b in blocks:
                 aid = getattr(b, "id", None)
                 if aid:
@@ -210,10 +200,10 @@ def _get_ideal_ab_ids_from_core(embedded_name=EMBEDDED_IDEAL_NAME):
                 return sorted(ids)
         except Exception:
             pass
-    if hasattr(ssc, "load_embedded_ideal_text") and hasattr(ssc, "parse_ideal_txt_from_string"):
+    if hasattr(sstcore, "load_embedded_ideal_text") and hasattr(sstcore, "parse_ideal_txt_from_string"):
         try:
-            txt = ssc.load_embedded_ideal_text(embedded_name)
-            blocks = ssc.parse_ideal_txt_from_string(txt)
+            txt = sstcore.load_embedded_ideal_text(embedded_name)
+            blocks = sstcore.parse_ideal_txt_from_string(txt)
             for b in blocks:
                 aid = getattr(b, "id", None)
                 if aid:
@@ -268,7 +258,7 @@ class HelicityWorker(QThread):
 
     def run(self):
         if helicity_mod is None:
-            self.progress.emit("[ERR] HelicityCalculationVAMcore not importable.\n")
+            self.progress.emit("[ERR] Helicity module (sst_helicity / HelicityCalculationVAMcore) not importable.\n")
             self.finished.emit()
             return
         try:
@@ -276,13 +266,23 @@ class HelicityWorker(QThread):
             for f in self.files:
                 self.progress.emit(f"[*] {f.name}\n")
                 res = sstcore.compute_helicity_from_fseries(str(f), grid_size=self.grid, spacing=self.spacing, interior_margin=self.interior, nsamples=1000) if using_cxx_backend and sstcore is not None and hasattr(sstcore, 'compute_helicity_from_fseries') else helicity_mod.compute_a_mu_for_file(
-                    str(f), grid=self.grid, spacing=self.spacing, interior=self.interior
+                    str(f), grid_size=self.grid, spacing=self.spacing, interior=self.interior
                 )
-                if isinstance(res, dict):
+                extra = {"L": "", "kappa_max": "", "kappa_mean": "", "bend_energy": "", "min_non_neighbor_dist": "", "reach_proxy": "", "nsamples": ""}
+                if hasattr(res, "a_mu") and hasattr(res, "Hc") and hasattr(res, "Hm"):
+                    a_mu, Hc, Hm = res.a_mu, res.Hc, res.Hm
+                    for key in extra.keys():
+                        if hasattr(res, key):
+                            extra[key] = getattr(res, key)
+                elif isinstance(res, dict):
                     a_mu, Hc, Hm = res.get("a_mu"), res.get("Hc"), res.get("Hm")
+                    for key in extra.keys():
+                        extra[key] = res.get(key, "")
                 else:
                     a_mu, Hc, Hm = res[0], res[1], res[2]
-                rows.append((f.name, self.grid, self.spacing, self.interior, a_mu, Hc, Hm))
+                rows.append((f.name, self.grid, self.spacing, self.interior, a_mu, Hc, Hm,
+                             extra["L"], extra["kappa_max"], extra["kappa_mean"], extra["bend_energy"],
+                             extra["min_non_neighbor_dist"], extra["reach_proxy"], extra["nsamples"]))
             out = Path(self.out_csv)
             out.parent.mkdir(parents=True, exist_ok=True)
             import csv
@@ -509,7 +509,7 @@ class TabKnotFseriesMaster(QWidget):
         layout.addWidget(grp_log, 1)
 
         # Standaard: embedded als SSTcore dat ondersteunt
-        if ssc is not None and getattr(ssc, "get_embedded_knot_files", None):
+        if sstcore is not None and getattr(sstcore, "get_embedded_knot_files", None):
             self.bron_combo.setCurrentIndex(0)
         self._on_bron_changed()
 
@@ -547,9 +547,9 @@ class TabKnotFseriesMaster(QWidget):
     def _refresh_list(self):
         self.listw.clear()
         self._embedded_ids = []
-        if self._use_embedded and ssc is not None and getattr(ssc, "get_embedded_knot_files", None):
+        if self._use_embedded and sstcore is not None and getattr(sstcore, "get_embedded_knot_files", None):
             try:
-                files = ssc.get_embedded_knot_files()
+                files = sstcore.get_embedded_knot_files()
                 ids = sorted(files.keys()) if isinstance(files, dict) else []
                 self._embedded_ids = ids
                 for kid in ids:
@@ -593,12 +593,12 @@ class TabKnotFseriesMaster(QWidget):
 
     def _curve_from_embedded(self, knot_id: str, n_points: int):
         """Evalueer knoopcurve uit embedded SSTcore; retourneer (N,3) of None."""
-        if ssc is None or not getattr(ssc, "load_embedded_knot_block", None) or not getattr(ssc, "evaluate_fourier_block", None):
+        if sstcore is None or not getattr(sstcore, "load_embedded_knot_block", None) or not getattr(sstcore, "evaluate_fourier_block", None):
             return None
         try:
-            block = ssc.load_embedded_knot_block(knot_id)
+            block = sstcore.load_embedded_knot_block(knot_id)
             s = np.linspace(0.0, 2.0 * np.pi, n_points, endpoint=False)
-            out = ssc.evaluate_fourier_block(block, s.tolist() if hasattr(s, "tolist") else list(s))
+            out = sstcore.evaluate_fourier_block(block, s.tolist() if hasattr(s, "tolist") else list(s))
             if isinstance(out, (list, tuple)) and len(out) == 3:
                 x, y, z = out
                 return np.column_stack([np.asarray(x), np.asarray(y), np.asarray(z)])
@@ -612,14 +612,14 @@ class TabKnotFseriesMaster(QWidget):
     def _curve_from_fseries(self, path: Path, n_points: int):
         """Evalueer knoopcurve uit .fseries; retourneer (N,3) array of lijst daarvan."""
         s = np.linspace(0.0, 2.0 * np.pi, n_points, endpoint=False)
-        if ssc is not None and hasattr(ssc, "parse_fseries_multi") and hasattr(ssc, "evaluate_fourier_block"):
+        if sstcore is not None and hasattr(sstcore, "parse_fseries_multi") and hasattr(sstcore, "evaluate_fourier_block"):
             try:
-                blocks = ssc.parse_fseries_multi(str(path))
+                blocks = sstcore.parse_fseries_multi(str(path))
                 if not blocks:
                     return None
-                idx = ssc.index_of_largest_block(blocks) if hasattr(ssc, "index_of_largest_block") else 0
+                idx = sstcore.index_of_largest_block(blocks) if hasattr(sstcore, "index_of_largest_block") else 0
                 block = blocks[idx]
-                out = ssc.evaluate_fourier_block(block, s.tolist() if hasattr(s, "tolist") else list(s))
+                out = sstcore.evaluate_fourier_block(block, s.tolist() if hasattr(s, "tolist") else list(s))
                 if isinstance(out, (list, tuple)) and len(out) == 3:
                     x, y, z = out
                     return np.column_stack([np.asarray(x), np.asarray(y), np.asarray(z)])
@@ -681,10 +681,10 @@ class TabKnotFseriesMaster(QWidget):
 
     def _plot_ideal_ab(self):
         """Teken Ideal AB Id (uit embedded ideal.txt) in het 3D-canvas."""
-        if not HAS_MPL or ssc is None:
+        if not HAS_MPL or sstcore is None:
             self._append("[Vis] Matplotlib of SSTcore niet beschikbaar.\n")
             return
-        if not hasattr(ssc, "parse_embedded_ideal_ab_by_id") or not hasattr(ssc, "evaluate_ideal_ab_components"):
+        if not hasattr(sstcore, "parse_embedded_ideal_ab_by_id") or not hasattr(sstcore, "evaluate_ideal_ab_components"):
             self._append("[Vis] parse_embedded_ideal_ab_by_id / evaluate_ideal_ab_components niet in core.\n")
             return
         ab_id = (self.ab_combo.currentText() or "").strip()
@@ -694,12 +694,12 @@ class TabKnotFseriesMaster(QWidget):
         n = self.vis_points.value() if hasattr(self, "vis_points") else VIS_POINTS
         s = np.linspace(0.0, 2.0 * np.pi, n, endpoint=False)
         try:
-            ab = ssc.parse_embedded_ideal_ab_by_id(ab_id, EMBEDDED_IDEAL_NAME)
+            ab = sstcore.parse_embedded_ideal_ab_by_id(ab_id, EMBEDDED_IDEAL_NAME)
         except Exception as e:
             self._append(f"[Vis] Kon AB {ab_id!r} niet laden: {e}\n")
             return
         try:
-            curves = ssc.evaluate_ideal_ab_components(ab, s)
+            curves = sstcore.evaluate_ideal_ab_components(ab, s)
         except Exception as e:
             self._append(f"[Vis] Eval AB componenten mislukt: {e}\n")
             return

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sstcore"
-version = "0.2.0"
+version = "0.1.8"
 description = "SSTcore - Swirl String Theory Canonical Core. High-performance C++ library for knot dynamics, vortex systems, and fluid mechanics"
 readme = "Readme.md"
 requires-python = ">=3.9"

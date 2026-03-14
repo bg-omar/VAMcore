@@ -23,11 +23,14 @@ except ImportError:
     except ImportError:
         sstcore = None
 
-# Python fallback
+# Python fallback: prefer canonical module, then legacy shim
 try:
-    import HelicityCalculationVAMcore as helicity_mod
+    import sst_helicity as helicity_mod
 except ImportError:
-    helicity_mod = None
+    try:
+        import HelicityCalculationVAMcore as helicity_mod
+    except ImportError:
+        helicity_mod = None
 
 try:
     from sst_exports import get_exports_dir
@@ -114,7 +117,7 @@ class HelicityWorker(QThread):
 
     def run(self):
         if helicity_mod is None:
-            self.progress.emit("[ERR] HelicityCalculationVAMcore.py not importable.\n")
+            self.progress.emit("[ERR] Helicity module (sst_helicity / HelicityCalculationVAMcore) not importable.\n")
             self.finished.emit()
             return
         try:
@@ -124,7 +127,7 @@ class HelicityWorker(QThread):
                 self.progress.emit(f"[*] Helicity: {f.name}\n")
                 res = sstcore.compute_helicity_from_fseries(str(f), grid_size=self.grid, spacing=self.spacing, interior_margin=self.interior, nsamples=1000) if using_cxx_backend and sstcore is not None and hasattr(sstcore, 'compute_helicity_from_fseries') else helicity_mod.compute_a_mu_for_file(
                     str(f),
-                    grid=self.grid,
+                    grid_size=self.grid,
                     spacing=self.spacing,
                     interior=self.interior,
                 )

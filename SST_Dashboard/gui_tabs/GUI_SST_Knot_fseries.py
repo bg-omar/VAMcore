@@ -36,10 +36,14 @@ except Exception:
     HAVE_SSTFULL = False
 
 try:
-    import HelicityCalculationVAMcore as _hel
+    import sst_helicity as _hel
     HAVE_HELICITY = True
 except Exception:
-    HAVE_HELICITY = False
+    try:
+        import HelicityCalculationVAMcore as _hel
+        HAVE_HELICITY = True
+    except Exception:
+        HAVE_HELICITY = False
 
 # ---------- SST constants (Canon-aligned names; values user-provided) ----------
 # House naming:
@@ -1485,7 +1489,7 @@ class App(tk.Tk):
 
     def on_helicity_selected(self):
         if not HAVE_HELICITY:
-            messagebox.showerror("Helicity", "HelicityCalculationVAMcore.py not found/importable.")
+            messagebox.showerror("Helicity", "Helicity module (sst_helicity / HelicityCalculationVAMcore) not found/importable.")
             return
         path = self._selected_path_if_ext(".fseries")
         if not path:
@@ -1519,7 +1523,7 @@ class App(tk.Tk):
 
     def on_helicity_all(self):
         if not HAVE_HELICITY:
-            messagebox.showerror("Helicity", "HelicityCalculationVAMcore.py not found/importable.")
+            messagebox.showerror("Helicity", "Helicity module (sst_helicity / HelicityCalculationVAMcore) not found/importable.")
             return
         root = self.var_root.get()
         out_csv = (self.var_h_export_csv.get() or "").strip()

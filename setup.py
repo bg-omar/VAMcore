@@ -11,7 +11,7 @@ import tempfile
 import shutil
 import sys
 
-__version__ = "0.2.1"
+__version__ = "0.1.8"
 base_dir = os.path.dirname(os.path.abspath(__file__))
 
 
