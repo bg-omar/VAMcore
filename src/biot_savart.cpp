@@ -8,9 +8,23 @@ namespace sst {
         const std::vector<Vec3>& curve,
         const std::vector<Vec3>& grid_points
     ) {
+      // Preserve historical behavior exactly: Gamma = 1.0
+      return computeVelocity(curve, grid_points, 1.0);
+    }
+
+    std::vector<Vec3> BiotSavart::computeVelocity(
+        const std::vector<Vec3>& curve,
+        const std::vector<Vec3>& grid_points,
+        double Gamma
+    ) {
       std::vector<Vec3> vel(grid_points.size(), {0.0, 0.0, 0.0});
+
+      if (curve.size() < 2 || grid_points.empty()) {
+        return vel;
+      }
+
       const size_t N = curve.size();
-      const double factor = 1.0 / (4.0 * M_PI);
+      const double factor = Gamma / (4.0 * M_PI);
 
       for (size_t i = 0; i < N; ++i) {
         const Vec3& r0 = curve[i];

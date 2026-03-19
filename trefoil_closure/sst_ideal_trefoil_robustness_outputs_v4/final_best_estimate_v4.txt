@@ -1,0 +1,12 @@
+SST ideal-trefoil final best-estimate v4
+================================================================
+Ideal source                : ideal.txt (3:1:1, 183 modes, k_max=250)
+Local sst_core available    : True
+Preferred fit method        : plateau_0.12
+Best grid (practical)       : N_geom=32000, N_int=32000
+A_K_best (practical)       : 0.07964105 +- 0.00687444
+A_ratio_best              : 1.00079901 +- 0.08638671
+a_nc/r_c_best              : 1.00039942 +- 0.04177709
+Asymptotic (two highest N_int): A_K=0.07964184 +- 0.00000079
+                             a_nc/r_c=1.00040435 +- 0.00000493
+Branch mode                 : closest_to_a_nc

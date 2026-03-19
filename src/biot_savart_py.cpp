@@ -2,6 +2,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <pybind11/numpy.h>
+#include <stdexcept>
 #include "biot_savart.h"
 
 namespace py = pybind11;
@@ -23,7 +24,18 @@ static std::vector<Vec3> to_vec3_list(
 
 void bind_biot_savart(py::module_& m) {
   py::class_<BiotSavart>(m, "BiotSavart")
-      .def_static("compute_velocity",   &BiotSavart::computeVelocity)
+      .def_static(
+          "compute_velocity",
+          [](const std::vector<Vec3>& curve,
+             const std::vector<Vec3>& grid_points,
+             double circulation) {
+            return BiotSavart::computeVelocity(curve, grid_points, circulation);
+          },
+          py::arg("curve"),
+          py::arg("grid_points"),
+          py::arg("circulation") = 1.0,
+          "Compute the Biot–Savart velocity field from a closed curve at given grid points.\n"
+          "Backward compatible with the historical 2-argument call; circulation defaults to 1.0.")
       .def_static("compute_vorticity",  &BiotSavart::computeVorticity)
       .def_static("extract_interior",   &BiotSavart::extractInterior)
       .def_static("compute_invariants", &BiotSavart::computeInvariants);
@@ -36,11 +48,12 @@ void bind_biot_savart(py::module_& m) {
   // Convenience: grid-based velocity  (polyline (N,3), grid (G,3)) -> (G,3)
   m.def("biot_savart_velocity_grid",
         [](py::array_t<double, py::array::c_style | py::array::forcecast> polyline,
-           py::array_t<double, py::array::c_style | py::array::forcecast> grid)
+           py::array_t<double, py::array::c_style | py::array::forcecast> grid,
+           double circulation)
         {
           auto wire = to_vec3_list(polyline);
           auto pts  = to_vec3_list(grid);
-          std::vector<Vec3> V = BiotSavart::computeVelocity(wire, pts);
+          std::vector<Vec3> V = BiotSavart::computeVelocity(wire, pts, circulation);
 
           // pack to NumPy (G,3)
           const py::ssize_t G = (py::ssize_t)V.size();
@@ -53,6 +66,7 @@ void bind_biot_savart(py::module_& m) {
           }
           return out;
         },
-        py::arg("polyline"), py::arg("grid"),
-        "Biot–Savart velocity at arbitrary grid points for a polyline");
+        py::arg("polyline"), py::arg("grid"), py::arg("circulation") = 1.0,
+        "Biot–Savart velocity at arbitrary grid points for a polyline.\n"
+        "Backward compatible with the historical 2-argument call; circulation defaults to 1.0.");
 }

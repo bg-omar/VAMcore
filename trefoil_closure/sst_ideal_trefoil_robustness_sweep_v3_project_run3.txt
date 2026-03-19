@@ -1,0 +1,311 @@
+C:\Users\mr\anaconda3\envs\SSTcore12\python.exe C:\workspace\projects\SSTcore\trefoil_closure\sst_ideal_trefoil_robustness_sweep_v3_project.py
+[1t[c[?1004h[?9001h[ideal.txt] Loaded knot 3:1:1 from C:\workspace\projects\SSTcore\trefoil_closure\ideal.txt with L=16.371637, D=1.000000
+[sst_core] Recompiling local sst_core.cpp ...
+running build_ext
+building 'sst_core' extension
+creating build\temp.win-amd64-cpython-312\Release\workspace\projects\SSTcore\trefoil_closure
+"C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\bin\HostX86\x64\cl.exe" /c /nologo /O2 /W3 /GL /DNDEBUG /MD -IC:\Users\mr\anaconda3\envs\SSTcore12\Lib\site-packages\pybind11\include -IC:\Users\mr\anaconda3\envs\SSTcore12\include -IC:\Users\mr\anaconda3\envs\SSTcore12\Include "-IC:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include" "-IC:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\ATLMFC\include" "-IC:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\VS\include" "-IC:\Program Files (x86)\Windows Kits\10\include\10.0.26100.0\ucrt" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\um" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\shared" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\winrt" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\cppwinrt" "-IC:\Program Files (x86)\Windows Kits\NETFXSDK\4.8\include\um" /EHsc /TpC:\workspace\projects\SSTcore\trefoil_closure\sst_core.cpp /Fobuild\temp.win-amd64-cpython-312\Release\workspace\projects\SSTcore\trefoil_closure\sst_core.obj /O2 /std:c++17
+sst_core.cpp
+creating C:\workspace\projects\SSTcore\trefoil_closure\build\lib.win-amd64-cpython-312
+"C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\bin\HostX86\x64\link.exe" /nologo /INCREMENTAL:NO /LTCG /DLL /MANIFEST:EMBED,ID=2 /MANIFESTUAC:NO /LIBPATH:C:\Users\mr\anaconda3\envs\SSTcore12\libs /LIBPATH:C:\Users\mr\anaconda3\envs\SSTcore12 /LIBPATH:C:\Users\mr\anaconda3\envs\SSTcore12\PCbuild\amd64 "/LIBPATH:C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\ATLMFC\lib\x64" "/LIBPATH:C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\lib\x64" "/LIBPATH:C:\Program Files (x86)\Windows Kits\NETFXSDK\4.8\lib\um\x64" "/LIBPATH:C:\Program Files (x86)\Windows Kits\10\lib\10.0.26100.0\ucrt\x64" "/LIBPATH:C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x64" /EXPORT:PyInit_sst_core build\temp.win-amd64-cpython-312\Release\workspace\projects\SSTcore\trefoil_closure\sst_core.obj /OUT:build\lib.win-amd64-cpython-312\sst_core.cp312-win_amd64.pyd /IMPLIB:build\temp.win-amd64-cpython-312\Release\workspace\projects\SSTcore\trefoil_closure\sst_core.cp312-win_amd64.lib
+   Creating library build\temp.win-amd64-cpython-312\Release\workspace\projects\SSTcore\trefoil_closure\sst_core.cp312-win_amd64.lib and object build\temp.win-amd64-cpython-312\Release\workspace\projects\SSTcore\trefoil_closure\sst_core.cp312-win_amd64.exp
+Generating code
+Finished generating code
+copying build\lib.win-amd64-cpython-312\sst_core.cp312-win_amd64.pyd ->
+==============================================================================
+SST ROBUSTNESS SWEEP V3 (PROJECT-INTEGRATED) - MODE: IDEAL
+==============================================================================
+Output directory : C:\workspace\projects\SSTcore\trefoil_closure\sst_ideal_trefoil_robustness_outputs_v3
+Ideal source     : C:\workspace\projects\SSTcore\trefoil_closure\ideal.txt
+Local sst_core   : yes
+Gamma_0_input    : 9.68361918e-09 m^2/s
+v_swirl          : 1.09384563e+06 m/s
+r_c_canon        : 1.40897017e-15 m
+A_req            : 1/(4*pi) = 0.07957747
+Branch mode      : closest_to_a_nc
+Preferred fit    : plateau_0.12
+Torch device     : xpu
+
+------------------------------------------------------------------------------
+Building geometry for N_geom=4000, N_int_target=2000
+  L_dimless_full = 16.372460   (Gilbert ref: 16.371637)
+  d_min_full     = 0.999971   (Gilbert D: 1.000000)
+  N_int_actual   = 2000
+  d_min_int      = 0.999971
+  sst_core L     = 16.372447   (diagnostic)
+  sst_core Wr    = 3.418145   (diagnostic)
+  Scanning Biot-Savart energy...
+  Fit       global: A_K=0.07917596, A/A_req=0.994954, a_nc/r_c=0.997474
+  Fit plateau_0.08: A_K=0.09207768, A/A_req=1.157082, a_nc/r_c=1.075678
+  Fit plateau_0.12: A_K=0.09017286, A/A_req=1.133146, a_nc/r_c=1.064493
+  Fit plateau_0.16: A_K=0.09017286, A/A_req=1.133146, a_nc/r_c=1.064493
+------------------------------------------------------------------------------
+Building geometry for N_geom=4000, N_int_target=4000
+  L_dimless_full = 16.372460   (Gilbert ref: 16.371637)
+  d_min_full     = 0.999971   (Gilbert D: 1.000000)
+  N_int_actual   = 4000
+  d_min_int      = 0.999971
+  sst_core L     = 16.372447   (diagnostic)
+  sst_core Wr    = 3.418304   (diagnostic)
+  Scanning Biot-Savart energy...
+  Fit       global: A_K=0.07832881, A/A_req=0.984309, a_nc/r_c=0.992123
+  Fit plateau_0.08: A_K=0.08513056, A/A_req=1.069782, a_nc/r_c=1.034303
+  Fit plateau_0.12: A_K=0.08092030, A/A_req=1.016875, a_nc/r_c=1.008402
+  Fit plateau_0.16: A_K=0.08214577, A/A_req=1.032274, a_nc/r_c=1.016009
+------------------------------------------------------------------------------
+Building geometry for N_geom=4000, N_int_target=8000
+  L_dimless_full = 16.372460   (Gilbert ref: 16.371637)
+  d_min_full     = 0.999971   (Gilbert D: 1.000000)
+  N_int_actual   = 4000
+  d_min_int      = 0.999971
+  sst_core L     = 16.372447   (diagnostic)
+  sst_core Wr    = 3.418304   (diagnostic)
+  Scanning Biot-Savart energy...
+  Fit       global: A_K=0.07832881, A/A_req=0.984309, a_nc/r_c=0.992123
+  Fit plateau_0.08: A_K=0.08513056, A/A_req=1.069782, a_nc/r_c=1.034303
+  Fit plateau_0.12: A_K=0.08092030, A/A_req=1.016875, a_nc/r_c=1.008402
+  Fit plateau_0.16: A_K=0.08214577, A/A_req=1.032274, a_nc/r_c=1.016009
+------------------------------------------------------------------------------
+Building geometry for N_geom=4000, N_int_target=16000
+  L_dimless_full = 16.372460   (Gilbert ref: 16.371637)
+  d_min_full     = 0.999971   (Gilbert D: 1.000000)
+  N_int_actual   = 4000
+  d_min_int      = 0.999971
+  sst_core L     = 16.372447   (diagnostic)
+  sst_core Wr    = 3.418304   (diagnostic)
+  Scanning Biot-Savart energy...
+  Fit       global: A_K=0.07832881, A/A_req=0.984309, a_nc/r_c=0.992123
+  Fit plateau_0.08: A_K=0.08513056, A/A_req=1.069782, a_nc/r_c=1.034303
+  Fit plateau_0.12: A_K=0.08092030, A/A_req=1.016875, a_nc/r_c=1.008402
+  Fit plateau_0.16: A_K=0.08214577, A/A_req=1.032274, a_nc/r_c=1.016009
+------------------------------------------------------------------------------
+Building geometry for N_geom=4000, N_int_target=32000
+  L_dimless_full = 16.372460   (Gilbert ref: 16.371637)
+  d_min_full     = 0.999971   (Gilbert D: 1.000000)
+  N_int_actual   = 4000
+  d_min_int      = 0.999971
+  sst_core L     = 16.372447   (diagnostic)
+  sst_core Wr    = 3.418304   (diagnostic)
+  Scanning Biot-Savart energy...
+  Fit       global: A_K=0.07832881, A/A_req=0.984309, a_nc/r_c=0.992123
+  Fit plateau_0.08: A_K=0.08513056, A/A_req=1.069782, a_nc/r_c=1.034303
+  Fit plateau_0.12: A_K=0.08092030, A/A_req=1.016875, a_nc/r_c=1.008402
+  Fit plateau_0.16: A_K=0.08214577, A/A_req=1.032274, a_nc/r_c=1.016009
+------------------------------------------------------------------------------
+Building geometry for N_geom=8000, N_int_target=2000
+  L_dimless_full = 16.372460   (Gilbert ref: 16.371637)
+  d_min_full     = 0.999971   (Gilbert D: 1.000000)
+  N_int_actual   = 2000
+  d_min_int      = 0.999971
+  sst_core L     = 16.372457   (diagnostic)
+  sst_core Wr    = 3.418145   (diagnostic)
+  Scanning Biot-Savart energy...
+  Fit       global: A_K=0.07917596, A/A_req=0.994954, a_nc/r_c=0.997474
+  Fit plateau_0.08: A_K=0.09207768, A/A_req=1.157082, a_nc/r_c=1.075678
+  Fit plateau_0.12: A_K=0.09017286, A/A_req=1.133146, a_nc/r_c=1.064493
+  Fit plateau_0.16: A_K=0.09017286, A/A_req=1.133146, a_nc/r_c=1.064493
+------------------------------------------------------------------------------
+Building geometry for N_geom=8000, N_int_target=4000
+  L_dimless_full = 16.372460   (Gilbert ref: 16.371637)
+  d_min_full     = 0.999971   (Gilbert D: 1.000000)
+  N_int_actual   = 4000
+  d_min_int      = 0.999971
+  sst_core L     = 16.372457   (diagnostic)
+  sst_core Wr    = 3.418304   (diagnostic)
+  Scanning Biot-Savart energy...
+  Fit       global: A_K=0.07832881, A/A_req=0.984309, a_nc/r_c=0.992123
+  Fit plateau_0.08: A_K=0.08513056, A/A_req=1.069782, a_nc/r_c=1.034303
+  Fit plateau_0.12: A_K=0.08092030, A/A_req=1.016875, a_nc/r_c=1.008402
+  Fit plateau_0.16: A_K=0.08214577, A/A_req=1.032274, a_nc/r_c=1.016009
+------------------------------------------------------------------------------
+Building geometry for N_geom=8000, N_int_target=8000
+  L_dimless_full = 16.372460   (Gilbert ref: 16.371637)
+  d_min_full     = 0.999971   (Gilbert D: 1.000000)
+  N_int_actual   = 8000
+  d_min_int      = 0.999971
+  sst_core L     = 16.372457   (diagnostic)
+  sst_core Wr    = 3.418348   (diagnostic)
+  Scanning Biot-Savart energy...
+  Fit       global: A_K=0.07853446, A/A_req=0.986893, a_nc/r_c=0.993425
+  Fit plateau_0.08: A_K=0.07885413, A/A_req=0.990910, a_nc/r_c=0.995445
+  Fit plateau_0.12: A_K=0.08042273, A/A_req=1.010622, a_nc/r_c=1.005297
+  Fit plateau_0.16: A_K=0.08042273, A/A_req=1.010622, a_nc/r_c=1.005297
+------------------------------------------------------------------------------
+Building geometry for N_geom=8000, N_int_target=16000
+  L_dimless_full = 16.372460   (Gilbert ref: 16.371637)
+  d_min_full     = 0.999971   (Gilbert D: 1.000000)
+  N_int_actual   = 8000
+  d_min_int      = 0.999971
+  sst_core L     = 16.372457   (diagnostic)
+  sst_core Wr    = 3.418348   (diagnostic)
+  Scanning Biot-Savart energy...
+  Fit       global: A_K=0.07853446, A/A_req=0.986893, a_nc/r_c=0.993425
+  Fit plateau_0.08: A_K=0.07885413, A/A_req=0.990910, a_nc/r_c=0.995445
+  Fit plateau_0.12: A_K=0.08042273, A/A_req=1.010622, a_nc/r_c=1.005297
+  Fit plateau_0.16: A_K=0.08042273, A/A_req=1.010622, a_nc/r_c=1.005297
+------------------------------------------------------------------------------
+Building geometry for N_geom=8000, N_int_target=32000
+  L_dimless_full = 16.372460   (Gilbert ref: 16.371637)
+  d_min_full     = 0.999971   (Gilbert D: 1.000000)
+  N_int_actual   = 8000
+  d_min_int      = 0.999971
+  sst_core L     = 16.372457   (diagnostic)
+  sst_core Wr    = 3.418348   (diagnostic)
+  Scanning Biot-Savart energy...
+  Fit       global: A_K=0.07853446, A/A_req=0.986893, a_nc/r_c=0.993425
+  Fit plateau_0.08: A_K=0.07885413, A/A_req=0.990910, a_nc/r_c=0.995445
+  Fit plateau_0.12: A_K=0.08042273, A/A_req=1.010622, a_nc/r_c=1.005297
+  Fit plateau_0.16: A_K=0.08042273, A/A_req=1.010622, a_nc/r_c=1.005297
+------------------------------------------------------------------------------
+Building geometry for N_geom=16000, N_int_target=2000
+  L_dimless_full = 16.372460   (Gilbert ref: 16.371637)
+  d_min_full     = 0.999971   (Gilbert D: 1.000000)
+  N_int_actual   = 2000
+  d_min_int      = 0.999971
+  sst_core L     = 16.372460   (diagnostic)
+  sst_core Wr    = 3.418145   (diagnostic)
+  Scanning Biot-Savart energy...
+  Fit       global: A_K=0.07917596, A/A_req=0.994954, a_nc/r_c=0.997474
+  Fit plateau_0.08: A_K=0.09207768, A/A_req=1.157082, a_nc/r_c=1.075678
+  Fit plateau_0.12: A_K=0.09017286, A/A_req=1.133146, a_nc/r_c=1.064493
+  Fit plateau_0.16: A_K=0.09017286, A/A_req=1.133146, a_nc/r_c=1.064493
+------------------------------------------------------------------------------
+Building geometry for N_geom=16000, N_int_target=4000
+  L_dimless_full = 16.372460   (Gilbert ref: 16.371637)
+  d_min_full     = 0.999971   (Gilbert D: 1.000000)
+  N_int_actual   = 4000
+  d_min_int      = 0.999971
+  sst_core L     = 16.372460   (diagnostic)
+  sst_core Wr    = 3.418304   (diagnostic)
+  Scanning Biot-Savart energy...
+  Fit       global: A_K=0.07832881, A/A_req=0.984309, a_nc/r_c=0.992123
+  Fit plateau_0.08: A_K=0.08513056, A/A_req=1.069782, a_nc/r_c=1.034303
+  Fit plateau_0.12: A_K=0.08092030, A/A_req=1.016875, a_nc/r_c=1.008402
+  Fit plateau_0.16: A_K=0.08214577, A/A_req=1.032274, a_nc/r_c=1.016009
+------------------------------------------------------------------------------
+Building geometry for N_geom=16000, N_int_target=8000
+  L_dimless_full = 16.372460   (Gilbert ref: 16.371637)
+  d_min_full     = 0.999971   (Gilbert D: 1.000000)
+  N_int_actual   = 8000
+  d_min_int      = 0.999971
+  sst_core L     = 16.372460   (diagnostic)
+  sst_core Wr    = 3.418348   (diagnostic)
+  Scanning Biot-Savart energy...
+  Fit       global: A_K=0.07853446, A/A_req=0.986893, a_nc/r_c=0.993425
+  Fit plateau_0.08: A_K=0.07885413, A/A_req=0.990910, a_nc/r_c=0.995445
+  Fit plateau_0.12: A_K=0.08042273, A/A_req=1.010622, a_nc/r_c=1.005297
+  Fit plateau_0.16: A_K=0.08042273, A/A_req=1.010622, a_nc/r_c=1.005297
+------------------------------------------------------------------------------
+Building geometry for N_geom=16000, N_int_target=16000
+  L_dimless_full = 16.372460   (Gilbert ref: 16.371637)
+  d_min_full     = 0.999970   (Gilbert D: 1.000000)
+  N_int_actual   = 16000
+  d_min_int      = 0.999970
+  sst_core L     = 16.372460   (diagnostic)
+  sst_core Wr    = 3.418360   (diagnostic)
+  Scanning Biot-Savart energy...
+  Fit       global: A_K=0.07965198, A/A_req=1.000936, a_nc/r_c=1.000468
+  Fit plateau_0.08: A_K=0.07896475, A/A_req=0.992300, a_nc/r_c=0.996143
+  Fit plateau_0.12: A_K=0.07964263, A/A_req=1.000819, a_nc/r_c=1.000409
+  Fit plateau_0.16: A_K=0.07946726, A/A_req=0.998615, a_nc/r_c=0.999307
+------------------------------------------------------------------------------
+Building geometry for N_geom=16000, N_int_target=32000
+  L_dimless_full = 16.372460   (Gilbert ref: 16.371637)
+  d_min_full     = 0.999970   (Gilbert D: 1.000000)
+  N_int_actual   = 16000
+  d_min_int      = 0.999970
+  sst_core L     = 16.372460   (diagnostic)
+  sst_core Wr    = 3.418360   (diagnostic)
+  Scanning Biot-Savart energy...
+  Fit       global: A_K=0.07965198, A/A_req=1.000936, a_nc/r_c=1.000468
+  Fit plateau_0.08: A_K=0.07896475, A/A_req=0.992300, a_nc/r_c=0.996143
+  Fit plateau_0.12: A_K=0.07964263, A/A_req=1.000819, a_nc/r_c=1.000409
+  Fit plateau_0.16: A_K=0.07946726, A/A_req=0.998615, a_nc/r_c=0.999307
+------------------------------------------------------------------------------
+Building geometry for N_geom=32000, N_int_target=2000
+  L_dimless_full = 16.372460   (Gilbert ref: 16.371637)
+  d_min_full     = 0.999971   (Gilbert D: 1.000000)
+  N_int_actual   = 2000
+  d_min_int      = 0.999971
+  sst_core L     = 16.372460   (diagnostic)
+  sst_core Wr    = 3.418145   (diagnostic)
+  Scanning Biot-Savart energy...
+  Fit       global: A_K=0.07917596, A/A_req=0.994954, a_nc/r_c=0.997474
+  Fit plateau_0.08: A_K=0.09207768, A/A_req=1.157082, a_nc/r_c=1.075678
+  Fit plateau_0.12: A_K=0.09017286, A/A_req=1.133146, a_nc/r_c=1.064493
+  Fit plateau_0.16: A_K=0.09017286, A/A_req=1.133146, a_nc/r_c=1.064493
+------------------------------------------------------------------------------
+Building geometry for N_geom=32000, N_int_target=4000
+  L_dimless_full = 16.372460   (Gilbert ref: 16.371637)
+  d_min_full     = 0.999971   (Gilbert D: 1.000000)
+  N_int_actual   = 4000
+  d_min_int      = 0.999971
+  sst_core L     = 16.372460   (diagnostic)
+  sst_core Wr    = 3.418304   (diagnostic)
+  Scanning Biot-Savart energy...
+  Fit       global: A_K=0.07832881, A/A_req=0.984309, a_nc/r_c=0.992123
+  Fit plateau_0.08: A_K=0.08513056, A/A_req=1.069782, a_nc/r_c=1.034303
+  Fit plateau_0.12: A_K=0.08092030, A/A_req=1.016875, a_nc/r_c=1.008402
+  Fit plateau_0.16: A_K=0.08214577, A/A_req=1.032274, a_nc/r_c=1.016009
+------------------------------------------------------------------------------
+Building geometry for N_geom=32000, N_int_target=8000
+  L_dimless_full = 16.372460   (Gilbert ref: 16.371637)
+  d_min_full     = 0.999971   (Gilbert D: 1.000000)
+  N_int_actual   = 8000
+  d_min_int      = 0.999971
+  sst_core L     = 16.372460   (diagnostic)
+  sst_core Wr    = 3.418348   (diagnostic)
+  Scanning Biot-Savart energy...
+  Fit       global: A_K=0.07853446, A/A_req=0.986893, a_nc/r_c=0.993425
+  Fit plateau_0.08: A_K=0.07885413, A/A_req=0.990910, a_nc/r_c=0.995445
+  Fit plateau_0.12: A_K=0.08042273, A/A_req=1.010622, a_nc/r_c=1.005297
+  Fit plateau_0.16: A_K=0.08042273, A/A_req=1.010622, a_nc/r_c=1.005297
+------------------------------------------------------------------------------
+Building geometry for N_geom=32000, N_int_target=16000
+  L_dimless_full = 16.372460   (Gilbert ref: 16.371637)
+  d_min_full     = 0.999970   (Gilbert D: 1.000000)
+  N_int_actual   = 16000
+  d_min_int      = 0.999970
+  sst_core L     = 16.372460   (diagnostic)
+  sst_core Wr    = 3.418360   (diagnostic)
+  Scanning Biot-Savart energy...
+  Fit       global: A_K=0.07965198, A/A_req=1.000936, a_nc/r_c=1.000468
+  Fit plateau_0.08: A_K=0.07896475, A/A_req=0.992300, a_nc/r_c=0.996143
+  Fit plateau_0.12: A_K=0.07964263, A/A_req=1.000819, a_nc/r_c=1.000409
+  Fit plateau_0.16: A_K=0.07946726, A/A_req=0.998615, a_nc/r_c=0.999307
+------------------------------------------------------------------------------
+Building geometry for N_geom=32000, N_int_target=32000
+  L_dimless_full = 16.372460   (Gilbert ref: 16.371637)
+  d_min_full     = 0.999970   (Gilbert D: 1.000000)
+  N_int_actual   = 32000
+  d_min_int      = 0.999970
+  sst_core L     = 16.372460   (diagnostic)
+  sst_core Wr    = 3.418363   (diagnostic)
+  Scanning Biot-Savart energy...
+  Fit       global: A_K=0.07978703, A/A_req=1.002633, a_nc/r_c=1.001316
+  Fit plateau_0.08: A_K=0.07959323, A/A_req=1.000198, a_nc/r_c=1.000099
+  Fit plateau_0.12: A_K=0.07964105, A/A_req=1.000799, a_nc/r_c=1.000399
+  Fit plateau_0.16: A_K=0.07924736, A/A_req=0.995852, a_nc/r_c=0.997924
+
+==============================================================================
+Sweep complete
+CSV summary        : C:\workspace\projects\SSTcore\trefoil_closure\sst_ideal_trefoil_robustness_outputs_v3\robustness_summary_v3_ideal.csv
+Best-estimate CSV  : C:\workspace\projects\SSTcore\trefoil_closure\sst_ideal_trefoil_robustness_outputs_v3\final_best_estimate.csv
+Best-estimate TXT  : C:\workspace\projects\SSTcore\trefoil_closure\sst_ideal_trefoil_robustness_outputs_v3\final_best_estimate.txt
+Best-estimate TeX  : C:\workspace\projects\SSTcore\trefoil_closure\sst_ideal_trefoil_robustness_outputs_v3\final_best_estimate.tex
+Plots              : C:\workspace\projects\SSTcore\trefoil_closure\sst_ideal_trefoil_robustness_outputs_v3
+==============================================================================
+
+Stable runs (first 10):
+  Ng= 4000, Ni= 2000, fit=global      , lambda=0      , A/Areq=0.99495, a*/r_c=0.99389
+  Ng= 4000, Ni= 2000, fit=global      , lambda=0.001  , A/Areq=0.99495, a*/r_c=0.99389
+  Ng= 4000, Ni= 2000, fit=global      , lambda=0.003  , A/Areq=0.99495, a*/r_c=0.98121
+  Ng= 4000, Ni= 4000, fit=global      , lambda=0      , A/Areq=0.98431, a*/r_c=0.99389
+  Ng= 4000, Ni= 4000, fit=global      , lambda=0.001  , A/Areq=0.98431, a*/r_c=0.99389
+  Ng= 4000, Ni= 4000, fit=global      , lambda=0.003  , A/Areq=0.98431, a*/r_c=0.98121
+  Ng= 4000, Ni= 4000, fit=plateau_0.12, lambda=0      , A/Areq=1.01687, a*/r_c=1.00675
+  Ng= 4000, Ni= 4000, fit=plateau_0.12, lambda=0.001  , A/Areq=1.01687, a*/r_c=1.00675
+  Ng= 4000, Ni= 4000, fit=plateau_0.12, lambda=0.003  , A/Areq=1.01687, a*/r_c=0.99389
+  Ng= 4000, Ni= 4000, fit=global      , lambda=0      , A/Areq=0.98431, a*/r_c=0.99389
+[0m
+Process finished with exit code 0

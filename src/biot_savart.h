@@ -20,10 +20,20 @@ namespace sst {
         class BiotSavart {
         public:
 
-          // Compute Biot–Savart velocity field from a closed curve (points) at given grid points
+          // Backward-compatible overload:
+          // Compute Biot–Savart velocity field from a closed curve (points)
+          // at given grid points using the historical default circulation Gamma = 1.
           static std::vector<Vec3> computeVelocity(
               const std::vector<Vec3>& curve,
               const std::vector<Vec3>& grid_points
+          );
+
+          // New overload:
+          // Same computation, but with explicit circulation Gamma.
+          static std::vector<Vec3> computeVelocity(
+              const std::vector<Vec3>& curve,
+              const std::vector<Vec3>& grid_points,
+              double Gamma
           );
 
           // Compute vorticity from velocity field on a regular grid

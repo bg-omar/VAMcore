@@ -1,0 +1,242 @@
+==========================================================================================
+RUNNING BASELINE BLOCK
+==========================================================================================
+Reference / input values:
+  r_c_canon   = 1.40897017e-15 m   (comparison only)
+  v_swirl     = 1.09384563e+06 m/s
+  rho_f       = 7.00000000e-07 kg/m^3
+  rho_core    = 3.89343583e+18 kg/m^3  (not used in Route 2)
+  Gamma_0     = 9.68361918e-09 m^2/s  (independent input)
+  c           = 299792458.0 m/s
+
+Trefoil geometry (dimensionless):
+  N               = 2000
+  L_K             = 31.89848436
+  d_min           = 1.13762767
+  median ds       = 1.57078990e-02
+
+Computing E_BS_norm(a_dimless)...
+  a_dimless = 4.712370e-02   E_BS_norm = 8.54137488
+  a_dimless = 5.170544e-02   E_BS_norm = 8.39004063
+  a_dimless = 5.673266e-02   E_BS_norm = 8.21589639
+  a_dimless = 6.224867e-02   E_BS_norm = 7.88749309
+  a_dimless = 6.830099e-02   E_BS_norm = 7.64225150
+  a_dimless = 7.494176e-02   E_BS_norm = 7.45908531
+  a_dimless = 8.222820e-02   E_BS_norm = 7.20430349
+  a_dimless = 9.022309e-02   E_BS_norm = 6.95978850
+  a_dimless = 9.899531e-02   E_BS_norm = 6.75358738
+  a_dimless = 1.086204e-01   E_BS_norm = 6.46128377
+  a_dimless = 1.191814e-01   E_BS_norm = 6.27162383
+  a_dimless = 1.307692e-01   E_BS_norm = 6.00283053
+  a_dimless = 1.434836e-01   E_BS_norm = 5.79753023
+  a_dimless = 1.574342e-01   E_BS_norm = 5.55951865
+  a_dimless = 1.727412e-01   E_BS_norm = 5.30271796
+  a_dimless = 1.895365e-01   E_BS_norm = 5.06375775
+  a_dimless = 2.079648e-01   E_BS_norm = 4.84872591
+  a_dimless = 2.281848e-01   E_BS_norm = 4.61602215
+  a_dimless = 2.503708e-01   E_BS_norm = 4.38004930
+  a_dimless = 2.747139e-01   E_BS_norm = 4.13190051
+  a_dimless = 3.014238e-01   E_BS_norm = 3.90934613
+  a_dimless = 3.307306e-01   E_BS_norm = 3.68138467
+  a_dimless = 3.628869e-01   E_BS_norm = 3.44392634
+  a_dimless = 3.981697e-01   E_BS_norm = 3.21412899
+
+A_K extraction:
+  method                 = local-slope plateau
+  A_K_local_plateau      = 0.08261293
+  spread                 = 0.01759010
+  A_K_global_fit         = 0.07936818
+  A_K_req = 1/(4*pi)     = 0.07957747
+
+Chosen Biot–Savart parameters for energy model:
+  A_K_use                = 0.08261293
+  a_K_use                = -0.26642856
+
+Physical scaling from primitives:
+  L_natural = Gamma_0 / v_swirl = 8.85282065e-15 m
+  L_K_phys  = 2.82391561e-13 m
+  d_min_phys= 1.00712137e-14 m
+
+======================================================================
+RESULTS SUMMARY
+======================================================================
+
+Primitive inputs:
+  rho_f         = 7.00000000e-07 kg/m^3
+  Gamma_0       = 9.68361918e-09 m^2/s
+  v_swirl       = 1.09384563e+06 m/s
+
+Biot–Savart extraction:
+  A_K_use       = 0.08261293
+  A_K_req       = 0.07957747
+  A_K_use/A_req = 1.03814475
+  a_K_use       = -0.26642856
+
+Stationary radius:
+  a0 (no contact)   = 1.43559109e-15 m
+  a* (full model)   = 1.39958651e-15 m
+  is minimum        = True
+  a*/r_c_canon      = 0.99334006
+  chi_eff           = 0.15809498
+  chi_req = 1/(2pi) = 0.15915494
+  chi_eff/chi_req   = 0.99334006
+
+Alpha consistency check:
+  alpha_SST        = 0.007297352557
+  alpha_SST^-1     = 137.035999312
+  NIST target      = 137.035999177
+
+Interpretation:
+  ✓ a* agrees with r_c_canon within about 25%.
+  multiplicative closure factor r_c_canon/a* = 1.00670459
+
+Saved files:
+  ./sst_trefoil_AK_local_plateau.png
+  ./sst_trefoil_energy_patched.png
+  ./sst_trefoil_gamma_scan.png
+  ./sst_trefoil_stability_patched.py
+
+==========================================================================================
+RUNNING SWEEP BLOCK
+==========================================================================================
+Building geometry cache...
+Geometry cache ready.
+
+Saved files:
+  ./sst_optionB_outputs\sst_optionB_physics_sweep.csv
+  ./sst_optionB_outputs\sst_optionB_contact_study.csv
+  ./sst_optionB_outputs\sst_optionB_summary.txt
+  ./sst_optionB_outputs\sst_optionB_heatmaps.png
+  ./sst_optionB_outputs\sst_optionB_gamma_sweep.png
+  ./sst_optionB_outputs\sst_optionB_contact_sensitivity.png
+  ./sst_optionB_outputs\sst_optionB_AK_local_nominal.png
+
+Nominal case summary:
+ratio_R_over_r                                       2.0
+R_t                                                  2.0
+r_t                                                  1.0
+N                                                    600
+L_K_dimless                                    31.897308
+d_min_dimless                                   1.137628
+xi                                                   1.0
+Gamma_0                                              0.0
+lam_K                                               0.01
+p_exp                                                  2
+A_K                                             0.078685
+A_K_spread                                           NaN
+A_K_global                                      0.078685
+a_K                                            -0.244053
+A_over_Areq                                     0.988789
+L_natural_m                                          0.0
+L_K_phys_m                                           0.0
+d_min_phys_m                                         0.0
+a0_m                                                 0.0
+a_star_m                                             0.0
+is_minimum                                          True
+d2E                                             0.000002
+a_star_over_rc                                  0.973176
+chi_eff                                         0.154886
+chi_eff_over_chireq                             0.973176
+gamma_required_for_rc                                0.0
+gamma_required_ratio_vs_canonical               1.027563
+barrier_shift_frac                             -0.021322
+A_method                             global-fit-fallback
+a_scan_min                                      0.157073
+a_scan_max                                       0.39817
+closure_error_chi                               0.026824
+closure_error_a                                 0.026824
+
+Best closure case (by chi):
+ratio_R_over_r                                       2.5
+R_t                                                  2.5
+r_t                                                  1.0
+N                                                    600
+L_K_dimless                                    36.938393
+d_min_dimless                                   1.346583
+xi                                                   1.2
+Gamma_0                                              0.0
+lam_K                                               0.01
+p_exp                                                  2
+A_K                                             0.079474
+A_K_spread                                           NaN
+A_K_global                                      0.079474
+a_K                                            -0.247028
+A_over_Areq                                     0.998696
+L_natural_m                                          0.0
+L_K_phys_m                                           0.0
+d_min_phys_m                                         0.0
+a0_m                                                 0.0
+a_star_m                                             0.0
+is_minimum                                          True
+d2E                                             0.000002
+a_star_over_rc                                  1.173006
+chi_eff                                         0.155575
+chi_eff_over_chireq                             0.977505
+gamma_required_for_rc                                0.0
+gamma_required_ratio_vs_canonical               1.023013
+barrier_shift_frac                             -0.021857
+A_method                             global-fit-fallback
+a_scan_min                                      0.183178
+a_scan_max                                      0.471304
+closure_error_chi                               0.022495
+closure_error_a                                 0.173006
+
+==========================================================================================
+RUNNING ADVANCED BLOCK
+==========================================================================================
+========================================================================
+SST TREFOIL V3 — HARDER OPTION-B TEST
+========================================================================
+FAST_MODE            = False
+Output directory     = ./sst_optionB_v3_outputs
+Gamma0_nominal       = 9.683619180e-09 m^2/s
+alpha_SST^-1         = 137.035999312
+Target chi_req       = 0.159154943 = 1/(2*pi)
+Target A_req         = 0.079577472 = 1/(4*pi)
+
+SST Trefoil V3 summary
+========================================
+FAST_MODE: False
+Nominal A_K: 0.081045046
+Nominal A_ratio: 1.018442089
+Nominal chi_eff: 0.158177265
+Nominal chi_ratio: 0.993857070
+Nominal a*/r_c: 0.993857068
+Nominal plateau relstd: 0.118890608
+
+Best (R_t/r_t, xi) from objective scan:
+N                 4.000000e+03
+rt_ratio          2.400000e+00
+xi                1.000000e+00
+A_K               8.357726e-02
+A_ratio           1.050263e+00
+plateau_relstd    8.970989e-02
+a_star            1.404729e-15
+chi_eff           1.586759e-01
+chi_ratio         9.969902e-01
+a_ratio           9.969902e-01
+contact_ratio     2.501841e-01
+objective         3.440830e-02
+
+N convergence:
+   N  rt_ratio  xi      A_K  A_ratio  plateau_relstd       a_star  chi_eff  chi_ratio  a_ratio  contact_ratio
+2000       2.0 1.0 0.083429 1.048394        0.105116 1.415270e-15 0.159867   1.004471 1.004471       0.292873
+4000       2.0 1.0 0.081045 1.018442        0.118891 1.400315e-15 0.158177   0.993857 0.993857       0.285283
+8000       2.0 1.0 0.079402 0.997792        0.063881 1.364026e-15 0.154078   0.968101 0.968101       0.277890
+
+Gamma scan:
+      Gamma0  gamma_multiplier  rt_ratio  xi      A_K  chi_eff  chi_ratio       a_star  a_ratio  Gamma_req_for_rc  Gamma_req_ratio
+6.778533e-09              0.70       2.4 1.0 0.083577 0.158676    0.99699 9.833106e-16 0.697893      9.712853e-09         1.432884
+8.231076e-09              0.85       2.4 1.0 0.083577 0.158676    0.99699 1.194020e-15 0.847442      9.712853e-09         1.180022
+9.683619e-09              1.00       2.4 1.0 0.083577 0.158676    0.99699 1.404729e-15 0.996990      9.712853e-09         1.003019
+1.113616e-08              1.15       2.4 1.0 0.083577 0.158676    0.99699 1.615439e-15 1.146539      9.712853e-09         0.872190
+1.258870e-08              1.30       2.4 1.0 0.083577 0.158676    0.99699 1.826148e-15 1.296087      9.712853e-09         0.771553
+
+Contact sensitivity:
+ lam  p  rt_ratio  xi      A_K  chi_eff  chi_ratio  a_ratio  contact_ratio
+0.00  2       2.4 1.0 0.083577 0.162897   1.023515 1.023515       0.256840
+0.00  3       2.4 1.0 0.083577 0.162897   1.023515 1.023515       0.256840
+0.01  2       2.4 1.0 0.083577 0.158676   0.996990 0.996990       0.250184
+0.01  3       2.4 1.0 0.083577 0.162897   1.023515 1.023515       0.256840
+0.05  2       2.4 1.0 0.083577 0.150558   0.945985 0.945985       0.237385
+0.05  3       2.4 1.0 0.083577 0.154564   0.971153 0.971153       0.243701
