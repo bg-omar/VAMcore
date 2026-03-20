@@ -1,3 +1,7 @@
+PyQt5==5.15.11
+PyQtWebEngine==5.15.7
+PyQtWebEngine_Qt5==5.15.2
+matplotlib==3.10.8
 absl-py==2.4.0
 aiohappyeyeballs==2.6.1
 aiohttp==3.13.3

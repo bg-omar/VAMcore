@@ -1,0 +1,19 @@
+{
+  "python_version": "3.12.12",
+  "platform": "win32",
+  "torch_version": null,
+  "torch_device": null,
+  "local_sst_core_loaded": false,
+  "local_cpp_scan_available": false,
+  "ideal_txt_path": "C:\\workspace\\solo_projects\\SSTcore\\trefoil_closure\\ideal.txt",
+  "knot_id": "3:1:1",
+  "mode": "ideal",
+  "backend_mode": "torch",
+  "backend_used": "numpy",
+  "contact_model": "legacy",
+  "root_selection_mode": "continuation",
+  "branch_mode": "closest_to_a_nc",
+  "lambda_continuation_sort": true,
+  "emit_v5_logs": true,
+  "run_start_iso": "1970-01-01T05:30:07"
+}
