@@ -1,0 +1,70 @@
+SST ideal-trefoil parallel theorem-candidate report v10.2
+============================================================================
+Candidate fit methods: ['plateau_0.04', 'plateau_0.06', 'plateau_0.08', 'plateau_0.10', 'plateau_0.12']
+Extrapolation minimum N_int_actual: 8000
+
+[plateau_0.04]
+  A_inf - 1/(4*pi)         = 2.6397438849e-03
+  a_nc/r_c (inf) - 1       = 1.6301732216e-02
+  A tail quasi-monotone    = no
+  a_nc tail quasi-monotone = no
+  theorem_no_contact_ok    = no
+  a*/r_c (inf) - 1         = 1.6301732216e-02
+  F(1)_inf                 = -3.3171999984e-02
+  a* tail quasi-monotone   = no
+  F(1) tail quasi-monotone = no
+  shiftfree root choices   = targeted_x_nc:3
+  theorem_shiftfree_ok     = no
+
+[plateau_0.06]
+  A_inf - 1/(4*pi)         = 7.9178164061e-03
+  a_nc/r_c (inf) - 1       = 4.9843389874e-02
+  A tail quasi-monotone    = no
+  a_nc tail quasi-monotone = no
+  theorem_no_contact_ok    = no
+  a*/r_c (inf) - 1         = 4.9843389874e-02
+  F(1)_inf                 = -9.9498215416e-02
+  a* tail quasi-monotone   = no
+  F(1) tail quasi-monotone = no
+  shiftfree root choices   = targeted_x_nc:3
+  theorem_shiftfree_ok     = no
+
+[plateau_0.08]
+  A_inf - 1/(4*pi)         = 4.0444814562e-03
+  a_nc/r_c (inf) - 1       = 2.5436481038e-02
+  A tail quasi-monotone    = no
+  a_nc tail quasi-monotone = no
+  theorem_no_contact_ok    = no
+  a*/r_c (inf) - 1         = 2.5436481038e-02
+  F(1)_inf                 = -5.0824452921e-02
+  a* tail quasi-monotone   = no
+  F(1) tail quasi-monotone = no
+  shiftfree root choices   = targeted_x_nc:3
+  theorem_shiftfree_ok     = no
+
+[plateau_0.10]
+  A_inf - 1/(4*pi)         = 2.7174761538e-03
+  a_nc/r_c (inf) - 1       = 1.7099426377e-02
+  A tail quasi-monotone    = no
+  a_nc tail quasi-monotone = no
+  theorem_no_contact_ok    = no
+  a*/r_c (inf) - 1         = 1.7099426377e-02
+  F(1)_inf                 = -3.4148812485e-02
+  a* tail quasi-monotone   = no
+  F(1) tail quasi-monotone = no
+  shiftfree root choices   = targeted_x_nc:3
+  theorem_shiftfree_ok     = no
+
+[plateau_0.12]
+  A_inf - 1/(4*pi)         = 3.8172148864e-03
+  a_nc/r_c (inf) - 1       = 2.4002524261e-02
+  A tail quasi-monotone    = no
+  a_nc tail quasi-monotone = no
+  theorem_no_contact_ok    = no
+  a*/r_c (inf) - 1         = 2.4002524261e-02
+  F(1)_inf                 = -4.7968536978e-02
+  a* tail quasi-monotone   = no
+  F(1) tail quasi-monotone = no
+  shiftfree root choices   = targeted_x_nc:3
+  theorem_shiftfree_ok     = no
+

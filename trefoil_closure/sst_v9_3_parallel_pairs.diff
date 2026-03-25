@@ -1,0 +1,243 @@
+--- /mnt/data/sst_ideal_trefoil_robustness_sweep_v9_3.py	2026-03-24 17:16:46.563849342 +0000
++++ /mnt/data/sst_ideal_trefoil_robustness_sweep_v9_3_parallel.py	2026-03-24 17:19:42.580370517 +0000
+@@ -48,6 +48,7 @@
+ import sys
+ import argparse
+ import importlib
++import subprocess
+ import time
+ from dataclasses import dataclass
+ from typing import Dict, List, Optional, Tuple, Sequence, Union
+@@ -185,7 +186,7 @@
+ POSTCHECK_ROOT_SELECTION_MODE = "targeted_x_nc"
+ POSTCHECK_CONTACT_MODEL = "barrier_flat_at_rc"
+ 
+-PREFERRED_FIT_METHOD = "plateau_0.8"
++PREFERRED_FIT_METHOD = "plateau_0.08"
+ THEOREM_CANDIDATE_FIT_METHODS = [
+     "plateau_0.04",
+     "plateau_0.06",
+@@ -2511,6 +2512,138 @@
+         ROOT_SELECTION_MODE = root_selection_saved
+ 
+ 
++def _worker_geom_token(N_geom: int, N_int_target: int, R_ratio: Optional[float]) -> str:
++    if R_ratio is None:
++        return f"{int(N_geom)}:{int(N_int_target)}"
++    return f"{int(N_geom)}:{int(N_int_target)}:{float(R_ratio):.12g}"
++
++
++def _parse_worker_geom_token(token: str) -> Tuple[int, int, Optional[float]]:
++    parts = [p.strip() for p in str(token).split(":") if p.strip()]
++    if len(parts) == 2:
++        return int(parts[0]), int(parts[1]), None
++    if len(parts) == 3:
++        return int(parts[0]), int(parts[1]), float(parts[2])
++    raise ValueError(f"Invalid worker geom token: {token!r}")
++
++
++def _collect_csv_rows(path: str) -> List[dict]:
++    if not os.path.exists(path):
++        return []
++    try:
++        df = pd.read_csv(path)
++    except Exception:
++        return []
++    return df.to_dict(orient="records")
++
++
++def _merge_parallel_worker_outputs(child_dirs: List[str], mode: str) -> Tuple[List[dict], List[dict], List[dict]]:
++    rows: List[dict] = []
++    postcheck_rows: List[dict] = []
++    plateau_rows: List[dict] = []
++    summary_name = f"robustness_summary_v9_{mode}.csv"
++    for child_dir in child_dirs:
++        rows.extend(_collect_csv_rows(os.path.join(child_dir, summary_name)))
++        postcheck_rows.extend(_collect_csv_rows(os.path.join(child_dir, "shiftfree_postcheck_v9_3.csv")))
++        plateau_rows.extend(_collect_csv_rows(os.path.join(child_dir, "plateau_mask_diagnostics_v9_3.csv")))
++    return rows, postcheck_rows, plateau_rows
++
++
++def _build_child_argv(args: argparse.Namespace, geom_token: str, child_outdir: str) -> List[str]:
++    argv = [
++        sys.executable,
++        os.path.abspath(__file__),
++        "--mode", str(args.mode),
++        "--preset", str(args.preset),
++        "--backend", str(args.backend),
++        "--contact-model", str(args.contact_model),
++        "--root-selection-mode", str(args.root_selection_mode),
++        "--run-v6-shiftfree-postcheck", str(int(bool(args.run_v6_shiftfree_postcheck))),
++        "--emit-v5-logs", str(int(bool(args.emit_v5_logs))),
++        "--branch-mode", str(args.branch_mode),
++        "--extrap-min-nint", str(int(args.extrap_min_nint)),
++        "--sweep-layout", "exact_pairs_only",
++        "--worker-geom-config", geom_token,
++        "--output-dir", child_outdir,
++        "--pair-workers", "1",
++        "--no-auto-compile",
++    ]
++    if getattr(args, "knot_id", None) is not None:
++        argv += ["--knot-id", str(args.knot_id)]
++    if getattr(args, "max_fourier_mode", None) is not None:
++        argv += ["--max-fourier-mode", str(args.max_fourier_mode)]
++    if getattr(args, "n_geom_list", ""):
++        argv += ["--n-geom-list", str(args.n_geom_list)]
++    if getattr(args, "n_int_list", ""):
++        argv += ["--n-int-list", str(args.n_int_list)]
++    if getattr(args, "lambda_list", ""):
++        argv += ["--lambda-list", str(args.lambda_list)]
++    if getattr(args, "plateau_fracs", ""):
++        argv += ["--plateau-fracs", str(args.plateau_fracs)]
++    if getattr(args, "no_torch", False):
++        argv.append("--no-torch")
++    if getattr(args, "no_local_sst_core", False):
++        argv.append("--no-local-sst-core")
++    if getattr(args, "no_v8_extrapolation", False):
++        argv.append("--no-v8-extrapolation")
++    return argv
++
++
++def _run_parallel_pairs(args: argparse.Namespace, geom_configs: List[Tuple[int, int, Optional[float]]], output_dir: str) -> Tuple[List[dict], List[dict], List[dict]]:
++    pair_workers = max(1, int(getattr(args, "pair_workers", 1)))
++    child_root = os.path.join(output_dir, "parallel_pair_workers_v9_3")
++    os.makedirs(child_root, exist_ok=True)
++
++    child_jobs = []
++    for idx, (N_geom, N_int_target, R_ratio) in enumerate(geom_configs):
++        geom_token = _worker_geom_token(N_geom, N_int_target, R_ratio)
++        safe_token = geom_token.replace(":", "_")
++        child_outdir = os.path.join(child_root, f"pair_{idx:03d}_{safe_token}")
++        os.makedirs(child_outdir, exist_ok=True)
++        child_jobs.append((geom_token, child_outdir, _build_child_argv(args, geom_token, child_outdir)))
++
++    print(f"[PAR] pair_workers={pair_workers} total_pairs={len(child_jobs)} child_root={child_root}")
++
++    env = os.environ.copy()
++    env.setdefault("OMP_NUM_THREADS", "1")
++    env.setdefault("OPENBLAS_NUM_THREADS", "1")
++    env.setdefault("MKL_NUM_THREADS", "1")
++    env.setdefault("NUMEXPR_NUM_THREADS", "1")
++
++    failures: List[str] = []
++    running: List[Tuple[subprocess.Popen, str, str]] = []
++    pending = list(child_jobs)
++
++    while pending or running:
++        while pending and len(running) < pair_workers:
++            geom_token, child_outdir, argv = pending.pop(0)
++            print(f"[PAR] launch geom={geom_token} -> {child_outdir}")
++            proc = subprocess.Popen(argv, env=env)
++            running.append((proc, geom_token, child_outdir))
++
++        next_running: List[Tuple[subprocess.Popen, str, str]] = []
++        for proc, geom_token, child_outdir in running:
++            ret = proc.poll()
++            if ret is None:
++                next_running.append((proc, geom_token, child_outdir))
++                continue
++            if ret != 0:
++                failures.append(f"geom={geom_token} exit={ret} outdir={child_outdir}")
++            else:
++                print(f"[PAR] done geom={geom_token}")
++        running = next_running
++        if running:
++            time.sleep(0.5)
++
++    if failures:
++        raise RuntimeError("Parallel pair workers failed:\n" + "\n".join(failures))
++
++    child_dirs = [child_outdir for _, child_outdir, _ in child_jobs]
++    rows, postcheck_rows, plateau_rows = _merge_parallel_worker_outputs(child_dirs, str(args.mode))
++    print(f"[PAR] merged rows={len(rows)} postcheck_rows={len(postcheck_rows)} plateau_rows={len(plateau_rows)}")
++    return rows, postcheck_rows, plateau_rows
++
++
+ def write_run_metadata(outdir: str, mode: str, backend_mode: str, backend_used: str,
+                       knot_id: str, run_start: float) -> None:
+     torch_ver = None
+@@ -2599,6 +2732,7 @@
+     n_int_list = _prompt_text("Override N_int list (blank = default)", "")
+     lambda_list = _prompt_text("Override lambda list (blank = default)", "")
+     plateau_fracs = _prompt_text("Override plateau fracs (blank = default)", "")
++    pair_workers = _prompt_text("Pair workers for parallel exact-pair runs", "1")
+     output_dir = _prompt_text("Output directory (blank = version default)", "")
+ 
+     argv: List[str] = [
+@@ -2621,6 +2755,8 @@
+         argv += ["--lambda-list", lambda_list]
+     if plateau_fracs:
+         argv += ["--plateau-fracs", plateau_fracs]
++    if pair_workers:
++        argv += ["--pair-workers", pair_workers]
+     if output_dir:
+         argv += ["--output-dir", output_dir]
+ 
+@@ -2667,6 +2803,10 @@
+                         help="Disable asymptotic extrapolation writer")
+     parser.add_argument("--sweep-layout", choices=["matrix", "exact_pairs_only", "theorem_ladder"], default="matrix",
+                         help="matrix = original sweep grid; exact_pairs_only = only exact Ngeom:Nint pairs; theorem_ladder = exact-pair ladder geared to theorem runs")
++    parser.add_argument("--pair-workers", type=int, default=1,
++                        help="Number of subprocess workers used to parallelize exact-pair geometry blocks. >1 is most useful with exact_pairs_only or theorem_ladder.")
++    parser.add_argument("--worker-geom-config", default="",
++                        help="Internal use: run exactly one geometry block encoded as Ngeom:Nint or Ngeom:Nint:Rratio")
+ 
+     argv_in = None
+     if len(sys.argv) == 1 and sys.stdin.isatty():
+@@ -2775,6 +2915,56 @@
+ 
+     geom_configs = tmp_gc
+ 
++    if args.worker_geom_config:
++        geom_configs = [_parse_worker_geom_token(args.worker_geom_config)]
++
++    can_parallelize_pairs = (
++        int(args.pair_workers) > 1
++        and not bool(args.worker_geom_config)
++        and all((item[2] is None) for item in geom_configs)
++    )
++
++    if can_parallelize_pairs:
++        rows, postcheck_rows, plateau_diag_rows = _run_parallel_pairs(args, geom_configs, OUTPUT_DIR)
++        csv_path = os.path.join(OUTPUT_DIR, "robustness_summary_v9_{}.csv".format(args.mode))
++        write_csv(rows, csv_path)
++        if SAVE_SUMMARY_PLOTS:
++            save_summary_plots(rows, OUTPUT_DIR)
++        if SAVE_PLATEAU_DIAGNOSTICS and plateau_diag_rows:
++            plateau_csv = os.path.join(OUTPUT_DIR, "plateau_mask_diagnostics_v9_3.csv")
++            write_plateau_diagnostics_csv(plateau_diag_rows, plateau_csv)
++            save_plateau_diagnostics_summary_plot(
++                plateau_diag_rows,
++                os.path.join(OUTPUT_DIR, "plateau_mask_summary_v9_3.png")
++            )
++        write_best_estimate(rows, OUTPUT_DIR)
++
++        print("\n[META] Parallel pair sweep complete")
++        print("[META] CSV summary : {}".format(csv_path))
++        print("[META] Best-estimate {} CSV/TXT/TeX : {}".format(SCRIPT_VERSION, OUTPUT_DIR))
++        if postcheck_rows:
++            shift_csv = os.path.join(OUTPUT_DIR, "shiftfree_postcheck_v9_3.csv")
++            write_csv(postcheck_rows, shift_csv)
++            print("[META] Shift-free postcheck {} CSV/TXT/TeX : {}".format(SCRIPT_VERSION, OUTPUT_DIR))
++        if SAVE_PLATEAU_DIAGNOSTICS and plateau_diag_rows:
++            print("[META] Plateau diagnostics CSV/PNG : {}".format(OUTPUT_DIR))
++        print("[META] run_metadata_v9_3.json : {}".format(os.path.join(OUTPUT_DIR, "run_metadata_v9_3.json")))
++
++        if WRITE_V8_EXTRAPOLATION:
++            if not postcheck_rows:
++                if RUN_V6_SHIFT_FREE_POSTCHECK:
++                    print("[WARN] Shift-free postcheck was enabled but returned no rows; extrapolation will contain only no-contact asymptotics.")
++                else:
++                    print("[WARN] Shift-free postcheck is disabled; extrapolation will contain only no-contact asymptotics.")
++            try:
++                write_v8_extrapolation(rows, postcheck_rows, OUTPUT_DIR)
++                print("[META] Extrapolation {} CSV/TXT/TeX : {}".format(SCRIPT_VERSION, OUTPUT_DIR))
++                write_v9_3_parallel_theorem_report(rows, postcheck_rows, OUTPUT_DIR)
++                print("[META] Parallel theorem candidates {} CSV/TXT/TeX : {}".format(SCRIPT_VERSION, OUTPUT_DIR))
++            except Exception as exc:
++                print(f"[WARN] v8 extrapolation writer failed: {exc}")
++        return
++
+     last_backend_printed = backend_used
+     for idx, (N_geom, N_int_target, R_ratio) in enumerate(geom_configs):
+         t_block_start = time.perf_counter()

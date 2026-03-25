@@ -1,0 +1,815 @@
+--- /mnt/data/sst_ideal_trefoil_robustness_sweep_v9_3.py	2026-03-24 22:00:52.159582750 +0000
++++ /mnt/data/sst_knot_candidate_robustness_sweep_v10_0.py	2026-03-24 22:06:24.083122454 +0000
+@@ -1,6 +1,6 @@
+ #!/usr/bin/env python3
+ """
+-SST ideal-trefoil robustness sweep v9.3
++SST knot-candidate robustness sweep v10.0
+ =====================================
+ 
+ Extends v4 with:
+@@ -68,7 +68,7 @@
+     torch = None  # type: ignore[assignment]
+     _TORCH_AVAILABLE = False
+ 
+-SCRIPT_VERSION = "v9.3"
++SCRIPT_VERSION = "v10.0"
+ 
+ # -----------------------------------------------------------------------------
+ # Paths and defaults (overridable by CLI)
+@@ -200,7 +200,7 @@
+ RUN_V6_SHIFT_FREE_POSTCHECK = True
+ SHIFTFREE_POSTCHECK_CONTACT_MODEL = "barrier_flat_at_rc"
+ 
+-OUTPUT_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "sst_ideal_trefoil_robustness_outputs_v9_3"))
++OUTPUT_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "sst_knot_candidate_robustness_outputs_v10_0"))
+ KNOT_ID = "3:1:1"
+ MAX_FOURIER_MODE: Optional[int] = None
+ 
+@@ -235,6 +235,61 @@
+     (64000, 64000),
+ ]
+ 
++DEFAULT_KNOT_LIST: List[str] = ["3:1:1"]
++
++
++def parse_knot_list(text: str) -> List[str]:
++    items = [tok.strip() for tok in text.replace(",", " ").split() if tok.strip()]
++    seen = set()
++    out: List[str] = []
++    for item in items:
++        if item not in seen:
++            seen.add(item)
++            out.append(item)
++    return out
++
++
++def sanitize_knot_id_for_path(knot_id: str) -> str:
++    safe = re.sub(r"[^A-Za-z0-9._-]+", "_", knot_id.strip())
++    safe = safe.strip("._")
++    return safe or "knot"
++
++
++def closure_score_from_row(row: Optional[dict]) -> float:
++    if not row:
++        return float("inf")
++    score = 0.0
++    vals = [
++        abs(float(row.get("A_ratio", np.nan)) - 1.0),
++        abs(float(row.get("a_nc_over_rc", np.nan)) - 1.0),
++        abs(float(row.get("closure_x_from_A", np.nan)) - 1.0),
++    ]
++    astar = row.get("a_star_over_rc", np.nan)
++    if np.isfinite(astar):
++        vals.append(abs(float(astar) - 1.0))
++    for v in vals:
++        if not np.isfinite(v):
++            return float("inf")
++        score += float(v)
++    return score
++
++
++def write_knot_comparison_summary(records: List[dict], outdir: str) -> None:
++    if not records:
++        return
++    df = pd.DataFrame(records).sort_values(["closure_score", "knot_id"])
++    csv_path = os.path.join(outdir, "knot_candidate_comparison_v10_0.csv")
++    txt_path = os.path.join(outdir, "knot_candidate_comparison_v10_0.txt")
++    df.to_csv(csv_path, index=False)
++    with open(txt_path, "w", encoding="utf-8") as f:
++        f.write(f"SST knot candidate comparison {SCRIPT_VERSION}\n")
++        f.write("=" * 72 + "\n\n")
++        for i, rec in enumerate(df.to_dict(orient="records"), start=1):
++            f.write(f"[{i}] knot_id={rec['knot_id']} mode={rec['mode']} closure_score={rec['closure_score']:.6e}\n")
++            f.write(f"    fit_method={rec.get('fit_method')} N_geom={rec.get('N_geom')} N_int_actual={rec.get('N_int_actual')}\n")
++            f.write(f"    A_K={rec.get('A_K')} A_ratio={rec.get('A_ratio')} a_nc_over_rc={rec.get('a_nc_over_rc')}\n")
++            f.write(f"    a_star_over_rc={rec.get('a_star_over_rc')} status={rec.get('status')} output_dir={rec.get('output_dir')}\n\n")
++
+ 
+ def _parse_triplet(text: str) -> Tuple[float, float, float]:
+     parts = [p.strip() for p in text.split(",")]
+@@ -1471,13 +1526,13 @@
+         "Theorem fields: no-contact closure x = sqrt(4*pi*A_K); full-model row = same grid/fit at max lambda_K with finite a*."
+     )
+ 
+-    csv_path = os.path.join(outdir, "final_best_estimate_v9_3.csv")
++    csv_path = os.path.join(outdir, "final_best_estimate_v10_0.csv")
+     with open(csv_path, "w", newline="", encoding="utf-8") as f:
+         writer = csv.DictWriter(f, fieldnames=list(result.keys()))
+         writer.writeheader()
+         writer.writerow(result)
+ 
+-    txt_path = os.path.join(outdir, "final_best_estimate_v9_3.txt")
++    txt_path = os.path.join(outdir, "final_best_estimate_v10_0.txt")
+     with open(txt_path, "w", encoding="utf-8") as f:
+         f.write(f"SST ideal-trefoil final best-estimate {SCRIPT_VERSION}\n")
+         f.write("=" * 64 + "\n")
+@@ -1506,7 +1561,7 @@
+             f.write(f"                             a_nc/r_c={asym.get('a_nc_over_rc_mid', np.nan):.8f} +- {asym.get('a_nc_over_rc_half_range', np.nan):.8f}\n")
+         f.write(f"Branch mode                 : {BRANCH_MODE}\n")
+ 
+-    tex_path = os.path.join(outdir, "final_best_estimate_v9_3.tex")
++    tex_path = os.path.join(outdir, "final_best_estimate_v10_0.tex")
+     with open(tex_path, "w", encoding="utf-8") as f:
+         f.write(f"\\paragraph{{Final best-estimate {SCRIPT_VERSION}.}}\n")
+         if best:
+@@ -1944,10 +1999,10 @@
+     if not summary_rows:
+         return
+ 
+-    csv_path = os.path.join(outdir, "parallel_theorem_candidates_v9_3.csv")
++    csv_path = os.path.join(outdir, "parallel_theorem_candidates_v10_0.csv")
+     write_csv(summary_rows, csv_path)
+ 
+-    txt_path = os.path.join(outdir, "parallel_theorem_candidates_v9_3.txt")
++    txt_path = os.path.join(outdir, "parallel_theorem_candidates_v10_0.txt")
+     with open(txt_path, "w", encoding="utf-8") as f:
+         f.write(f"SST ideal-trefoil parallel theorem-candidate report {SCRIPT_VERSION}\n")
+         f.write("=" * 76 + "\n")
+@@ -1967,7 +2022,7 @@
+             f.write(f"  shiftfree root choices   = {row['shiftfree_root_choice_summary']}\n")
+             f.write(f"  theorem_shiftfree_ok     = {'yes' if row['theorem_shiftfree_ok'] else 'no'}\n\n")
+ 
+-    tex_path = os.path.join(outdir, "parallel_theorem_candidates_v9_3.tex")
++    tex_path = os.path.join(outdir, "parallel_theorem_candidates_v10_0.tex")
+     with open(tex_path, "w", encoding="utf-8") as f:
+         f.write(f"\\paragraph{{Parallel theorem-candidate comparison ({SCRIPT_VERSION}).}}\n")
+         f.write("We evaluated multiple plateau-based extraction rules in parallel, keeping the numerical sweep, root solver, and shift-free postcheck fixed. ")
+@@ -2092,7 +2147,7 @@
+     # ------------------------------------------------------------
+     # 3) Write CSV
+     # ------------------------------------------------------------
+-    csv_path = os.path.join(outdir, "extrapolation_summary_v9_3.csv")
++    csv_path = os.path.join(outdir, "extrapolation_summary_v10_0.csv")
+     if out_rows:
+         write_csv(out_rows, csv_path)
+ 
+@@ -2301,7 +2356,7 @@
+     plt.grid(True, alpha=0.3)
+     plt.legend(fontsize=7, ncol=2)
+     plt.tight_layout()
+-    plt.savefig(os.path.join(outdir, "summary_astar_over_rc_vs_lambda_shiftfree_v9_3.png"), dpi=170, bbox_inches="tight")
++    plt.savefig(os.path.join(outdir, "summary_astar_over_rc_vs_lambda_shiftfree_v10_0.png"), dpi=170, bbox_inches="tight")
+     plt.close(fig)
+ 
+ 
+@@ -2433,7 +2488,7 @@
+                     root_choice, row["F_at_x1"], row["a_star_over_rc"], row["delta_a_star_vs_legacy"]
+                 ))
+ 
+-        csv_path = os.path.join(outdir, "shiftfree_postcheck_v9_3.csv")
++        csv_path = os.path.join(outdir, "shiftfree_postcheck_v10_0.csv")
+         write_csv(shift_rows, csv_path)
+         save_shiftfree_postcheck_plot(shift_rows, outdir)
+ 
+@@ -2456,7 +2511,7 @@
+         best_zero = max(zero_rows, key=lambda r: (r["N_int_actual"], r["N_geom"])) if zero_rows else None
+         best_max = max(max_rows, key=lambda r: (r["N_int_actual"], r["N_geom"])) if max_rows else None
+ 
+-        txt_path = os.path.join(outdir, "shiftfree_postcheck_v9_3.txt")
++        txt_path = os.path.join(outdir, "shiftfree_postcheck_v10_0.txt")
+         with open(txt_path, "w", encoding="utf-8") as f:
+             f.write(f"{SCRIPT_VERSION} post-sweep shift-free barrier theorem check\n")
+             f.write("=" * 64 + "\n")
+@@ -2495,7 +2550,7 @@
+             f.write("  This postcheck replaces the legacy contact term only in the post-sweep theorem test.\n")
+             f.write("  Because the barrier_flat_at_rc model is shift-free at x=1, any remaining mismatch is then dominated by A_K != 1/(4*pi), not by contact-term-induced drift.\n")
+ 
+-        tex_path = os.path.join(outdir, "shiftfree_postcheck_v9_3.tex")
++        tex_path = os.path.join(outdir, "shiftfree_postcheck_v10_0.tex")
+         with open(tex_path, "w", encoding="utf-8") as f:
+             f.write(f"\\paragraph{{{SCRIPT_VERSION} post-sweep shift-free barrier check.}}\n")
+             f.write("After the full legacy sweep, the preferred-fit rows were re-evaluated with the shift-free barrier contact model ")
+@@ -2550,7 +2605,7 @@
+         "run_start_iso": time.strftime("%Y-%m-%dT%H:%M:%S", time.localtime(run_start)),
+     }
+     meta["script_version"] = SCRIPT_VERSION
+-    path = os.path.join(outdir, "run_metadata_v9_3.json")
++    path = os.path.join(outdir, "run_metadata_v10_0.json")
+     with open(path, "w", encoding="utf-8") as f:
+         json.dump(meta, f, indent=2)
+ 
+@@ -2577,11 +2632,13 @@
+     return val if val else default
+ 
+ 
+-def prompt_cli_menu_v9() -> List[str]:
++def prompt_cli_menu_v10() -> List[str]:
+     print(f"\nSST Robustness Sweep {SCRIPT_VERSION} interactive launcher")
+     print("Press Enter to accept the default shown in parentheses.\n")
+ 
+     mode = _prompt_choice("Mode", ["ideal", "torus"], "ideal")
++    knot_id = _prompt_text("Single knot id", DEFAULT_KNOT_LIST[0])
++    knot_list = _prompt_text("Batch knot list (blank = single knot)", "")
+     preset = _prompt_choice("Preset", ["fast", "full"], "full")
+     sweep_layout = _prompt_choice("Sweep layout", ["matrix", "exact_pairs_only", "theorem_ladder"], "theorem_ladder")
+     backend = _prompt_choice("Backend", list(BS_BACKEND_ALLOWED), "auto")
+@@ -2603,6 +2660,7 @@
+ 
+     argv: List[str] = [
+         "--mode", mode,
++        "--knot-id", knot_id,
+         "--preset", preset,
+         "--backend", backend,
+         "--contact-model", contact_model,
+@@ -2611,6 +2669,8 @@
+         "--extrap-min-nint", extrap_min,
+         "--sweep-layout", sweep_layout,
+     ]
++    if knot_list:
++        argv += ["--knot-list", knot_list]
+     if extra_pairs:
+         argv += ["--extra-target-pairs", extra_pairs]
+     if n_geom_list:
+@@ -2628,100 +2688,17 @@
+     return argv
+ 
+ 
+-def main() -> None:
+-    global OUTPUT_DIR, KNOT_ID, MAX_FOURIER_MODE, N_GEOM_LIST, N_INT_LIST, LAMBDA_LIST, PLATEAU_FRACS
+-    global USE_LOCAL_SST_CORE, AUTO_COMPILE_SST_CORE, ENABLE_TORCH_ACCEL, BS_BACKEND_MODE
+-    global CONTACT_MODEL, ROOT_SELECTION_MODE, EMIT_V5_LOGS, BRANCH_MODE
+-    global RUN_V6_SHIFT_FREE_POSTCHECK
+-    global WRITE_V8_EXTRAPOLATION, EXTRAP_MIN_NINT, EXTRA_TARGET_PAIRS, SWEEP_LAYOUT
+-
+-    parser = argparse.ArgumentParser(description=f"SST Robustness Sweep {SCRIPT_VERSION}")
+-    parser.add_argument("--mode", choices=["ideal", "torus"], default="ideal")
+-    parser.add_argument("--preset", choices=["fast", "full"], default="full",
+-                        help="fast = smaller sweep for UI testing; full = full sweep")
+-    parser.add_argument("--output-dir", default="", help="Output directory (default: .../sst_ideal_trefoil_robustness_outputs_v9_3)")
+-    parser.add_argument("--backend", choices=BS_BACKEND_ALLOWED, default="auto")
+-    parser.add_argument("--knot-id", default="3:1:1")
+-    parser.add_argument("--max-fourier-mode", type=int, default=None)
+-    parser.add_argument("--n-geom-list", default="", help="Comma-separated e.g. 4000,8000,16000")
+-    parser.add_argument("--n-int-list", default="", help="Comma-separated e.g. 2000,4000,8000")
+-    parser.add_argument("--lambda-list", default="", help="Comma-separated e.g. 0,1e-3,1e-2")
+-    parser.add_argument("--plateau-fracs", default="", help="Comma-separated e.g. 0.08,0.12,0.16")
+-    parser.add_argument("--contact-model", choices=["legacy", "barrier_flat_at_rc"], default="legacy")
+-    parser.add_argument("--root-selection-mode",
+-                        choices=["continuation", "closest_to_a_nc", "lowest_energy", "targeted_x_nc"],
+-                        default="continuation")
+-    parser.add_argument("--emit-v5-logs", type=int, choices=[0, 1], default=1)
+-    parser.add_argument("--branch-mode", choices=["closest_to_a_nc", "lowest_energy"],
+-                        default="closest_to_a_nc", help="Used when root-selection-mode is not continuation; also sets first-lambda fallback for continuation")
+-    parser.add_argument("--run-v6-shiftfree-postcheck", type=int, choices=[0, 1], default=1,
+-                        help="After the normal legacy sweep, run an extra shift-free barrier theorem postcheck")
+-    parser.add_argument("--no-torch", action="store_true")
+-    parser.add_argument("--no-local-sst-core", action="store_true")
+-    parser.add_argument("--no-auto-compile", action="store_true")
+-    parser.add_argument("--extra-target-pairs", default="",
+-                        help="Comma-separated exact Ngeom:Nint pairs, e.g. 48000:48000,64000:64000")
+-    parser.add_argument("--extrap-min-nint", type=int, default=8000,
+-                        help="Minimum N_int_actual included in v8/v9 asymptotic extrapolation")
+-    parser.add_argument("--no-v8-extrapolation", action="store_true",
+-                        help="Disable asymptotic extrapolation writer")
+-    parser.add_argument("--sweep-layout", choices=["matrix", "exact_pairs_only", "theorem_ladder"], default="matrix",
+-                        help="matrix = original sweep grid; exact_pairs_only = only exact Ngeom:Nint pairs; theorem_ladder = exact-pair ladder geared to theorem runs")
+-
+-    argv_in = None
+-    if len(sys.argv) == 1 and sys.stdin.isatty():
+-        argv_in = prompt_cli_menu_v9()
+-    args = parser.parse_args(argv_in)
+-
+-    EXTRAP_MIN_NINT = int(args.extrap_min_nint)
+-    WRITE_V8_EXTRAPOLATION = not bool(args.no_v8_extrapolation)
+-    EXTRA_TARGET_PAIRS = parse_exact_pairs(args.extra_target_pairs) if args.extra_target_pairs else []
+-    SWEEP_LAYOUT = str(args.sweep_layout)
+-    if SWEEP_LAYOUT == "theorem_ladder":
+-        for pair in DEFAULT_THEOREM_TARGET_PAIRS:
+-            if pair not in EXTRA_TARGET_PAIRS:
+-                EXTRA_TARGET_PAIRS.append(pair)
+-
+-    CONTACT_MODEL = args.contact_model
+-    ROOT_SELECTION_MODE = args.root_selection_mode
+-    EMIT_V5_LOGS = bool(args.emit_v5_logs)
+-    BRANCH_MODE = args.branch_mode
+-    RUN_V6_SHIFT_FREE_POSTCHECK = bool(args.run_v6_shiftfree_postcheck)
+-
+-    if args.no_local_sst_core:
+-        USE_LOCAL_SST_CORE = False
+-    if args.no_auto_compile:
+-        AUTO_COMPILE_SST_CORE = False
+-    if args.no_torch:
+-        ENABLE_TORCH_ACCEL = False
+-    # USE_LOCAL_IDEAL_DB remains True (no CLI to disable ideal.txt)
+-    if args.output_dir:
+-        OUTPUT_DIR = os.path.abspath(args.output_dir)
+-    KNOT_ID = args.knot_id
+-    MAX_FOURIER_MODE = args.max_fourier_mode
+-    BS_BACKEND_MODE = args.backend
+-
+-    if args.preset == "fast":
+-        N_GEOM_LIST = [4000, 8000]
+-        N_INT_LIST = [2000, 4000]
+-        LAMBDA_LIST = [0.0, 1e-3]
+-    if args.n_geom_list:
+-        N_GEOM_LIST = [int(x.strip()) for x in args.n_geom_list.split(",") if x.strip()]
+-    if args.n_int_list:
+-        N_INT_LIST = [int(x.strip()) for x in args.n_int_list.split(",") if x.strip()]
+-    if args.lambda_list:
+-        LAMBDA_LIST = [float(x.strip()) for x in args.lambda_list.replace(",", " ").split() if x.strip()]
+-    if args.plateau_fracs:
+-        PLATEAU_FRACS = [float(x.strip()) for x in args.plateau_fracs.split(",") if x.strip()]
++def run_single_knot_sweep(args: argparse.Namespace, mode: str, knot_id: str, output_dir: str, run_start_wall: float, base_output_dir: str) -> Dict[str, object]:
++    global OUTPUT_DIR, KNOT_ID, MAX_FOURIER_MODE, CONTACT_MODEL, ROOT_SELECTION_MODE
+ 
++    OUTPUT_DIR = output_dir
++    KNOT_ID = knot_id
+     os.makedirs(OUTPUT_DIR, exist_ok=True)
+-    run_start_wall = time.time()
+-    run_start = time.perf_counter()
+ 
+     initialize_project_sources(KNOT_ID, MAX_FOURIER_MODE, USE_LOCAL_IDEAL_DB, USE_LOCAL_SST_CORE, AUTO_COMPILE_SST_CORE)
+     backend_used = detect_bs_backend(BS_BACKEND_MODE, ENABLE_TORCH_ACCEL)
+ 
+-    print("[META] SST ROBUSTNESS SWEEP {} - mode={} knot_id={}".format(SCRIPT_VERSION, args.mode.upper(), KNOT_ID))
++    print("[META] SST ROBUSTNESS SWEEP {} - mode={} knot_id={}".format(SCRIPT_VERSION, mode.upper(), KNOT_ID))
+     print("[META] output_dir={}".format(OUTPUT_DIR))
+     print("[META] ideal_source={}".format(IDEAL_SOURCE_DESC))
+     print("[META] local_sst_core_loaded={} local_cpp_scan_available={}".format(_SST_CORE_AVAILABLE, SST_CORE_SCAN_AVAILABLE))
+@@ -2733,22 +2710,19 @@
+         print("[THEOREM] contact_model={} root_selection_mode={}".format(CONTACT_MODEL, ROOT_SELECTION_MODE))
+         if RUN_V6_SHIFT_FREE_POSTCHECK:
+             print("[THEOREM] v6_postcheck will rerun theorem-candidate fit rows with shift-free barrier after the legacy sweep")
+-        print("[THEOREM] v7 root_solver_space={} xtol={} rtol={} ftol={}".format(
+-            ROOT_SOLVER_SPACE, ROOT_XTOL, ROOT_RTOL, ROOT_FTOL
+-        ))
++        print("[THEOREM] v7 root_solver_space={} xtol={} rtol={} ftol={}".format(ROOT_SOLVER_SPACE, ROOT_XTOL, ROOT_RTOL, ROOT_FTOL))
+         print("[THEOREM] v7.1 targeted-x_nc selector enabled when requested")
+-        print("[THEOREM] target window abs={} rel={}".format(
+-            TARGET_XNC_ABS_TOL, TARGET_XNC_REL_TOL
+-        ))
++        print("[THEOREM] target window abs={} rel={}".format(TARGET_XNC_ABS_TOL, TARGET_XNC_REL_TOL))
+         print("[THEOREM] sweep_layout={} exact_pairs={}".format(SWEEP_LAYOUT, EXTRA_TARGET_PAIRS))
+         print("[THEOREM] v9 tail check: need quasi-monotone contracting high-resolution tail before theorem-style OK")
+-        print("[THEOREM] v9.3 parallel theorem candidate fits={}".format(THEOREM_CANDIDATE_FIT_METHODS))
+-    write_run_metadata(OUTPUT_DIR, args.mode, BS_BACKEND_MODE, backend_used, KNOT_ID, run_start_wall)
++        print("[THEOREM] v10 batch knot comparison enabled at base_output_dir={}".format(base_output_dir))
++        print("[THEOREM] v10 parallel theorem candidate fits={}".format(THEOREM_CANDIDATE_FIT_METHODS))
++    write_run_metadata(OUTPUT_DIR, mode, BS_BACKEND_MODE, backend_used, KNOT_ID, run_start_wall)
+ 
+     rows: List[dict] = []
+     postcheck_rows: List[dict] = []
+     plateau_diag_rows: List[dict] = []
+-    if args.mode == "torus":
++    if mode == "torus":
+         R_ratio_grid = np.linspace(2.0, 2.6, 7)
+         geom_configs = [(Ng, Ni, R) for Ng in N_GEOM_LIST for Ni in N_INT_LIST for R in R_ratio_grid]
+     else:
+@@ -2766,7 +2740,7 @@
+             tmp_gc.append(item)
+             existing_gc.add(key)
+ 
+-    if args.mode == "ideal" and SWEEP_LAYOUT == "matrix":
++    if mode == "ideal" and SWEEP_LAYOUT == "matrix":
+         for (Ng_extra, Ni_extra) in EXTRA_TARGET_PAIRS:
+             key = (Ng_extra, Ni_extra, None)
+             if key not in existing_gc:
+@@ -2779,7 +2753,7 @@
+     for idx, (N_geom, N_int_target, R_ratio) in enumerate(geom_configs):
+         t_block_start = time.perf_counter()
+         print("-" * 78)
+-        if args.mode == "torus" and R_ratio is not None:
++        if mode == "torus" and R_ratio is not None:
+             print("[GEOM] Building torus N_geom={} N_int={} R_t/r_t={:.2f}".format(N_geom, N_int_target, R_ratio))
+             geom = build_torus_geometry(N_geom, N_int_target, R_ratio, 1.0)
+             ideal_source_str = "Torus R_t/r_t={:.2f}".format(R_ratio)
+@@ -2787,8 +2761,7 @@
+             print("[GEOM] Building geometry N_geom={} N_int_target={}".format(N_geom, N_int_target))
+             geom = build_geometry(N_geom, N_int_target)
+             ideal_source_str = IDEAL_SOURCE_DESC
+-            print("[GEOM] L_dimless_full={:.6f} d_min_full={:.6f} N_int_actual={} d_min_int={:.6f}".format(
+-                geom.L_dimless_full, geom.d_min_full, geom.N_int_actual, geom.d_min_int))
++            print("[GEOM] L_dimless_full={:.6f} d_min_full={:.6f} N_int_actual={} d_min_int={:.6f}".format(geom.L_dimless_full, geom.d_min_full, geom.N_int_actual, geom.d_min_int))
+ 
+         t_geom_end = time.perf_counter()
+         t_geometry_s = t_geom_end - t_block_start
+@@ -2811,228 +2784,130 @@
+ 
+         if SAVE_PER_RUN_DIAGNOSTICS:
+             save_geometry_plot(geom, os.path.join(OUTPUT_DIR, "geom_Ng{}_Ni{}.png".format(N_geom, geom.N_int_actual)))
+-            save_bs_diagnostics(a_scan, E_vals, fit_results, diagnostics,
+-                                os.path.join(OUTPUT_DIR, "bs_diagnostics_Ng{}_Ni{}.png".format(N_geom, geom.N_int_actual)))
++            save_bs_diagnostics(a_scan, E_vals, fit_results, diagnostics, os.path.join(OUTPUT_DIR, "bs_diagnostics_Ng{}_Ni{}.png".format(N_geom, geom.N_int_actual)))
+         if SAVE_LOCAL_A_CURVES:
+-            save_local_A_curve_csv(
+-                diagnostics,
+-                geom.d_min_full,
+-                os.path.join(OUTPUT_DIR, "local_A_curve_Ng{}_Ni{}.csv".format(N_geom, geom.N_int_actual))
+-            )
++            save_local_A_curve_csv(diagnostics, geom.d_min_full, os.path.join(OUTPUT_DIR, "local_A_curve_Ng{}_Ni{}.csv".format(N_geom, geom.N_int_actual)))
+ 
+         plateau_diag = diagnostics.get("plateau_diag", {})
+         for method_name, st in plateau_diag.items():
+             plateau_diag_rows.append({
+-                "N_geom": N_geom,
+-                "N_int_target": N_int_target,
+-                "N_int_actual": geom.N_int_actual,
+-                "L_dimless": geom.L_dimless_full,
+-                "d_min_dimless": geom.d_min_full,
+-                "frac": st["frac"],
+-                "method_name": method_name,
+-                "n_plateau": st["n_plateau"],
+-                "a_lo": st["a_lo"],
+-                "a_hi": st["a_hi"],
+-                "a_span": st["a_span"],
+-                "a_span_over_dmin": st["a_span_over_dmin"],
+-                "a_ref": st["a_ref"],
+-                "A_ref": st["A_ref"],
+-                "A_median": st["A_median"],
+-                "A_std": st["A_std"],
+-                "A_min": st["A_min"],
+-                "A_max": st["A_max"],
++                "knot_id": KNOT_ID,
++                "N_geom": N_geom, "N_int_target": N_int_target, "N_int_actual": geom.N_int_actual,
++                "L_dimless": geom.L_dimless_full, "d_min_dimless": geom.d_min_full,
++                "frac": st["frac"], "method_name": method_name, "n_plateau": st["n_plateau"],
++                "a_lo": st["a_lo"], "a_hi": st["a_hi"], "a_span": st["a_span"],
++                "a_span_over_dmin": st["a_span_over_dmin"], "a_ref": st["a_ref"], "A_ref": st["A_ref"],
++                "A_median": st["A_median"], "A_std": st["A_std"], "A_min": st["A_min"], "A_max": st["A_max"],
+                 "A_median_minus_Areq": (st["A_median"] - A_req) if np.isfinite(st["A_median"]) else np.nan,
+-                "rel_dE_median": st["rel_dE_median"],
+-                "rel_dE_min": st["rel_dE_min"],
+-                "rel_dE_max": st["rel_dE_max"],
+-                "rel_dE_thresh": REL_DE_THRESH,
+-                "ideal_source": ideal_source_str,
+-                "bs_backend": backend_this,
++                "rel_dE_median": st["rel_dE_median"], "rel_dE_min": st["rel_dE_min"], "rel_dE_max": st["rel_dE_max"],
++                "rel_dE_thresh": REL_DE_THRESH, "ideal_source": ideal_source_str, "bs_backend": backend_this,
+             })
+ 
+         if EMIT_V5_LOGS and plateau_diag_rows:
+             key = "plateau_0.12"
+             st = plateau_diag.get(key)
+             if st is not None:
+-                print("[PLATEAU] N_geom={} N_int={} frac=0.12 n_plateau={} a_lo={} a_hi={} A_median_minus_Areq={:.8e}".format(
+-                    N_geom,
+-                    geom.N_int_actual,
+-                    st["n_plateau"],
+-                    st["a_lo"],
+-                    st["a_hi"],
+-                    (st["A_median"] - A_req) if np.isfinite(st["A_median"]) else float("nan"),
+-                ))
++                print("[PLATEAU] N_geom={} N_int={} frac=0.12 n_plateau={} a_lo={} a_hi={} A_median_minus_Areq={:.8e}".format(N_geom, geom.N_int_actual, st["n_plateau"], st["a_lo"], st["a_hi"], (st["A_median"] - A_req) if np.isfinite(st["A_median"]) else float("nan")))
+ 
+-        baseline_by_fit: Dict[str, float] = {}
+         for fr in fit_results:
+             if not np.isfinite(fr.A_K):
+-                rows.append({
+-                    "N_geom": N_geom, "N_int_target": N_int_target, "N_int_actual": geom.N_int_actual,
+-                    "L_dimless": geom.L_dimless_full, "d_min_dimless": geom.d_min_full,
+-                    "fit_method": fr.fit_method, "plateau_frac": fr.plateau_frac, "n_plateau": fr.n_plateau,
+-                    "A_K": np.nan, "a_K": np.nan, "A_spread": np.nan, "A_ratio": np.nan, "a_fit_ref_dimless": np.nan,
+-                    "a_nc_m": np.nan, "a_nc_over_rc": np.nan, "lambda_K": np.nan, "p_exp": np.nan,
+-                    "root_count": 0, "min_root_count": 0, "root_choice": "none",
+-                    "a_star_m": np.nan, "a_star_over_rc": np.nan, "E_star_J": np.nan, "delta_lambda_over_rc": np.nan,
+-                    "is_min": False, "status": "inconclusive", "uses_local_sst_core": _SST_CORE_AVAILABLE,
+-                    "ideal_source": ideal_source_str, "notes": "A_K extraction failed",
+-                    "bs_backend": backend_this,
+-                    "t_geometry_s": t_geometry_s, "t_scan_s": t_scan_s, "t_fit_s": t_fit_s, "t_total_block_s": np.nan,
+-                    "contact_model": CONTACT_MODEL, "root_selection_mode": ROOT_SELECTION_MODE,
+-                    "closure_x_from_A": np.nan, "closure_x_minus_1": np.nan, "beta_dimless": np.nan,
+-                    "F_at_x1": np.nan, "contact_force_at_x1": np.nan,
+-                    "continuation_prev_a_star_over_rc": np.nan, "continuation_jump": np.nan,
+-                    "theorem_candidate_no_contact": False, "theorem_candidate_full_model": False,
+-                    "root_solver_space": ROOT_SOLVER_SPACE,
+-                    "F_at_root": np.nan,
+-                    "root_xtol": ROOT_XTOL,
+-                    "root_rtol": ROOT_RTOL,
+-                })
+                 continue
+-            # keep a_nc exactly consistent with the theorem relation
+-            #       a_nc / r_c = sqrt(4*pi*A_K)
+-            x_closure = closure_x_from_A(fr.A_K)
+-            a_nc = r_c_canon * x_closure
+-            a_nc_over_rc = x_closure
+             A_ratio = fr.A_K / A_req
+-            print("[FIT] N_geom={} N_int={} method={} A_K={:.8f} A_ratio={:.6f} a_nc_over_rc={:.6f}".format(
+-                N_geom, geom.N_int_actual, fr.fit_method, fr.A_K, A_ratio, a_nc_over_rc))
+-
+-            beta_dimless = geom.d_min_full * L_natural / r_c_canon
++            a_nc = r_c_canon * np.sqrt(4.0 * np.pi * fr.A_K)
++            a_nc_over_rc = a_nc / r_c_canon
++            x_closure = closure_x_from_A(fr.A_K)
+             if EMIT_V5_LOGS:
+-                print("[CHECK] N_geom={} N_int={} method={} closure_x={:.8f} closure_x_minus_1={:.8e}".format(
+-                    N_geom, geom.N_int_actual, fr.fit_method, x_closure, x_closure - 1.0))
+-
+-            lam_iter = sorted(LAMBDA_LIST) if (ROOT_SELECTION_MODE == "continuation" and LAMBDA_CONTINUATION_SORT) else list(LAMBDA_LIST)
+-            prev_a_star_by_p: Dict[int, Optional[float]] = {int(p): None for p in P_LIST}
++                print("[FIT] N_geom={} N_int={} method={} A_K={:.8f} A_ratio={:.6f} a_nc_over_rc={:.6f}".format(N_geom, geom.N_int_actual, fr.fit_method, fr.A_K, A_ratio, a_nc_over_rc))
++                print("[CHECK] N_geom={} N_int={} method={} closure_x={:.8f} closure_x_minus_1={:.8e}".format(N_geom, geom.N_int_actual, fr.fit_method, x_closure, x_closure - 1.0))
+ 
++            prev_a_star: Optional[float] = None
++            if LAMBDA_CONTINUATION_SORT:
++                lam_iter = sorted(LAMBDA_LIST)
++            else:
++                lam_iter = list(LAMBDA_LIST)
+             for lam_K in lam_iter:
+                 for p_exp in P_LIST:
+-                    prev_a_star = prev_a_star_by_p[p_exp]
+-                    contact_force_at_x1 = contact_force_dimensionless(1.0, beta_dimless, lam_K, p_exp, CONTACT_MODEL)
+-                    F_at_x1 = F_dimensionless(1.0, fr.A_K, beta_dimless, lam_K, p_exp, CONTACT_MODEL)
+-                    prev_val = (prev_a_star / r_c_canon) if (prev_a_star is not None and np.isfinite(prev_a_star)) else np.nan
+-
+-                    candidates = find_root_candidates(
+-                        fr.A_K, fr.a_K, geom.L_dimless_full, geom.d_min_full, lam_K, p_exp, CONTACT_MODEL)
++                    candidates = find_root_candidates(fr.A_K, fr.a_K, geom.L_dimless_full, geom.d_min_full, lam_K, p_exp, CONTACT_MODEL)
+                     if ROOT_SELECTION_MODE == "continuation":
+-                        fb = "lowest_energy" if BRANCH_MODE == "lowest_energy" else "closest_to_a_nc"
+-                        a_star, is_min, E_star, root_count, min_root_count, root_choice = choose_root_continuation(
+-                            candidates, prev_a_star, a_nc, fallback_mode=fb)
+-
++                        a_star, is_min, E_star, root_count, min_root_count, root_choice = choose_root_continuation(candidates, prev_a_star, a_nc, BRANCH_MODE)
+                     elif ROOT_SELECTION_MODE == "targeted_x_nc":
+-                        a_star, is_min, E_star, root_count, min_root_count, root_choice = choose_root_targeted_x_nc(
+-                            candidates, a_nc
+-                        )
+-
++                        a_star, is_min, E_star, root_count, min_root_count, root_choice = choose_root_targeted_x_nc(candidates, a_nc)
+                     else:
+-                        branch = "lowest_energy" if ROOT_SELECTION_MODE == "lowest_energy" else "closest_to_a_nc"
+-                        a_star, is_min, E_star, root_count, min_root_count, root_choice = choose_root(
+-                            candidates, a_nc, branch)
++                        a_star, is_min, E_star, root_count, min_root_count, root_choice = choose_root(candidates, a_nc, BRANCH_MODE)
+ 
+                     a_star_over_rc = a_star / r_c_canon if np.isfinite(a_star) else np.nan
+-                    F_at_root = (
+-                        F_dimensionless(a_star_over_rc, fr.A_K, beta_dimless, lam_K, p_exp, CONTACT_MODEL)
+-                        if np.isfinite(a_star_over_rc) else np.nan
+-                    )
+-                    if EMIT_V5_LOGS:
+-                        print("[ROOTX] lambda_K={} a_star_over_rc={} F_at_root={:.8e} solver={}".format(
+-                            lam_K, a_star_over_rc, F_at_root, ROOT_SOLVER_SPACE
+-                        ))
+-                    if ROOT_SELECTION_MODE == "continuation" and np.isfinite(a_star):
+-                        prev_a_star_by_p[p_exp] = float(a_star)
+-
+-                    continuation_jump = (
+-                        abs(a_star_over_rc - prev_val)
+-                        if np.isfinite(prev_val) and np.isfinite(a_star_over_rc) else np.nan
+-                    )
+-
+-                    if lam_K == 0.0:
+-                        baseline_by_fit[fr.fit_method] = a_star_over_rc
+-                    baseline = baseline_by_fit.get(fr.fit_method, np.nan)
+-                    delta_lambda_over_rc = a_star_over_rc - baseline if np.isfinite(a_star_over_rc) and np.isfinite(baseline) else np.nan
+-                    status = classify_run(A_ratio, a_star_over_rc, is_min)
+-                    notes = []
+-                    if fr.fit_method.startswith("plateau"):
+-                        notes.append("n_plateau={}".format(fr.n_plateau))
+-                    if geom.N_int_actual < geom.N_geom:
+-                        notes.append("Biot-Savart downsampled")
+-                    if lam_K == 0.0:
+-                        notes.append("no-contact case")
+-                    t_total_block_s = time.perf_counter() - t_block_start
+-
+-                    theorem_candidate_no_contact = bool(lam_K == 0.0 and abs(x_closure - 1.0) < 0.01)
+-                    theorem_candidate_full_model = bool(
+-                        abs(F_at_x1) < 0.01 and np.isfinite(a_star_over_rc) and abs(a_star_over_rc - 1.0) < 0.02
+-                    )
++                    prev_val = prev_a_star / r_c_canon if (prev_a_star is not None and np.isfinite(prev_a_star)) else np.nan
++                    continuation_jump = abs(a_star_over_rc - prev_val) if (np.isfinite(a_star_over_rc) and np.isfinite(prev_val)) else np.nan
++                    if np.isfinite(a_star):
++                        prev_a_star = a_star
+ 
++                    beta_dimless = dimensionless_beta(geom.d_min_full * L_natural)
++                    F_at_x1 = F_dimensionless(1.0, fr.A_K, beta_dimless, lam_K, p_exp, CONTACT_MODEL)
++                    contact_force_at_x1 = contact_force_dimensionless(1.0, beta_dimless, lam_K, p_exp, CONTACT_MODEL)
++                    F_at_root = F_dimensionless(a_star_over_rc, fr.A_K, beta_dimless, lam_K, p_exp, CONTACT_MODEL) if np.isfinite(a_star_over_rc) else np.nan
+                     if EMIT_V5_LOGS:
+-                        print("[CONT] lambda_K={} prev_a_star_over_rc={} a_star_over_rc={} jump={} root_choice={}".format(
+-                            lam_K, prev_val, a_star_over_rc, continuation_jump, root_choice))
+-                        print("[BARRIER] lambda_K={} beta={:.8f} contact_force_at_x1={:.8e} F_at_x1={:.8e} contact_model={}".format(
+-                            lam_K, beta_dimless, contact_force_at_x1, F_at_x1, CONTACT_MODEL))
++                        print("[ROOTX] lambda_K={} a_star_over_rc={} F_at_root={:.8e} solver={}".format(lam_K, a_star_over_rc, F_at_root if np.isfinite(F_at_root) else float("nan"), ROOT_SOLVER_SPACE))
++                        if ROOT_SELECTION_MODE == "continuation":
++                            print("[CONT] lambda_K={} prev_a_star_over_rc={} a_star_over_rc={} jump={} root_choice={}".format(lam_K, prev_val, a_star_over_rc, continuation_jump, root_choice))
++                        print("[BARRIER] lambda_K={} beta={:.8f} contact_force_at_x1={:.8e} F_at_x1={:.8e} contact_model={}".format(lam_K, beta_dimless, contact_force_at_x1 if np.isfinite(contact_force_at_x1) else float("nan"), F_at_x1 if np.isfinite(F_at_x1) else float("nan"), CONTACT_MODEL))
+ 
++                    delta_lambda_over_rc = abs(a_star_over_rc - 1.0) if np.isfinite(a_star_over_rc) else np.nan
++                    status = classify_run(A_ratio, a_star_over_rc, is_min)
++                    theorem_candidate_no_contact = bool(np.isfinite(x_closure) and abs(x_closure - 1.0) <= V8_THEOREM_TOL_AINF)
++                    theorem_candidate_full_model = bool(np.isfinite(a_star_over_rc) and np.isfinite(F_at_x1) and abs(a_star_over_rc - 1.0) <= V8_THEOREM_TOL_XINF and abs(F_at_x1) <= V8_THEOREM_TOL_FINF)
++                    t_total_block_s = time.perf_counter() - t_block_start
++                    notes = []
++                    if fr.fit_method in THEOREM_CANDIDATE_FIT_METHODS:
++                        notes.append("parallel_theorem_candidate")
+                     rows.append({
++                        "knot_id": KNOT_ID, "mode": mode,
+                         "N_geom": N_geom, "N_int_target": N_int_target, "N_int_actual": geom.N_int_actual,
++                        "R_t_over_r_t": R_ratio if R_ratio is not None else np.nan,
+                         "L_dimless": geom.L_dimless_full, "d_min_dimless": geom.d_min_full,
+                         "fit_method": fr.fit_method, "plateau_frac": fr.plateau_frac, "n_plateau": fr.n_plateau,
+-                        "A_K": fr.A_K, "a_K": fr.a_K, "A_spread": fr.A_spread, "A_ratio": A_ratio, "a_fit_ref_dimless": fr.a_fit_ref,
++                        "A_K": fr.A_K, "A_spread": fr.A_spread, "A_ratio": A_ratio, "a_K": fr.a_K, "a_fit_ref": fr.a_fit_ref,
+                         "a_nc_m": a_nc, "a_nc_over_rc": a_nc_over_rc, "lambda_K": lam_K, "p_exp": p_exp,
+                         "root_count": root_count, "min_root_count": min_root_count, "root_choice": root_choice,
+                         "a_star_m": a_star, "a_star_over_rc": a_star_over_rc, "E_star_J": E_star, "delta_lambda_over_rc": delta_lambda_over_rc,
+                         "is_min": is_min, "status": status, "uses_local_sst_core": _SST_CORE_AVAILABLE,
+-                        "ideal_source": ideal_source_str, "notes": "; ".join(notes),
+-                        "bs_backend": backend_this,
++                        "ideal_source": ideal_source_str, "notes": "; ".join(notes), "bs_backend": backend_this,
+                         "t_geometry_s": t_geometry_s, "t_scan_s": t_scan_s, "t_fit_s": t_fit_s, "t_total_block_s": t_total_block_s,
+                         "contact_model": CONTACT_MODEL, "root_selection_mode": ROOT_SELECTION_MODE,
+                         "closure_x_from_A": x_closure, "closure_x_minus_1": float(x_closure - 1.0),
+-                        "beta_dimless": beta_dimless,
+-                        "F_at_x1": F_at_x1, "contact_force_at_x1": contact_force_at_x1,
++                        "beta_dimless": beta_dimless, "F_at_x1": F_at_x1, "contact_force_at_x1": contact_force_at_x1,
+                         "continuation_prev_a_star_over_rc": prev_val, "continuation_jump": continuation_jump,
+                         "theorem_candidate_no_contact": theorem_candidate_no_contact,
+                         "theorem_candidate_full_model": theorem_candidate_full_model,
+-                        "root_solver_space": ROOT_SOLVER_SPACE,
+-                        "F_at_root": F_at_root,
+-                        "root_xtol": ROOT_XTOL,
+-                        "root_rtol": ROOT_RTOL,
++                        "root_solver_space": ROOT_SOLVER_SPACE, "F_at_root": F_at_root, "root_xtol": ROOT_XTOL, "root_rtol": ROOT_RTOL,
+                     })
+                     print("[ROOT] lambda_K={} a_star_over_rc={} is_min={} status={}".format(lam_K, a_star_over_rc, is_min, status))
+ 
+-    total_elapsed = time.perf_counter() - run_start
+-    print("[TIME] total_script_s={:.3f}".format(total_elapsed))
+     best = select_best_row(rows)
+     if best:
+-        print("[BEST] practical N_geom={} N_int={} A_K={:.8f} A_ratio={:.6f} a_nc_over_rc={:.8f}".format(
+-            best["N_geom"], best["N_int_actual"], best["A_K"], best["A_ratio"], best["a_nc_over_rc"]))
++        print("[BEST] practical N_geom={} N_int={} A_K={:.8f} A_ratio={:.6f} a_nc_over_rc={:.8f}".format(best["N_geom"], best["N_int_actual"], best["A_K"], best["A_ratio"], best["a_nc_over_rc"]))
+         bx = closure_x_from_A(best["A_K"])
+         if EMIT_V5_LOGS:
+-            print("[BEST] theorem_no_contact A_K={:.8f} closure_x={:.8f} closure_x_minus_1={:.8e}".format(
+-                best["A_K"], bx, bx - 1.0))
++            print("[BEST] theorem_no_contact A_K={:.8f} closure_x={:.8f} closure_x_minus_1={:.8e}".format(best["A_K"], bx, bx - 1.0))
+             comp = None
+             for r in rows:
+-                if (r["N_geom"] == best["N_geom"] and r["N_int_actual"] == best["N_int_actual"]
+-                        and r["fit_method"] == best["fit_method"] and r["p_exp"] == best.get("p_exp", P_LIST[0])):
++                if (r["N_geom"] == best["N_geom"] and r["N_int_actual"] == best["N_int_actual"] and r["fit_method"] == best["fit_method"] and r["p_exp"] == best.get("p_exp", P_LIST[0])):
+                     if not np.isfinite(r.get("a_star_over_rc", np.nan)):
+                         continue
+                     if comp is None or r["lambda_K"] > comp["lambda_K"]:
+                         comp = r
+             if comp is not None:
+-                print("[BEST] theorem_full_model contact_model={} F_at_x1={:.8e} a_star_over_rc={:.8f}".format(
+-                    CONTACT_MODEL, comp.get("F_at_x1", float("nan")), comp.get("a_star_over_rc", float("nan"))))
++                print("[BEST] theorem_full_model contact_model={} F_at_x1={:.8e} a_star_over_rc={:.8f}".format(CONTACT_MODEL, comp.get("F_at_x1", float("nan")), comp.get("a_star_over_rc", float("nan"))))
+             else:
+                 print("[BEST] theorem_full_model contact_model={} F_at_x1=nan a_star_over_rc=nan".format(CONTACT_MODEL))
+ 
+-    csv_path = os.path.join(OUTPUT_DIR, "robustness_summary_v9_{}.csv".format(args.mode))
++    csv_path = os.path.join(OUTPUT_DIR, "robustness_summary_v10_{}.csv".format(mode))
+     write_csv(rows, csv_path)
+     if SAVE_SUMMARY_PLOTS:
+         save_summary_plots(rows, OUTPUT_DIR)
+     if SAVE_PLATEAU_DIAGNOSTICS:
+-        plateau_csv = os.path.join(OUTPUT_DIR, "plateau_mask_diagnostics_v9_3.csv")
++        plateau_csv = os.path.join(OUTPUT_DIR, "plateau_mask_diagnostics_v10_0.csv")
+         write_plateau_diagnostics_csv(plateau_diag_rows, plateau_csv)
+-        save_plateau_diagnostics_summary_plot(
+-            plateau_diag_rows,
+-            os.path.join(OUTPUT_DIR, "plateau_mask_summary_v9_3.png")
+-        )
++        save_plateau_diagnostics_summary_plot(plateau_diag_rows, os.path.join(OUTPUT_DIR, "plateau_mask_summary_v10_0.png"))
+     write_best_estimate(rows, OUTPUT_DIR)
+ 
+     if RUN_V6_SHIFT_FREE_POSTCHECK:
+@@ -3045,7 +2920,7 @@
+         print("[META] Shift-free postcheck {} CSV/TXT/TeX : {}".format(SCRIPT_VERSION, OUTPUT_DIR))
+     if SAVE_PLATEAU_DIAGNOSTICS:
+         print("[META] Plateau diagnostics CSV/PNG : {}".format(OUTPUT_DIR))
+-    print("[META] run_metadata_v9_3.json : {}".format(os.path.join(OUTPUT_DIR, "run_metadata_v9_3.json")))
++    print("[META] run_metadata_v10_0.json : {}".format(os.path.join(OUTPUT_DIR, "run_metadata_v10_0.json")))
+ 
+     if WRITE_V8_EXTRAPOLATION:
+         if not postcheck_rows:
+@@ -3061,6 +2936,130 @@
+         except Exception as exc:
+             print(f"[WARN] v8 extrapolation writer failed: {exc}")
+ 
++    summary = {
++        "knot_id": KNOT_ID, "mode": mode, "output_dir": OUTPUT_DIR,
++        "backend_used": backend_used, "ideal_source": IDEAL_SOURCE_DESC,
++        "rows_written": len(rows), "postcheck_rows_written": len(postcheck_rows),
++        "best_found": bool(best), "closure_score": closure_score_from_row(best),
++    }
++    if best:
++        summary.update({
++            "fit_method": best.get("fit_method"), "N_geom": best.get("N_geom"), "N_int_actual": best.get("N_int_actual"),
++            "A_K": best.get("A_K"), "A_ratio": best.get("A_ratio"), "a_nc_over_rc": best.get("a_nc_over_rc"),
++            "closure_x_from_A": best.get("closure_x_from_A"), "a_star_over_rc": best.get("a_star_over_rc"),
++            "status": best.get("status"),
++        })
++    return summary
++
++
++def main() -> None:
++    global OUTPUT_DIR, KNOT_ID, MAX_FOURIER_MODE, N_GEOM_LIST, N_INT_LIST, LAMBDA_LIST, PLATEAU_FRACS
++    global USE_LOCAL_SST_CORE, AUTO_COMPILE_SST_CORE, ENABLE_TORCH_ACCEL, BS_BACKEND_MODE
++    global CONTACT_MODEL, ROOT_SELECTION_MODE, EMIT_V5_LOGS, BRANCH_MODE
++    global RUN_V6_SHIFT_FREE_POSTCHECK
++    global WRITE_V8_EXTRAPOLATION, EXTRAP_MIN_NINT, EXTRA_TARGET_PAIRS, SWEEP_LAYOUT
++
++    parser = argparse.ArgumentParser(description=f"SST Robustness Sweep {SCRIPT_VERSION}")
++    parser.add_argument("--mode", choices=["ideal", "torus"], default="ideal")
++    parser.add_argument("--preset", choices=["fast", "full"], default="full", help="fast = smaller sweep for UI testing; full = full sweep")
++    parser.add_argument("--output-dir", default="", help="Output directory (default: .../sst_knot_candidate_robustness_outputs_v10_0)")
++    parser.add_argument("--backend", choices=BS_BACKEND_ALLOWED, default="auto")
++    parser.add_argument("--knot-id", default=DEFAULT_KNOT_LIST[0], help="Single knot id for the sweep, e.g. 3:1:1")
++    parser.add_argument("--knot-list", default="", help="Whitespace/comma-separated batch knot ids, e.g. 3:1:1,4:1:1,5:1:1,5:2:1")
++    parser.add_argument("--max-fourier-mode", type=int, default=None)
++    parser.add_argument("--n-geom-list", default="", help="Comma-separated e.g. 4000,8000,16000")
++    parser.add_argument("--n-int-list", default="", help="Comma-separated e.g. 2000,4000,8000")
++    parser.add_argument("--lambda-list", default="", help="Comma-separated e.g. 0,1e-3,1e-2")
++    parser.add_argument("--plateau-fracs", default="", help="Comma-separated e.g. 0.08,0.12,0.16")
++    parser.add_argument("--contact-model", choices=["legacy", "barrier_flat_at_rc"], default="legacy")
++    parser.add_argument("--root-selection-mode", choices=["continuation", "closest_to_a_nc", "lowest_energy", "targeted_x_nc"], default="continuation")
++    parser.add_argument("--emit-v5-logs", type=int, choices=[0, 1], default=1)
++    parser.add_argument("--branch-mode", choices=["closest_to_a_nc", "lowest_energy"], default="closest_to_a_nc", help="Used when root-selection-mode is not continuation; also sets first-lambda fallback for continuation")
++    parser.add_argument("--run-v6-shiftfree-postcheck", type=int, choices=[0, 1], default=1, help="After the normal legacy sweep, run an extra shift-free barrier theorem postcheck")
++    parser.add_argument("--no-torch", action="store_true")
++    parser.add_argument("--no-local-sst-core", action="store_true")
++    parser.add_argument("--no-auto-compile", action="store_true")
++    parser.add_argument("--extra-target-pairs", default="", help="Comma-separated exact Ngeom:Nint pairs, e.g. 48000:48000,64000:64000")
++    parser.add_argument("--extrap-min-nint", type=int, default=8000, help="Minimum N_int_actual included in v8/v9 asymptotic extrapolation")
++    parser.add_argument("--no-v8-extrapolation", action="store_true", help="Disable asymptotic extrapolation writer")
++    parser.add_argument("--sweep-layout", choices=["matrix", "exact_pairs_only", "theorem_ladder"], default="matrix", help="matrix = original sweep grid; exact_pairs_only = only exact Ngeom:Nint pairs; theorem_ladder = exact-pair ladder geared to theorem runs")
++
++    argv_in = None
++    if len(sys.argv) == 1 and sys.stdin.isatty():
++        argv_in = prompt_cli_menu_v10()
++    args = parser.parse_args(argv_in)
++
++    EXTRAP_MIN_NINT = int(args.extrap_min_nint)
++    WRITE_V8_EXTRAPOLATION = not bool(args.no_v8_extrapolation)
++    EXTRA_TARGET_PAIRS = parse_exact_pairs(args.extra_target_pairs) if args.extra_target_pairs else []
++    SWEEP_LAYOUT = str(args.sweep_layout)
++    if SWEEP_LAYOUT == "theorem_ladder":
++        for pair in DEFAULT_THEOREM_TARGET_PAIRS:
++            if pair not in EXTRA_TARGET_PAIRS:
++                EXTRA_TARGET_PAIRS.append(pair)
++
++    CONTACT_MODEL = args.contact_model
++    ROOT_SELECTION_MODE = args.root_selection_mode
++    EMIT_V5_LOGS = bool(args.emit_v5_logs)
++    BRANCH_MODE = args.branch_mode
++    RUN_V6_SHIFT_FREE_POSTCHECK = bool(args.run_v6_shiftfree_postcheck)
++
++    if args.no_local_sst_core:
++        USE_LOCAL_SST_CORE = False
++    if args.no_auto_compile:
++        AUTO_COMPILE_SST_CORE = False
++    if args.no_torch:
++        ENABLE_TORCH_ACCEL = False
++    if args.output_dir:
++        OUTPUT_DIR = os.path.abspath(args.output_dir)
++    MAX_FOURIER_MODE = args.max_fourier_mode
++    BS_BACKEND_MODE = args.backend
++
++    if args.preset == "fast":
++        N_GEOM_LIST = [4000, 8000]
++        N_INT_LIST = [2000, 4000]
++        LAMBDA_LIST = [0.0, 1e-3]
++    if args.n_geom_list:
++        N_GEOM_LIST = [int(x.strip()) for x in args.n_geom_list.split(",") if x.strip()]
++    if args.n_int_list:
++        N_INT_LIST = [int(x.strip()) for x in args.n_int_list.split(",") if x.strip()]
++    if args.lambda_list:
++        LAMBDA_LIST = [float(x.strip()) for x in args.lambda_list.replace(",", " ").split() if x.strip()]
++    if args.plateau_fracs:
++        PLATEAU_FRACS = [float(x.strip()) for x in args.plateau_fracs.split(",") if x.strip()]
++
++    knot_ids = parse_knot_list(args.knot_list) if args.knot_list else [args.knot_id]
++    if not knot_ids:
++        knot_ids = [DEFAULT_KNOT_LIST[0]]
++
++    base_output_dir = OUTPUT_DIR
++    os.makedirs(base_output_dir, exist_ok=True)
++    run_start_wall = time.time()
++    run_start = time.perf_counter()
++
++    print("[META] v10 knot batch = {}".format(knot_ids))
++    knot_records: List[dict] = []
++    multi_knot = len(knot_ids) > 1
++
++    for idx, knot_id in enumerate(knot_ids, start=1):
++        if multi_knot:
++            knot_outdir = os.path.join(base_output_dir, sanitize_knot_id_for_path(knot_id))
++        else:
++            knot_outdir = base_output_dir
++        print("\n" + "=" * 90)
++        print("[META] Starting knot {}/{} : {}".format(idx, len(knot_ids), knot_id))
++        print("=" * 90)
++        rec = run_single_knot_sweep(args, args.mode, knot_id, knot_outdir, run_start_wall, base_output_dir)
++        knot_records.append(rec)
++
++    write_knot_comparison_summary(knot_records, base_output_dir)
++
++    total_elapsed = time.perf_counter() - run_start
++    print("[TIME] total_script_s={:.3f}".format(total_elapsed))
++    print("\n[META] Batch complete")
++    print("[META] Knot comparison CSV/TXT : {}".format(base_output_dir))
++
++
+ 
+ if __name__ == "__main__":
+     main()
+\ No newline at end of file

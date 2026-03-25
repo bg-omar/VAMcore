@@ -1,0 +1,23 @@
+SST knot candidate comparison v10.0
+========================================================================
+
+[1] knot_id=5:2:1 mode=ideal closure_score=1.472915e-04
+    fit_method=plateau_0.10 N_geom=64000 N_int_actual=64000
+    A_K=0.07958216002024998 A_ratio=1.0000589171056986 a_nc_over_rc=1.000029458118959
+    a_star_over_rc=1.000029458118959 status=stable output_dir=C:\workspace\projects\SSTcore\trefoil_closure\sst_knot_candidate_robustness_outputs_v10_0\5_2_1
+
+[2] knot_id=3:1:1 mode=ideal closure_score=1.855229e-04
+    fit_method=plateau_0.04 N_geom=64000 N_int_actual=64000
+    A_K=0.07957156623406485 A_ratio=0.999925791662287 a_nc_over_rc=0.9999628951427583
+    a_star_over_rc=0.9999628951427583 status=stable output_dir=C:\workspace\projects\SSTcore\trefoil_closure\sst_knot_candidate_robustness_outputs_v10_0\3_1_1
+
+[3] knot_id=5:1:1 mode=ideal closure_score=8.187439e-04
+    fit_method=global N_geom=32000 N_int_actual=32000
+    A_K=0.07955141139802631 A_ratio=0.9996725185229551 a_nc_over_rc=0.9998362458537674
+    a_star_over_rc=0.9998362458537674 status=stable output_dir=C:\workspace\projects\SSTcore\trefoil_closure\sst_knot_candidate_robustness_outputs_v10_0\5_1_1
+
+[4] knot_id=4:1:1 mode=ideal closure_score=1.765488e-03
+    fit_method=plateau_0.12 N_geom=64000 N_int_actual=64000
+    A_K=0.07952128025627066 A_ratio=0.9992938794286198 a_nc_over_rc=0.9996468773665127
+    a_star_over_rc=0.9996468773665127 status=stable output_dir=C:\workspace\projects\SSTcore\trefoil_closure\sst_knot_candidate_robustness_outputs_v10_0\4_1_1
+

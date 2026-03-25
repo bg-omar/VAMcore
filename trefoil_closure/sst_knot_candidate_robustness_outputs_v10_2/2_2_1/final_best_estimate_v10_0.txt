@@ -1,0 +1,17 @@
+SST ideal-trefoil final best-estimate v10.2
+================================================================
+Ideal source                : ideal.txt (2:2:1, 4 modes, k_max=1)
+Local sst_core available    : True
+Preferred fit method        : plateau_0.8
+Contact model               : legacy
+Root selection mode         : continuation (branch_mode legacy key: closest_to_a_nc)
+Best grid (practical)       : N_geom=64000, N_int=64000
+A_K_best (practical)       : 0.07957526 +- 0.00047262
+A_ratio_best              : 0.99997215 +- 0.00593918
+a_nc/r_c_best              : 0.99998607 +- 0.00296481
+Theorem (no-contact)        : closure_x = sqrt(4*pi*A_K) = 0.99998607 (x-1 = -1.39269330e-05)
+No-contact theorem candidate supported (|x_closure-1| < 0.01): yes
+Full-model row (max lambda) : lambda_K=0.01, F_at_x1=1.25339637e-01, a_star/r_c=0.94712929
+Shift-free at x=1 (barrier model removes dE_cont' at closure): model=legacy -> structural shift-free=no; numeric |force@x1| small=no
+Continuation (lambda branch tracking): enabled=yes; max |jump| in best block=3.50992901e-02
+Branch mode                 : closest_to_a_nc

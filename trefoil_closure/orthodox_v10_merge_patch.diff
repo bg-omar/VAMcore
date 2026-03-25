@@ -1,0 +1,470 @@
+--- /mnt/data/orthodox_ideal_knot_gui_integrated_proof_merged_v9_3.py	2026-03-25 14:04:56.005780290 +0000
++++ /mnt/data/orthodox_gui_v10_patch_target.py	2026-03-25 14:13:32.237149525 +0000
+@@ -27,7 +27,7 @@
+ import time
+ from dataclasses import dataclass
+ from pathlib import Path
+-from typing import Callable, Dict, List, Optional, Tuple
++from typing import Callable, Dict, List, Optional, Sequence, Tuple
+ 
+ import numpy as np
+ from scipy.optimize import brentq
+@@ -66,6 +66,12 @@
+ POINT_PRESETS = [500, 1000, 2000, 4000, 8000, 16000, 32000, 64000]
+ WARNING_PRESETS = {32000, 64000}
+ 
++SCRIPT_VERSION = "orthodox-v10-merge-patch"
++PREFERRED_FIT_METHOD = "plateau_0.12"
++CLOSURE_CANDIDATE_FIT_METHODS = ["plateau_0.04", "plateau_0.06", "plateau_0.08", "plateau_0.10", "plateau_0.12"]
++EXTRAP_MIN_NINT_DEFAULT = 8000
++SWEEP_LAYOUT_ALLOWED = ("exact_pairs_only", "matrix")
++
+ BS_BACKEND_ALLOWED = ("auto", "local_cpp_scan", "torch", "numpy")
+ ROOT_SELECTION_ALLOWED = ("continuation", "closest_to_a_nc", "lowest_energy", "targeted_x_nc")
+ REGULARIZER_ALLOWED = ("legacy", "shift_free_barrier")
+@@ -335,7 +341,7 @@
+     return np.minimum(d, n - d)
+ 
+ 
+-def coarse_min_self_distance(points: np.ndarray, comp_ids: np.ndarray, local_idx: np.ndarray, n_per_comp: np.ndarray, excl_same_comp: int, cancel_cb: Optional[Callable[[], bool]] = None) -> float:
++def coarse_min_self_distance(points: np.ndarray, comp_ids: np.ndarray, local_idx: np.ndarray, n_per_comp: np.ndarray, excl_same_comp: int, cancel_cb: Optional[Callable[[], bool]] = None, progress_cb: Optional[Callable[[float], None]] = None) -> float:
+     n = len(points)
+     d_min = np.inf
+     outer_steps = max(1, math.ceil(n / BS_BLOCK))
+@@ -437,8 +443,16 @@
+     ncomp_int = np.concatenate(ncomp_int_list)
+ 
+     L_dimless_full = float(np.sum(ds_full))
+-    d_min_full = coarse_min_self_distance(points_full, comp_full, local_full, ncomp_full, max(5, points_per_component // 15), cancel_cb=cancel_cb)
+-    d_min_int = coarse_min_self_distance(points_int, comp_int, local_int, ncomp_int, max(5, points_per_component // 15), cancel_cb=cancel_cb)
++    d_min_full = coarse_min_self_distance(
++        points_full, comp_full, local_full, ncomp_full, max(5, points_per_component // 15),
++        cancel_cb=cancel_cb,
++        progress_cb=(lambda f: progress_cb(0.25 * f, "geometry: d_min(full)")) if progress_cb is not None else None,
++    )
++    d_min_int = coarse_min_self_distance(
++        points_int, comp_int, local_int, ncomp_int, max(5, points_per_component // 15),
++        cancel_cb=cancel_cb,
++        progress_cb=(lambda f: progress_cb(0.25 + 0.25 * f, "geometry: d_min(int)")) if progress_cb is not None else None,
++    )
+ 
+     return GeometryData(
+         total_points_full=len(points_full),
+@@ -910,6 +924,93 @@
+     return choose_root(candidates, a_nc, branch)
+ 
+ 
++def parse_exact_pairs(text: str) -> List[Tuple[int, int]]:
++    pairs: List[Tuple[int, int]] = []
++    if not text.strip():
++        return pairs
++    for a_str, b_str in re.findall(r"\(\s*(\d+)\s*,\s*(\d+)\s*\)", text):
++        pairs.append((int(a_str), int(b_str)))
++    if pairs:
++        return pairs
++    for token in text.replace(",", " ").split():
++        if ":" not in token:
++            continue
++        left, right = token.split(":", 1)
++        if left.strip().isdigit() and right.strip().isdigit():
++            pairs.append((int(left.strip()), int(right.strip())))
++    return pairs
++
++
++def _fit_lookup(fits: Sequence[FitResult]) -> Dict[str, FitResult]:
++    return {fr.method: fr for fr in fits}
++
++
++def select_preferred_fit(fits: Sequence[FitResult], preferred_method: str = PREFERRED_FIT_METHOD) -> Optional[FitResult]:
++    lookup = _fit_lookup(fits)
++    fr = lookup.get(preferred_method)
++    if fr is not None and np.isfinite(fr.A_K):
++        return fr
++    finite = [x for x in fits if np.isfinite(x.A_K)]
++    if not finite:
++        return None
++    return min(finite, key=lambda x: abs(x.A_K - A_REQ))
++
++
++def _last2_half_range(vals: Sequence[float]) -> float:
++    arr = np.asarray([v for v in vals if np.isfinite(v)], dtype=float)
++    if arr.size < 2:
++        return float("nan")
++    return 0.5 * float(np.max(arr[-2:]) - np.min(arr[-2:]))
++
++
++def _quasi_monotone_tail(vals: Sequence[float], target: float, relax: float = 0.05, abs_eps: float = 1e-6) -> bool:
++    arr = np.asarray([v for v in vals if np.isfinite(v)], dtype=float)
++    if arr.size < 3:
++        return False
++    err = np.abs(arr - target)
++    for i in range(1, len(err)):
++        if err[i] > err[i - 1] + max(abs_eps, relax * err[i - 1]):
++            return False
++    return True
++
++
++def summarize_sweep_runs(sweeps: Sequence[SweepResult], preferred_method: str = PREFERRED_FIT_METHOD, extrap_min_nint: int = EXTRAP_MIN_NINT_DEFAULT) -> Dict[str, object]:
++    if not sweeps:
++        return {}
++    rows = []
++    for sw in sweeps:
++        fr = select_preferred_fit(sw.fits, preferred_method)
++        if fr is None:
++            continue
++        rows.append({
++            "N_geom": sw.N_geom,
++            "N_int": sw.N_int,
++            "backend": sw.backend,
++            "method": fr.method,
++            "A_K": float(fr.A_K),
++            "A_ratio": float(fr.A_K / A_REQ),
++            "x_nc": float(closure_x_from_A(fr.A_K)),
++            "n_plateau": int(fr.n_plateau),
++            "A_spread": float(fr.A_spread) if np.isfinite(fr.A_spread) else np.nan,
++            "a_fit_ref": float(fr.a_fit_ref) if np.isfinite(fr.a_fit_ref) else np.nan,
++        })
++    if not rows:
++        return {}
++    rows = sorted(rows, key=lambda r: (r["N_geom"], r["N_int"]))
++    tail = [r for r in rows if int(r["N_int"]) >= int(extrap_min_nint)]
++    A_tail = [float(r["A_K"]) for r in tail]
++    x_tail = [float(r["x_nc"]) for r in tail]
++    return {
++        "rows": rows,
++        "preferred_method": preferred_method,
++        "extrap_min_nint": int(extrap_min_nint),
++        "A_last2_half_range": _last2_half_range(A_tail),
++        "x_last2_half_range": _last2_half_range(x_tail),
++        "A_tail_quasi_monotone": _quasi_monotone_tail(A_tail, A_REQ),
++        "x_tail_quasi_monotone": _quasi_monotone_tail(x_tail, 1.0),
++    }
++
++
+ class BenchmarkWorker(QThread):
+     log_signal = pyqtSignal(str)
+     done_signal = pyqtSignal(dict)
+@@ -919,7 +1020,9 @@
+     def __init__(self, entry: IdealEntry, points_per_component: int, int_points_per_component: int,
+                  U_ref: float, Gamma_ref: float, rho: float, lam: float, p_exp: int,
+                  backend_mode: str, allow_torch: bool, root_selection_mode: str, regularizer: str,
+-                 sweep_enabled: bool = False, sweep_pairs_text: str = ""):
++                 sweep_enabled: bool = False, sweep_pairs_text: str = "",
++                 sweep_layout: str = "exact_pairs_only", preferred_fit_method: str = PREFERRED_FIT_METHOD,
++                 extrap_min_nint: int = EXTRAP_MIN_NINT_DEFAULT):
+         super().__init__()
+         self.entry = entry
+         self.points_per_component = points_per_component
+@@ -935,6 +1038,9 @@
+         self.regularizer = regularizer
+         self.sweep_enabled = sweep_enabled
+         self.sweep_pairs_text = sweep_pairs_text
++        self.sweep_layout = sweep_layout
++        self.preferred_fit_method = preferred_fit_method
++        self.extrap_min_nint = extrap_min_nint
+         self._t0 = 0.0
+ 
+     def _emit_progress(self, frac: float, phase: str):
+@@ -946,47 +1052,82 @@
+         eta_text = "--" if not np.isfinite(eta) else f"{eta:.1f}s"
+         self.progress_signal.emit(int(round(frac * 100.0)), phase, eta_text)
+ 
++    def _single_run(self, entry: IdealEntry, n_geom: int, n_int: int, r_ref: float) -> dict:
++        self.log_signal.emit(log_prefix(f"[META] file={entry.source_file.name} id={entry.knot_id} components={entry.n_components} L_ref={entry.L_ref:.6f}"))
++        self.log_signal.emit(log_prefix(f"[META] family_tags={','.join(family_tags(entry)) or '-'}"))
++        self.log_signal.emit(log_prefix(f"[META] r_ref = Gamma_ref/(2*pi*U_ref) = {r_ref:.8e} m"))
++        geom = build_geometry(
++            entry, n_geom, n_int,
++            cancel_cb=self.isInterruptionRequested,
++            progress_cb=lambda f, phase: self._emit_progress(0.05 + 0.35 * f, phase),
++        )
++        self.log_signal.emit(log_prefix(f"[GEOM] total_points_full={geom.total_points_full} total_points_int={geom.total_points_int} L_dimless={geom.L_dimless_full:.6f} d_min={geom.d_min_full:.6f}"))
++        a_scan, E_vals, backend_used = scan_bs_energy(
++            geom, self.backend_mode, self.allow_torch,
++            cancel_cb=self.isInterruptionRequested,
++            progress_cb=lambda f, phase: self._emit_progress(0.40 + 0.54 * f, phase),
++        )
++        self._emit_progress(0.96, "fit: extracting A_K")
++        fits, plateau_diag = extract_fits(a_scan, E_vals, geom.L_dimless_full, geom.d_min_full)
++        result = {
++            "entry": entry,
++            "geom": geom,
++            "a_scan": a_scan,
++            "E_vals": E_vals,
++            "fits": fits,
++            "plateau_diag": plateau_diag,
++            "backend_used": backend_used,
++            "r_ref": r_ref,
++        }
++        total_fits = max(1, len(fits))
++        prev_a_star = None
++        for fit_idx, fr in enumerate(fits, start=1):
++            A_K = fr.A_K
++            if not np.isfinite(A_K):
++                continue
++            a_nc = a_nc_from_A(A_K, r_ref)
++            a_nc_over_rref = closure_x_from_A(A_K)
++            self.log_signal.emit(log_prefix(f"[FIT] method={fr.method} A_K={A_K:.8f} A_ratio={A_K/A_REQ:.6f} a_nc_over_r_ref={a_nc_over_rref:.6f} n_plateau={fr.n_plateau}"))
++            a_star, is_min, E_star, root_count, min_root_count, root_choice = find_stationary_radius(
++                A_K, fr.a_K, geom.L_dimless_full, geom.d_min_full, self.rho, self.Gamma_ref, self.U_ref,
++                self.lam, self.p_exp, a_nc, regularizer=self.regularizer,
++                root_selection_mode=self.root_selection_mode, prev_a_star=prev_a_star
++            )
++            if self.root_selection_mode == "continuation" and np.isfinite(a_star):
++                prev_a_star = a_star
++            self.log_signal.emit(log_prefix(f"[ROOT] lambda={self.lam:g} method={fr.method} a_star_over_r_ref={a_star/r_ref:.6f} is_min={is_min} root_choice={root_choice} roots={root_count} minima={min_root_count} backend={backend_used}"))
++            self._emit_progress(0.96 + 0.04 * (fit_idx / total_fits), f"fit/root: {fit_idx}/{total_fits}")
++        return result
++
+     def run(self):
+         try:
+             self._t0 = time.perf_counter()
+             self._emit_progress(0.0, "starting")
+             r_ref = self.Gamma_ref / (2.0 * math.pi * self.U_ref)
+-            self.log_signal.emit(log_prefix(f"[META] file={self.entry.source_file.name} id={self.entry.knot_id} components={self.entry.n_components} L_ref={self.entry.L_ref:.6f}"))
+-            self.log_signal.emit(log_prefix(f"[META] family_tags={','.join(family_tags(self.entry)) or '-'}"))
+-            self.log_signal.emit(log_prefix(f"[META] r_ref = Gamma_ref/(2*pi*U_ref) = {r_ref:.8e} m"))
+-            geom = build_geometry(self.entry, self.points_per_component, self.int_points_per_component, cancel_cb=self.isInterruptionRequested, progress_cb=lambda f, phase: self._emit_progress(0.05 + 0.35 * f, phase))
+-            self.log_signal.emit(log_prefix(f"[GEOM] total_points_full={geom.total_points_full} total_points_int={geom.total_points_int} L_dimless={geom.L_dimless_full:.6f} d_min={geom.d_min_full:.6f}"))
+-            a_scan, E_vals, backend_used = scan_bs_energy(geom, self.backend_mode, self.allow_torch, cancel_cb=self.isInterruptionRequested, progress_cb=lambda f, phase: self._emit_progress(0.40 + 0.54 * f, phase))
+-            self._emit_progress(0.96, "fit: extracting A_K")
+-            fits, plateau_diag = extract_fits(a_scan, E_vals, geom.L_dimless_full, geom.d_min_full)
+-            result = {
+-                "entry": self.entry,
+-                "geom": geom,
+-                "a_scan": a_scan,
+-                "E_vals": E_vals,
+-                "fits": fits,
+-                "plateau_diag": plateau_diag,
+-                "backend_used": backend_used,
+-                "r_ref": r_ref,
+-            }
+-            total_fits = max(1, len(fits))
+-            prev_a_star = None
+-            for fit_idx, fr in enumerate(fits, start=1):
+-                A_K = fr.A_K
+-                if not np.isfinite(A_K):
+-                    continue
+-                a_nc = a_nc_from_A(A_K, r_ref)
+-                a_nc_over_rref = closure_x_from_A(A_K)
+-                self.log_signal.emit(log_prefix(f"[FIT] method={fr.method} A_K={A_K:.8f} A_ratio={A_K/A_REQ:.6f} a_nc_over_r_ref={a_nc_over_rref:.6f} n_plateau={fr.n_plateau}"))
+-                a_star, is_min, E_star, root_count, min_root_count, root_choice = find_stationary_radius(
+-                    A_K, fr.a_K, geom.L_dimless_full, geom.d_min_full, self.rho, self.Gamma_ref, self.U_ref,
+-                    self.lam, self.p_exp, a_nc, regularizer=self.regularizer,
+-                    root_selection_mode=self.root_selection_mode, prev_a_star=prev_a_star
++            result = self._single_run(self.entry, self.points_per_component, self.int_points_per_component, r_ref)
++            if self.sweep_enabled:
++                pairs = parse_exact_pairs(self.sweep_pairs_text)
++                if not pairs:
++                    pairs = [(self.points_per_component, self.int_points_per_component)]
++                sweep_runs: List[SweepResult] = []
++                total = len(pairs)
++                for idx, (n_geom, n_int) in enumerate(pairs, start=1):
++                    check_cancel(self.isInterruptionRequested)
++                    self.log_signal.emit(log_prefix(f"[SWEEP] {idx}/{total} N_geom={n_geom} N_int={n_int}"))
++                    sweep_result = self._single_run(self.entry, int(n_geom), int(n_int), r_ref)
++                    sweep_runs.append(SweepResult(
++                        N_geom=int(n_geom),
++                        N_int=int(n_int),
++                        backend=str(sweep_result.get("backend_used", "-")),
++                        fits=list(sweep_result.get("fits", [])),
++                        plateau_diag=dict(sweep_result.get("plateau_diag", {})),
++                    ))
++                result["sweep_runs"] = sweep_runs
++                result["sweep_summary"] = summarize_sweep_runs(
++                    sweep_runs,
++                    preferred_method=self.preferred_fit_method,
++                    extrap_min_nint=self.extrap_min_nint,
+                 )
+-                if self.root_selection_mode == "continuation" and np.isfinite(a_star):
+-                    prev_a_star = a_star
+-                self.log_signal.emit(log_prefix(f"[ROOT] lambda={self.lam:g} method={fr.method} a_star_over_r_ref={a_star/r_ref:.6f} is_min={is_min} root_choice={root_choice} roots={root_count} minima={min_root_count} backend={backend_used}"))
+-                self._emit_progress(0.96 + 0.04 * (fit_idx / total_fits), f"fit/root: {fit_idx}/{total_fits}")
+             self._emit_progress(1.0, "complete")
+             self.done_signal.emit(result)
+         except RunCancelled:
+@@ -1252,6 +1393,23 @@
+         form.addWidget(self.sweep_pairs_edit, row, 1, 1, 3)
+         row += 1
+ 
++        form.addWidget(QLabel("Sweep layout"), row, 0)
++        self.sweep_layout_combo = QComboBox()
++        self.sweep_layout_combo.addItems(list(SWEEP_LAYOUT_ALLOWED))
++        self.sweep_layout_combo.setCurrentText("exact_pairs_only")
++        form.addWidget(self.sweep_layout_combo, row, 1)
++        form.addWidget(QLabel("Preferred fit"), row, 2)
++        self.preferred_fit_combo = QComboBox()
++        self.preferred_fit_combo.addItems(["global"] + list(CLOSURE_CANDIDATE_FIT_METHODS))
++        self.preferred_fit_combo.setCurrentText(PREFERRED_FIT_METHOD)
++        form.addWidget(self.preferred_fit_combo, row, 3)
++        row += 1
++
++        form.addWidget(QLabel("Extrapolation min N_int"), row, 0)
++        self.extrap_min_spin = QSpinBox(); self.extrap_min_spin.setRange(1, 1000000); self.extrap_min_spin.setValue(EXTRAP_MIN_NINT_DEFAULT)
++        form.addWidget(self.extrap_min_spin, row, 1)
++        row += 1
++
+         left_layout.addLayout(form)
+ 
+         btn_row = QHBoxLayout()
+@@ -1302,6 +1460,9 @@
+         self.fit_box = QTextEdit(); self.fit_box.setReadOnly(True)
+         self.tabs.addTab(self.fit_box, "Fit Robustness")
+ 
++        self.sweep_box = QTextEdit(); self.sweep_box.setReadOnly(True)
++        self.tabs.addTab(self.sweep_box, "Resolution Sweep")
++
+         self.preview_tab = Preview3DWidget()
+         self.preview_tab.refresh_btn.clicked.connect(self.refresh_preview)
+         self.preview_tab.mode_combo.currentIndexChanged.connect(self.refresh_preview)
+@@ -1414,6 +1575,7 @@
+             self.preview_tab.render()
+             self.update_theorem_tab(None)
+             self.update_fit_robustness_tab(None)
++            self.update_sweep_tab(None)
+             return
+         html = []
+         html.append(f"<h3>{entry.knot_id}</h3>")
+@@ -1432,6 +1594,7 @@
+         self.preview_tab.set_entry(entry)
+         self.preview_tab.render()
+         self.update_theorem_tab(self.last_result)
++        self.update_sweep_tab(self.last_result)
+ 
+     def update_theorem_tab(self, result: Optional[dict] = None):
+         entry = self.current_entry()
+@@ -1446,14 +1609,8 @@
+         if result and not result.get('cancelled'):
+             fits = result.get('fits', [])
+             chosen = None
+-            for fr in fits:
+-                if getattr(fr, 'method', '') == 'plateau_0.12' and np.isfinite(getattr(fr, 'A_K', np.nan)):
+-                    chosen = fr
+-                    break
+-            if chosen is None:
+-                finite = [fr for fr in fits if np.isfinite(getattr(fr, 'A_K', np.nan))]
+-                if finite:
+-                    chosen = min(finite, key=lambda fr: abs(fr.A_K - A_REQ))
++            preferred_method = self.preferred_fit_combo.currentText() if hasattr(self, 'preferred_fit_combo') else PREFERRED_FIT_METHOD
++            chosen = select_preferred_fit(fits, preferred_method)
+             if chosen is not None:
+                 A_K = float(chosen.A_K)
+                 ratio = A_K / A_REQ
+@@ -1511,6 +1668,37 @@
+             html.append("</table>")
+         self.fit_box.setHtml("\n".join(html))
+ 
++    def update_sweep_tab(self, result: Optional[dict] = None):
++        html = ["<h3>Resolution Sweep</h3>"]
++        if not result or result.get("cancelled"):
++            html.append("<p><i>Enable exact-pair sweep to populate resolution diagnostics.</i></p>")
++            self.sweep_box.setHtml("\n".join(html))
++            return
++        summary = result.get("sweep_summary") or {}
++        rows = summary.get("rows", [])
++        if not rows:
++            html.append("<p><i>No sweep rows recorded for this run.</i></p>")
++            self.sweep_box.setHtml("\n".join(html))
++            return
++        html.append(f"<p><b>Preferred fit:</b> {summary.get('preferred_method', '-')} &nbsp; <b>Extrapolation min N_int:</b> {summary.get('extrap_min_nint', '-')}</p>")
++        html.append("<table border='1' cellspacing='0' cellpadding='4'>")
++        html.append("<tr><th>N_geom</th><th>N_int</th><th>backend</th><th>method</th><th>A_K</th><th>A ratio</th><th>x_nc</th><th>n_plateau</th></tr>")
++        for row in rows:
++            html.append(
++                f"<tr><td>{row['N_geom']}</td><td>{row['N_int']}</td><td>{row['backend']}</td><td>{row['method']}</td>"
++                f"<td>{row['A_K']:.8f}</td><td>{row['A_ratio']:.6f}</td><td>{row['x_nc']:.6f}</td><td>{row['n_plateau']}</td></tr>"
++            )
++        html.append("</table>")
++        html.append("<p><b>Tail diagnostics</b></p>")
++        html.append("<table border='1' cellspacing='0' cellpadding='4'>")
++        html.append("<tr><th>quantity</th><th>value</th></tr>")
++        html.append(f"<tr><td>last2 half-range A_K</td><td>{summary.get('A_last2_half_range', np.nan):.3e}</td></tr>")
++        html.append(f"<tr><td>last2 half-range x_nc</td><td>{summary.get('x_last2_half_range', np.nan):.3e}</td></tr>")
++        html.append(f"<tr><td>tail(A_K) quasi-monotone</td><td>{'yes' if summary.get('A_tail_quasi_monotone') else 'no'}</td></tr>")
++        html.append(f"<tr><td>tail(x_nc) quasi-monotone</td><td>{'yes' if summary.get('x_tail_quasi_monotone') else 'no'}</td></tr>")
++        html.append("</table>")
++        self.sweep_box.setHtml("\n".join(html))
++
+     def export_summary(self):
+         if not self.last_result or self.last_result.get("cancelled"):
+             QMessageBox.information(self, "No results", "Run the benchmark first.")
+@@ -1536,7 +1724,36 @@
+                     self.root_mode_combo.currentText(),
+                     self.regularizer_combo.currentText(),
+                 ])
++        txt_path = str(Path(path).with_suffix('.txt'))
++        with open(txt_path, 'w', encoding='utf-8') as f:
++            f.write(f"Orthodox ideal-knot benchmark summary {SCRIPT_VERSION}\n")
++            f.write("=" * 72 + "\n")
++            f.write(f"backend={self.last_result.get('backend_used', '-')}\n")
++            f.write(f"root_mode={self.root_mode_combo.currentText()} regularizer={self.regularizer_combo.currentText()}\n")
++            f.write(f"preferred_fit={self.preferred_fit_combo.currentText()}\n\n")
++            for fr in fits:
++                A_K = fr.A_K
++                x_nc = closure_x_from_A(A_K) if np.isfinite(A_K) else np.nan
++                f.write(
++                    f"[{fr.method}] A_K={A_K:.10e} A_ratio={(A_K / A_REQ) if np.isfinite(A_K) else np.nan:.10e} "
++                    f"x_nc={x_nc:.10e} n_plateau={fr.n_plateau} A_spread={fr.A_spread:.10e}\n"
++                )
++            summary = self.last_result.get('sweep_summary') or {}
++            rows = summary.get('rows', [])
++            if rows:
++                f.write("\n[Resolution sweep]\n")
++                f.write(f"preferred_method={summary.get('preferred_method')} extrap_min_nint={summary.get('extrap_min_nint')}\n")
++                for row in rows:
++                    f.write(
++                        f"N_geom={row['N_geom']} N_int={row['N_int']} backend={row['backend']} method={row['method']} "
++                        f"A_K={row['A_K']:.10e} x_nc={row['x_nc']:.10e}\n"
++                    )
++                f.write(f"tail_A_last2_half_range={summary.get('A_last2_half_range', np.nan):.10e}\n")
++                f.write(f"tail_x_last2_half_range={summary.get('x_last2_half_range', np.nan):.10e}\n")
++                f.write(f"tail_A_quasi_monotone={bool(summary.get('A_tail_quasi_monotone', False))}\n")
++                f.write(f"tail_x_quasi_monotone={bool(summary.get('x_tail_quasi_monotone', False))}\n")
+         self.append_log(f"[EXPORT] wrote summary to {path}")
++        self.append_log(f"[EXPORT] wrote text summary to {txt_path}")
+ 
+     def append_log(self, msg: str):
+         self.log_box.appendPlainText(msg)
+@@ -1576,6 +1793,9 @@
+             regularizer=self.regularizer_combo.currentText(),
+             sweep_enabled=bool(self.sweep_check.isChecked()),
+             sweep_pairs_text=self.sweep_pairs_edit.text().strip(),
++            sweep_layout=self.sweep_layout_combo.currentText(),
++            preferred_fit_method=self.preferred_fit_combo.currentText(),
++            extrap_min_nint=int(self.extrap_min_spin.value()),
+         )
+         self.current_worker.log_signal.connect(self.append_log)
+         self.current_worker.progress_signal.connect(self.on_progress)
+@@ -1593,6 +1813,7 @@
+             self.result_box.setHtml("<b>Run cancelled by user.</b>")
+             self.update_theorem_tab(None)
+             self.update_fit_robustness_tab(None)
++            self.update_sweep_tab(None)
+             self.tabs.setCurrentIndex(1)
+             self.current_worker = None
+             return
+@@ -1606,7 +1827,7 @@
+         lines.append(f"<p><b>Total points (full/int):</b> {geom.total_points_full} / {geom.total_points_int}<br>")
+         lines.append(f"<b>L_dimless:</b> {geom.L_dimless_full:.6f}<br>")
+         lines.append(f"<b>d_min:</b> {geom.d_min_full:.6f}<br>")
+-        lines.append(f"<b>r_ref:</b> {r_ref:.8e} m<br><b>backend:</b> {backend_used}</p>")
++        lines.append(f"<b>r_ref:</b> {r_ref:.8e} m<br><b>backend:</b> {backend_used}<br><b>preferred fit:</b> {self.preferred_fit_combo.currentText()}</p>")
+         lines.append("<table border='1' cellspacing='0' cellpadding='4'>")
+         lines.append("<tr><th>method</th><th>A_K</th><th>A_K/(1/(4π))</th><th>a_nc / r_ref</th></tr>")
+         for fr in fits:
+@@ -1617,6 +1838,7 @@
+         self.result_box.setHtml("\n".join(lines))
+         self.update_theorem_tab(result)
+         self.update_fit_robustness_tab(result)
++        self.update_sweep_tab(result)
+         self.tabs.setCurrentIndex(1)
+         self.append_log("[META] benchmark complete")
+         self.current_worker = None
+@@ -1627,6 +1849,7 @@
+         self.progress_label.setText("Failed")
+         self.update_theorem_tab(None)
+         self.update_fit_robustness_tab(None)
++        self.update_sweep_tab(None)
+         QMessageBox.critical(self, "Run failed", text)
+         self.append_log("[ERROR] run failed; see popup")
+         self.current_worker = None
