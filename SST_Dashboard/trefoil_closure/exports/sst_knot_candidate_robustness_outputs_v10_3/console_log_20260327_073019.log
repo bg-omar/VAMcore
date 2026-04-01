@@ -1,0 +1,19 @@
+[LOG_HEADER] SST robustness sweep console mirror
+[LOG_HEADER] script_version=v10.3_master started_wall=2026-03-27T07:30:19
+[LOG_HEADER] log_path=C:\workspace\projects\SSTcore\trefoil_closure\sst_knot_candidate_robustness_outputs_v10_3\console_log_20260327_073019.log
+[LOG_HEADER] cwd=C:\workspace\projects\SSTcore\trefoil_closure
+[LOG_HEADER] argv=['C:\\workspace\\projects\\SSTcore\\trefoil_closure\\sst_knot_candidate_robustness_sweep_v10_3_master_sweep.py']
+[LOG_HEADER] python=3.12.12 platform=win32
+[LOG_HEADER] numpy=2.3.5 pandas=2.3.3 scipy=1.16.3 torch=2.5.1+cxx11.abi cuda_available=False
+[LOG_HEADER] output_base_dir=C:\workspace\projects\SSTcore\trefoil_closure\sst_knot_candidate_robustness_outputs_v10_3
+[LOG_HEADER] knot_ids=['0:1:1', '3:1:1', '4:1:1', '5:1:1', '5:1:2', '5:1:3', '6:1:1', '6:1:2', '6:1:3', '7:1:1', '7:1:2', '7:1:3', '7:1:4', '8:1:1', '9:1:1', '9:1:2', '10:1:1', '0:1:2', '2:2:1']
+---
+[META] console_log_path=C:\workspace\projects\SSTcore\trefoil_closure\sst_knot_candidate_robustness_outputs_v10_3\console_log_20260327_073019.log
+[META] v10.3 knot batch = ['0:1:1', '3:1:1', '4:1:1', '5:1:1', '5:1:2', '5:1:3', '6:1:1', '6:1:2', '6:1:3', '7:1:1', '7:1:2', '7:1:3', '7:1:4', '8:1:1', '9:1:1', '9:1:2', '10:1:1', '0:1:2', '2:2:1']
+[META] external_knotlib=auto spherogram_available=True
+
+==========================================================================================
+[META] Starting knot 1/19 : 0:1:1
+==========================================================================================
+[PAR] geometry-parallel execution enabled: workers=8 tasks=10 scope=geom
+[PAR] done 1/10 Ng=24000 Ni=24000 scan=4.686s fit=0.027s best_A_ratio=0.999265 best_a_nc_over_rc=0.999632

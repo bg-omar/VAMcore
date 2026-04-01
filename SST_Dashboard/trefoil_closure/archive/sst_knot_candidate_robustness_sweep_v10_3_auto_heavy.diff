@@ -1,0 +1,90 @@
+--- /mnt/data/sst_knot_candidate_robustness_sweep_v10_3_repaired.py	2026-03-27 04:14:28.758267181 +0000
++++ /mnt/data/sst_knot_candidate_robustness_sweep_v10_3_auto_heavy.py	2026-03-27 04:14:29.644795128 +0000
+@@ -253,6 +253,34 @@
+ 
+ DEFAULT_KNOT_LIST: List[str] = ["3:1:1"]
+ 
++LAUNCHER_HEAVY_BATCH_KNOTS: List[str] = [
++    "0:1:1", "0:1:2", "2:2:1", "3:1:1", "4:1:1", "5:1:1", "5:1:2",
++    "6:1:1", "7:1:1", "7:1:2", "8:1:1", "9:1:1", "9:1:2", "10:1:1",
++]
++LAUNCHER_HEAVY_BATCH_KNOTS_CSV = ",".join(LAUNCHER_HEAVY_BATCH_KNOTS)
++
++LAUNCHER_HEAVY_EXACT_PAIRS: List[Tuple[int, int]] = [
++    (8000, 8000), (16000, 16000), (24000, 24000), (32000, 32000),
++    (40000, 40000), (48000, 48000), (56000, 56000), (64000, 64000),
++    (72000, 72000), (80000, 80000), (88000, 88000), (96000, 96000),
++]
++LAUNCHER_HEAVY_EXACT_PAIRS_CSV = ",".join(f"{a}:{b}" for (a, b) in LAUNCHER_HEAVY_EXACT_PAIRS)
++
++LAUNCHER_DEFAULT_MODE = "ideal"
++LAUNCHER_DEFAULT_KNOT_ID = LAUNCHER_HEAVY_BATCH_KNOTS[0]
++LAUNCHER_DEFAULT_KNOT_PRESET = ""
++LAUNCHER_DEFAULT_KNOT_LIST = LAUNCHER_HEAVY_BATCH_KNOTS_CSV
++LAUNCHER_DEFAULT_PRESET = "full"
++LAUNCHER_DEFAULT_SWEEP_LAYOUT = "exact_pairs_only"
++LAUNCHER_DEFAULT_BACKEND = "auto"
++LAUNCHER_DEFAULT_PARALLEL_SCOPE = "global"
++LAUNCHER_DEFAULT_MAX_WORKERS = "0"
++LAUNCHER_DEFAULT_CONTACT_MODEL = "legacy"
++LAUNCHER_DEFAULT_ROOT_MODE = "continuation"
++LAUNCHER_DEFAULT_RUN_POSTCHECK = "1"
++LAUNCHER_DEFAULT_EXTRAP_MIN_NINT = str(EXTRAP_MIN_NINT)
++LAUNCHER_DEFAULT_CONSOLE_LOG_ENABLED = "1"
++
+ phi0 = (1.0 + math.sqrt(5.0)) / 2.0
+ 
+ def twist_t_plus(n: int) -> float:
+@@ -2754,23 +2782,28 @@
+ def prompt_cli_menu_v10() -> List[str]:
+     print(f"\nSST Robustness Sweep {SCRIPT_VERSION} interactive launcher")
+     print("Press Enter to accept the default shown in parentheses.\n")
+-
+-    mode = _prompt_choice("Mode", ["ideal", "torus"], "ideal")
+-    knot_id = _prompt_text("Single knot id", DEFAULT_KNOT_LIST[0])
+-    knot_preset = _prompt_text("Knot preset/group (blank = none; e.g. leptons, quarks, twist_ladder)", "")
+-    knot_list = _prompt_text("Batch knot list (blank = single knot)", "")
+-    preset = _prompt_choice("Preset", ["fast", "full"], "full")
+-    sweep_layout = _prompt_choice("Sweep layout", ["matrix", "exact_pairs_only", "theorem_ladder"], "theorem_ladder")
+-    backend = _prompt_choice("Backend", list(BS_BACKEND_ALLOWED), "auto")
+-    parallel_scope = _prompt_choice("Parallel scope", ["auto", "none", "geom", "global"], "auto")
+-    max_workers = _prompt_text("Max workers (0 = auto)", "0")
+-    contact_model = _prompt_choice("Main sweep contact model", ["legacy", "barrier_flat_at_rc"], "legacy")
+-    root_mode = _prompt_choice("Root selection mode", ["continuation", "targeted_x_nc", "closest_to_a_nc", "lowest_energy"], "continuation")
+-    run_postcheck = _prompt_choice("Run shift-free postcheck", ["1", "0"], "1")
+-    extrap_min = _prompt_text("Extrapolation minimum N_int_actual", str(EXTRAP_MIN_NINT))
++    print("[MENU] Default launch profile = recommended heavy batch")
++    print(f"[MENU] Default knot batch   = {LAUNCHER_DEFAULT_KNOT_LIST}")
++    print(f"[MENU] Default exact pairs  = {LAUNCHER_HEAVY_EXACT_PAIRS_CSV}\n")
++
++    mode = _prompt_choice("Mode", ["ideal", "torus"], LAUNCHER_DEFAULT_MODE)
++    knot_id = _prompt_text("Single knot id", LAUNCHER_DEFAULT_KNOT_ID)
++    knot_preset = _prompt_text("Knot preset/group (blank = none; e.g. leptons, quarks, twist_ladder)", LAUNCHER_DEFAULT_KNOT_PRESET)
++    knot_list = _prompt_text("Batch knot list (blank = single knot)", LAUNCHER_DEFAULT_KNOT_LIST)
++    preset = _prompt_choice("Preset", ["fast", "full"], LAUNCHER_DEFAULT_PRESET)
++    sweep_layout = _prompt_choice("Sweep layout", ["matrix", "exact_pairs_only", "theorem_ladder"], LAUNCHER_DEFAULT_SWEEP_LAYOUT)
++    backend = _prompt_choice("Backend", list(BS_BACKEND_ALLOWED), LAUNCHER_DEFAULT_BACKEND)
++    parallel_scope = _prompt_choice("Parallel scope", ["auto", "none", "geom", "global"], LAUNCHER_DEFAULT_PARALLEL_SCOPE)
++    max_workers = _prompt_text("Max workers (0 = auto)", LAUNCHER_DEFAULT_MAX_WORKERS)
++    contact_model = _prompt_choice("Main sweep contact model", ["legacy", "barrier_flat_at_rc"], LAUNCHER_DEFAULT_CONTACT_MODEL)
++    root_mode = _prompt_choice("Root selection mode", ["continuation", "targeted_x_nc", "closest_to_a_nc", "lowest_energy"], LAUNCHER_DEFAULT_ROOT_MODE)
++    run_postcheck = _prompt_choice("Run shift-free postcheck", ["1", "0"], LAUNCHER_DEFAULT_RUN_POSTCHECK)
++    extrap_min = _prompt_text("Extrapolation minimum N_int_actual", LAUNCHER_DEFAULT_EXTRAP_MIN_NINT)
+ 
+     extra_pairs_default = ""
+-    if sweep_layout == "theorem_ladder":
++    if sweep_layout == "exact_pairs_only":
++        extra_pairs_default = LAUNCHER_HEAVY_EXACT_PAIRS_CSV
++    elif sweep_layout == "theorem_ladder":
+         extra_pairs_default = ",".join(f"{a}:{b}" for (a, b) in DEFAULT_THEOREM_TARGET_PAIRS)
+     extra_pairs = _prompt_text("Extra exact pairs Ngeom:Nint comma-separated", extra_pairs_default)
+ 
+@@ -2779,7 +2812,7 @@
+     lambda_list = _prompt_text("Override lambda list (blank = default)", "")
+     plateau_fracs = _prompt_text("Override plateau fracs (blank = default)", "")
+     output_dir = _prompt_text("Output directory (blank = version default)", "")
+-    console_log_enabled = _prompt_choice("Console mirror log", ["1", "0"], "1")
++    console_log_enabled = _prompt_choice("Console mirror log", ["1", "0"], LAUNCHER_DEFAULT_CONSOLE_LOG_ENABLED)
+     console_log_path = _prompt_text("Console log path (blank = auto under output dir)", "") if console_log_enabled == "1" else ""
+ 
+     argv: List[str] = [

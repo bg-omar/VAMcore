@@ -1,0 +1,744 @@
+[LOG_HEADER] SST robustness sweep console mirror
+[LOG_HEADER] script_version=v10.3_master started_wall=2026-03-27T11:38:39
+[LOG_HEADER] log_path=C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\console_log_20260327_113839.log
+[LOG_HEADER] cwd=C:\workspace\projects\SSTcore\trefoil_closure
+[LOG_HEADER] argv=['C:\\workspace\\projects\\SSTcore\\trefoil_closure\\sst_knot_candidate_robustness_sweep_v10_3_master_sweep.py', '--output-dir', 'C:\\workspace\\projects\\SSTcore\\trefoil_closure\\exports\\sst_knot_v10_3_gui_run', '--mode', 'ideal', '--preset', 'fast', '--backend', 'local_cpp_scan', '--sweep-layout', 'matrix', '--parallel-scope', 'auto', '--max-workers', '0', '--external-knotlib', 'auto', '--knot-preset', 'leptons / quarks / …', '--contact-model', 'legacy', '--root-selection-mode', 'continuation', '--branch-mode', 'lowest_energy', '--emit-v5-logs', '1', '--run-v6-shiftfree-postcheck', '1', '--extrap-min-nint', '8001', '--sst-project-root', 'C:\\workspace\\projects\\SSTcore', '--sst-cmake-config', 'Release']
+[LOG_HEADER] python=3.12.12 platform=win32
+[LOG_HEADER] numpy=2.3.5 pandas=2.3.3 scipy=1.16.3 torch=2.5.1+cxx11.abi cuda_available=False
+[LOG_HEADER] output_base_dir=C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run
+[LOG_HEADER] knot_ids=['3:1:1', '5:1:1', '7:1:1', '5:1:2', '6:1:1', '7:1:2', '8:1:1', '9:1:2', '10:1:1']
+---
+[META] console_log_path=C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\console_log_20260327_113839.log
+[META] v10.3 knot batch = ['3:1:1', '5:1:1', '7:1:1', '5:1:2', '6:1:1', '7:1:2', '8:1:1', '9:1:2', '10:1:1']
+[META] external_knotlib=auto spherogram_available=True
+
+==========================================================================================
+[PAR][GLOBAL] enabled: workers=19 total_tasks=36 knots=9 scope=auto
+==========================================================================================
+[META] Queue knot 1/9 : 3:1:1 -> 4 tasks
+[META] Queue knot 2/9 : 5:1:1 -> 4 tasks
+[META] Queue knot 3/9 : 7:1:1 -> 4 tasks
+[META] Queue knot 4/9 : 5:1:2 -> 4 tasks
+[META] Queue knot 5/9 : 6:1:1 -> 4 tasks
+[META] Queue knot 6/9 : 7:1:2 -> 4 tasks
+[META] Queue knot 7/9 : 8:1:1 -> 4 tasks
+[META] Queue knot 8/9 : 9:1:2 -> 4 tasks
+[META] Queue knot 9/9 : 10:1:1 -> 4 tasks
+[PAR][GLOBAL] done 1/36 knot=3:1:1 1/4 Ng=4000 Ni=2000 scan=0.031s fit=0.006s best_A_ratio=0.994954 best_a_nc_over_rc=0.997474
+[PAR][GLOBAL] done 2/36 knot=5:1:1 1/4 Ng=4000 Ni=2000 scan=0.035s fit=0.004s best_A_ratio=0.980900 best_a_nc_over_rc=0.990404
+[PAR][GLOBAL] done 3/36 knot=3:1:1 2/4 Ng=8000 Ni=2000 scan=0.038s fit=0.005s best_A_ratio=0.994954 best_a_nc_over_rc=0.997474
+[PAR][GLOBAL] done 4/36 knot=7:1:1 1/4 Ng=8000 Ni=2000 scan=0.035s fit=0.006s best_A_ratio=0.984339 best_a_nc_over_rc=0.992139
+[PAR][GLOBAL] done 5/36 knot=5:1:2 1/4 Ng=4000 Ni=2000 scan=0.050s fit=0.005s best_A_ratio=0.984834 best_a_nc_over_rc=0.992388
+[PAR][GLOBAL] done 6/36 knot=5:1:1 2/4 Ng=8000 Ni=2000 scan=0.049s fit=0.005s best_A_ratio=0.980900 best_a_nc_over_rc=0.990404
+[PAR][GLOBAL] done 7/36 knot=7:1:1 2/4 Ng=4000 Ni=2000 scan=0.032s fit=0.006s best_A_ratio=0.984339 best_a_nc_over_rc=0.992139
+[PAR][GLOBAL] done 8/36 knot=5:1:2 2/4 Ng=8000 Ni=2000 scan=0.031s fit=0.003s best_A_ratio=0.984834 best_a_nc_over_rc=0.992388
+[PAR][GLOBAL] done 9/36 knot=6:1:1 1/4 Ng=4000 Ni=2000 scan=0.052s fit=0.005s best_A_ratio=0.989582 best_a_nc_over_rc=0.994777
+[PAR][GLOBAL] done 10/36 knot=6:1:1 2/4 Ng=8000 Ni=2000 scan=0.032s fit=0.004s best_A_ratio=0.989582 best_a_nc_over_rc=0.994777
+[PAR][GLOBAL] done 11/36 knot=5:1:1 3/4 Ng=4000 Ni=4000 scan=0.127s fit=0.003s best_A_ratio=0.996599 best_a_nc_over_rc=0.998298
+[PAR][GLOBAL] done 12/36 knot=3:1:1 3/4 Ng=4000 Ni=4000 scan=0.152s fit=0.006s best_A_ratio=0.984309 best_a_nc_over_rc=0.992123
+[PAR][GLOBAL] done 13/36 knot=3:1:1 4/4 Ng=8000 Ni=4000 scan=0.130s fit=0.003s best_A_ratio=0.984309 best_a_nc_over_rc=0.992123
+[PAR][GLOBAL] done 14/36 knot=7:1:1 3/4 Ng=4000 Ni=4000 scan=0.135s fit=0.004s best_A_ratio=0.995225 best_a_nc_over_rc=0.997610
+[PAR][GLOBAL] done 15/36 knot=7:1:2 1/4 Ng=4000 Ni=2000 scan=0.050s fit=0.003s best_A_ratio=0.988023 best_a_nc_over_rc=0.993993
+[PAR][GLOBAL] done 16/36 knot=7:1:1 4/4 Ng=8000 Ni=4000 scan=0.135s fit=0.004s best_A_ratio=0.995225 best_a_nc_over_rc=0.997610
+[PAR][GLOBAL] done 17/36 knot=5:1:1 4/4 Ng=8000 Ni=4000 scan=0.133s fit=0.004s best_A_ratio=0.996599 best_a_nc_over_rc=0.998298
+[PAR][GLOBAL] done 18/36 knot=8:1:1 1/4 Ng=4000 Ni=2000 scan=0.049s fit=0.002s best_A_ratio=0.986580 best_a_nc_over_rc=0.993267
+[PAR][GLOBAL] done 19/36 knot=7:1:2 2/4 Ng=8000 Ni=2000 scan=0.031s fit=0.002s best_A_ratio=0.988023 best_a_nc_over_rc=0.993993
+[PAR][GLOBAL] done 20/36 knot=8:1:1 2/4 Ng=8000 Ni=2000 scan=0.030s fit=0.001s best_A_ratio=0.986580 best_a_nc_over_rc=0.993267
+[PAR][GLOBAL] done 21/36 knot=6:1:1 3/4 Ng=4000 Ni=4000 scan=0.121s fit=0.004s best_A_ratio=0.995168 best_a_nc_over_rc=0.997581
+[PAR][GLOBAL] done 22/36 knot=6:1:1 4/4 Ng=8000 Ni=4000 scan=0.154s fit=0.004s best_A_ratio=0.995168 best_a_nc_over_rc=0.997581
+[PAR][GLOBAL] done 23/36 knot=7:1:2 3/4 Ng=4000 Ni=4000 scan=0.125s fit=0.002s best_A_ratio=0.993309 best_a_nc_over_rc=0.996649
+[PAR][GLOBAL] done 24/36 knot=5:1:2 3/4 Ng=8000 Ni=4000 scan=0.138s fit=0.004s best_A_ratio=0.996508 best_a_nc_over_rc=0.998253
+[PAR][GLOBAL] done 25/36 knot=5:1:2 4/4 Ng=4000 Ni=4000 scan=0.123s fit=0.003s best_A_ratio=0.996508 best_a_nc_over_rc=0.998253
+[PAR][GLOBAL] done 26/36 knot=9:1:2 1/4 Ng=8000 Ni=2000 scan=0.031s fit=0.001s best_A_ratio=0.979633 best_a_nc_over_rc=0.989764
+[PAR][GLOBAL] done 27/36 knot=9:1:2 2/4 Ng=4000 Ni=2000 scan=0.058s fit=0.002s best_A_ratio=0.979633 best_a_nc_over_rc=0.989764
+[PAR][GLOBAL] done 28/36 knot=10:1:1 1/4 Ng=4000 Ni=2000 scan=0.031s fit=0.001s best_A_ratio=0.972286 best_a_nc_over_rc=0.986045
+[PAR][GLOBAL] done 29/36 knot=7:1:2 4/4 Ng=8000 Ni=4000 scan=0.125s fit=0.002s best_A_ratio=0.993309 best_a_nc_over_rc=0.996649
+[PAR][GLOBAL] done 30/36 knot=8:1:1 3/4 Ng=4000 Ni=4000 scan=0.119s fit=0.001s best_A_ratio=0.992399 best_a_nc_over_rc=0.996192
+[PAR][GLOBAL] done 31/36 knot=10:1:1 2/4 Ng=8000 Ni=2000 scan=0.031s fit=0.001s best_A_ratio=0.972286 best_a_nc_over_rc=0.986045
+[PAR][GLOBAL] done 32/36 knot=8:1:1 4/4 Ng=8000 Ni=4000 scan=0.100s fit=0.001s best_A_ratio=0.992399 best_a_nc_over_rc=0.996192
+[PAR][GLOBAL] done 33/36 knot=9:1:2 3/4 Ng=8000 Ni=4000 scan=0.075s fit=0.001s best_A_ratio=0.986875 best_a_nc_over_rc=0.993416
+[PAR][GLOBAL] done 34/36 knot=9:1:2 4/4 Ng=4000 Ni=4000 scan=0.070s fit=0.001s best_A_ratio=0.986875 best_a_nc_over_rc=0.993416
+[PAR][GLOBAL] done 35/36 knot=10:1:1 3/4 Ng=4000 Ni=4000 scan=0.095s fit=0.001s best_A_ratio=0.979906 best_a_nc_over_rc=0.989902
+[PAR][GLOBAL] done 36/36 knot=10:1:1 4/4 Ng=8000 Ni=4000 scan=0.081s fit=0.001s best_A_ratio=0.979906 best_a_nc_over_rc=0.989902
+
+==========================================================================================
+[META] Finalizing knot 1/9 : 3:1:1
+==========================================================================================
+[META] SST ROBUSTNESS SWEEP v10.3_master - mode=IDEAL knot_id=3:1:1
+[META] output_dir=C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\3_1_1
+[META] ideal_source=ideal.txt (3:1:1, 183 modes, k_max=250)
+[META] local_sst_core_loaded=True local_cpp_scan_available=True sst_core_scan_provider='sst_core'
+[META] A_req=1/(4*pi)=0.07957747154594767
+[BACKEND] bs_backend=local_cpp_scan
+[THEOREM] target=no_contact closure means a_nc/r_c = sqrt(4*pi*A_K)
+[THEOREM] target=full_model exact closure requires F(1)=0 in the chosen contact model
+[THEOREM] contact_model=legacy root_selection_mode=continuation
+[THEOREM] v6_postcheck will rerun theorem-candidate fit rows with shift-free barrier after the legacy sweep
+[THEOREM] v7 root_solver_space=dimensionless_x xtol=1e-14 rtol=1e-13 ftol=1e-12
+[THEOREM] v7.1 targeted-x_nc selector enabled when requested
+[THEOREM] target window abs=0.005 rel=0.005
+[THEOREM] sweep_layout=matrix exact_pairs=[]
+[THEOREM] v9 tail check: need quasi-monotone contracting high-resolution tail before theorem-style OK
+[THEOREM] v10 batch knot comparison enabled at base_output_dir=C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run
+[THEOREM] v10 parallel theorem candidate fits=['plateau_0.04', 'plateau_0.06', 'plateau_0.08', 'plateau_0.10', 'plateau_0.12']
+[THEOREM] v10.3 parallel_scope=auto max_workers=auto
+[BEST] practical N_geom=8000 N_int=2000 A_K=0.07917596 A_ratio=0.994954 a_nc_over_rc=0.99747405
+[BEST] theorem_no_contact A_K=0.07917596 closure_x=0.99747405 closure_x_minus_1=-2.52594789e-03
+[BEST] theorem_full_model contact_model=legacy F_at_x1=1.30848836e-02 a_star_over_rc=0.99352426
+[V7] Running post-sweep shift-free barrier postcheck
+[V7] contact_model=barrier_flat_at_rc root_selection=targeted_x_nc fit_methods=['plateau_0.04', 'plateau_0.06', 'plateau_0.08', 'plateau_0.10', 'plateau_0.12'] seed_rows=20
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.04 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-7.33538407e-01 a_star_over_rc=1.316639057073405 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.04 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-7.33538407e-01 a_star_over_rc=1.3122037994670828 delta_vs_legacy=0.003921183135674244
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.06 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-2.69313094e-01 a_star_over_rc=1.1266379604646386 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.06 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-2.69313094e-01 a_star_over_rc=1.1252391182022066 delta_vs_legacy=0.003957036637641798
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.08 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.57082282e-01 a_star_over_rc=1.075677591972029 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.08 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-1.57082282e-01 a_star_over_rc=1.0748898959233202 delta_vs_legacy=0.003964243288879343
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.10 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.57082282e-01 a_star_over_rc=1.075677591972029 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.10 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-1.57082282e-01 a_star_over_rc=1.0748898959233202 delta_vs_legacy=0.003964243288879343
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.12 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.33145563e-01 a_star_over_rc=1.0644931012867498 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.12 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-1.33145563e-01 a_star_over_rc=1.063830369755085 delta_vs_legacy=0.003965719909546195
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.04 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-7.33538407e-01 a_star_over_rc=1.316639057073405 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.04 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-7.33538407e-01 a_star_over_rc=1.3122038047743636 delta_vs_legacy=0.003921179883514148
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.06 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-2.69313094e-01 a_star_over_rc=1.1266379604646386 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.06 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-2.69313094e-01 a_star_over_rc=1.1252391197600498 delta_vs_legacy=0.003957033300989066
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.08 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.57082282e-01 a_star_over_rc=1.075677591972029 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.08 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-1.57082282e-01 a_star_over_rc=1.0748898967851848 delta_vs_legacy=0.003964239936035563
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.10 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.57082282e-01 a_star_over_rc=1.075677591972029 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.10 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-1.57082282e-01 a_star_over_rc=1.0748898967851848 delta_vs_legacy=0.003964239936035563
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.12 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.33145563e-01 a_star_over_rc=1.0644931012867498 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.12 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-1.33145563e-01 a_star_over_rc=1.0638303704774776 delta_vs_legacy=0.003965716553424814
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.04 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.22689765e-01 a_star_over_rc=1.0595705568795728 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.04 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-1.22689765e-01 a_star_over_rc=1.0589618378022188 delta_vs_legacy=0.003966358603447295
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.06 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-6.97821498e-02 a_star_over_rc=1.0343027360457107 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.06 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-6.97821498e-02 a_star_over_rc=1.0339620934920533 delta_vs_legacy=0.003969533679586856
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.08 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-6.97821498e-02 a_star_over_rc=1.0343027360457107 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.08 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-6.97821498e-02 a_star_over_rc=1.0339620934920533 delta_vs_legacy=0.003969533679586856
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.10 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.22689765e-01 a_star_over_rc=1.0595705568795728 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.10 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-1.22689765e-01 a_star_over_rc=1.0589618378022188 delta_vs_legacy=0.003966358603447295
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.12 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.68745346e-02 a_star_over_rc=1.008401970732504 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.12 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-1.68745346e-02 a_star_over_rc=1.0083209109929618 delta_vs_legacy=0.003972618493181201
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.04 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.22689765e-01 a_star_over_rc=1.0595705568795728 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.04 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-1.22689765e-01 a_star_over_rc=1.0589618378022188 delta_vs_legacy=0.003966358603447295
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.06 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-6.97821498e-02 a_star_over_rc=1.0343027360457107 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.06 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-6.97821498e-02 a_star_over_rc=1.0339620934920533 delta_vs_legacy=0.003969533679586856
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.08 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-6.97821498e-02 a_star_over_rc=1.0343027360457107 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.08 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-6.97821498e-02 a_star_over_rc=1.0339620934920533 delta_vs_legacy=0.003969533679586856
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.10 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.22689765e-01 a_star_over_rc=1.0595705568795728 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.10 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-1.22689765e-01 a_star_over_rc=1.0589618378022188 delta_vs_legacy=0.003966358603447295
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.12 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.68745346e-02 a_star_over_rc=1.008401970732504 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.12 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-1.68745346e-02 a_star_over_rc=1.0083209109929618 delta_vs_legacy=0.003972618493181201
+
+[META] Sweep complete
+[META] CSV summary : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\3_1_1\robustness_summary_v10_3_ideal.csv
+[META] Best-estimate v10.3_master CSV/TXT/TeX : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\3_1_1
+[META] Shift-free postcheck v10.3_master CSV/TXT/TeX : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\3_1_1
+[META] Plateau diagnostics CSV/PNG : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\3_1_1
+[META] run_metadata_v10_3.json : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\3_1_1\run_metadata_v10_3.json
+[META] Raw scan archive CSV : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\3_1_1\raw_scan_curve_archive_v10_3.csv
+[META] Root candidate archive CSV : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\3_1_1\root_candidate_archive_v10_3.csv
+[META] Extrapolation v10.3_master CSV/TXT/TeX : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\3_1_1
+[META] Parallel theorem candidates v10.3_master CSV/TXT/TeX : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\3_1_1
+
+==========================================================================================
+[META] Finalizing knot 2/9 : 5:1:1
+==========================================================================================
+[META] SST ROBUSTNESS SWEEP v10.3_master - mode=IDEAL knot_id=5:1:1
+[META] output_dir=C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\5_1_1
+[META] ideal_source=ideal.txt (5:1:1, 233 modes, k_max=255)
+[META] local_sst_core_loaded=True local_cpp_scan_available=True sst_core_scan_provider='sst_core'
+[META] A_req=1/(4*pi)=0.07957747154594767
+[BACKEND] bs_backend=local_cpp_scan
+[THEOREM] target=no_contact closure means a_nc/r_c = sqrt(4*pi*A_K)
+[THEOREM] target=full_model exact closure requires F(1)=0 in the chosen contact model
+[THEOREM] contact_model=legacy root_selection_mode=continuation
+[THEOREM] v6_postcheck will rerun theorem-candidate fit rows with shift-free barrier after the legacy sweep
+[THEOREM] v7 root_solver_space=dimensionless_x xtol=1e-14 rtol=1e-13 ftol=1e-12
+[THEOREM] v7.1 targeted-x_nc selector enabled when requested
+[THEOREM] target window abs=0.005 rel=0.005
+[THEOREM] sweep_layout=matrix exact_pairs=[]
+[THEOREM] v9 tail check: need quasi-monotone contracting high-resolution tail before theorem-style OK
+[THEOREM] v10 batch knot comparison enabled at base_output_dir=C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run
+[THEOREM] v10 parallel theorem candidate fits=['plateau_0.04', 'plateau_0.06', 'plateau_0.08', 'plateau_0.10', 'plateau_0.12']
+[THEOREM] v10.3 parallel_scope=auto max_workers=auto
+[BEST] practical N_geom=8000 N_int=4000 A_K=0.07930679 A_ratio=0.996599 a_nc_over_rc=0.99829781
+[BEST] theorem_no_contact A_K=0.07930679 closure_x=0.99829781 closure_x_minus_1=-1.70219284e-03
+[BEST] theorem_full_model contact_model=legacy F_at_x1=1.14425145e-02 a_star_over_rc=0.99433947
+[V7] Running post-sweep shift-free barrier postcheck
+[V7] contact_model=barrier_flat_at_rc root_selection=targeted_x_nc fit_methods=['plateau_0.04', 'plateau_0.06', 'plateau_0.08', 'plateau_0.10', 'plateau_0.12'] seed_rows=20
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.04 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-5.13599391e-01 a_star_over_rc=1.2302842722827834 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.04 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-5.13599391e-01 a_star_over_rc=1.2273973411274401 delta_vs_legacy=0.003940175785963174
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.06 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.01012192e+00 a_star_over_rc=1.417787685958763 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.06 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-1.01012192e+00 a_star_over_rc=1.4110709939281598 delta_vs_legacy=0.003894594807879237
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.08 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-8.36256252e-01 a_star_over_rc=1.3550853299981174 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.08 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-8.36256252e-01 a_star_over_rc=1.3498483261622554 delta_vs_legacy=0.003912307186649588
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.10 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-5.91082971e-01 a_star_over_rc=1.2613813742073485 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.10 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-5.91082971e-01 a_star_over_rc=1.2579729223137721 delta_vs_legacy=0.003934016023351861
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.12 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-5.13599391e-01 a_star_over_rc=1.2302842722827834 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.12 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-5.13599391e-01 a_star_over_rc=1.2273973411274401 delta_vs_legacy=0.003940175785963174
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.04 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-5.13599391e-01 a_star_over_rc=1.2302842722827834 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.04 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-5.13599391e-01 a_star_over_rc=1.2273972185721083 delta_vs_legacy=0.003940296757922068
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.06 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.01012192e+00 a_star_over_rc=1.417787685958763 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.06 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-1.01012192e+00 a_star_over_rc=1.4110706863763613 delta_vs_legacy=0.0038947116890890587
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.08 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-8.36256252e-01 a_star_over_rc=1.3550853299981174 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.08 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-8.36256252e-01 a_star_over_rc=1.349848092574401 delta_vs_legacy=0.003912425688876953
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.10 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-5.91082971e-01 a_star_over_rc=1.2613813742073485 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.10 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-5.91082971e-01 a_star_over_rc=1.2579727758786794 delta_vs_legacy=0.003934136459247561
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.12 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-5.13599391e-01 a_star_over_rc=1.2302842722827834 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.12 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-5.13599391e-01 a_star_over_rc=1.2273972185721083 delta_vs_legacy=0.003940296757922068
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.04 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-4.12166080e-01 a_star_over_rc=1.1883459427077843 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.04 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-4.12166080e-01 a_star_over_rc=1.1861043735067056 delta_vs_legacy=0.003947910688320455
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.06 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-2.59121871e-01 a_star_over_rc=1.122105998015495 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.06 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-2.59121871e-01 a_star_over_rc=1.1207640639051804 delta_vs_legacy=0.0039585076685222376
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.08 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.99274259e-01 a_star_over_rc=1.0951138109330236 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.08 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-1.99274259e-01 a_star_over_rc=1.094101050141925 delta_vs_legacy=0.003962388674788375
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.10 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.39426647e-01 a_star_over_rc=1.067439294297409 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.10 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-1.39426647e-01 a_star_over_rc=1.066743768092368 delta_vs_legacy=0.003966134939895838
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.12 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.39426647e-01 a_star_over_rc=1.067439294297409 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.12 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-1.39426647e-01 a_star_over_rc=1.066743768092368 delta_vs_legacy=0.003966134939895838
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.04 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-4.12166080e-01 a_star_over_rc=1.1883459427077843 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.04 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-4.12166080e-01 a_star_over_rc=1.1861043735067056 delta_vs_legacy=0.003947910688320455
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.06 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-2.59121871e-01 a_star_over_rc=1.122105998015495 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.06 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-2.59121871e-01 a_star_over_rc=1.1207640639051804 delta_vs_legacy=0.0039585076685222376
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.08 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.99274259e-01 a_star_over_rc=1.0951138109330236 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.08 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-1.99274259e-01 a_star_over_rc=1.094101050141925 delta_vs_legacy=0.003962388674788375
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.10 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.39426647e-01 a_star_over_rc=1.067439294297409 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.10 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-1.39426647e-01 a_star_over_rc=1.066743768092368 delta_vs_legacy=0.003966134939895838
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.12 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.39426647e-01 a_star_over_rc=1.067439294297409 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.12 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-1.39426647e-01 a_star_over_rc=1.066743768092368 delta_vs_legacy=0.003966134939895838
+
+[META] Sweep complete
+[META] CSV summary : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\5_1_1\robustness_summary_v10_3_ideal.csv
+[META] Best-estimate v10.3_master CSV/TXT/TeX : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\5_1_1
+[META] Shift-free postcheck v10.3_master CSV/TXT/TeX : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\5_1_1
+[META] Plateau diagnostics CSV/PNG : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\5_1_1
+[META] run_metadata_v10_3.json : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\5_1_1\run_metadata_v10_3.json
+[META] Raw scan archive CSV : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\5_1_1\raw_scan_curve_archive_v10_3.csv
+[META] Root candidate archive CSV : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\5_1_1\root_candidate_archive_v10_3.csv
+[META] Extrapolation v10.3_master CSV/TXT/TeX : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\5_1_1
+[META] Parallel theorem candidates v10.3_master CSV/TXT/TeX : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\5_1_1
+
+==========================================================================================
+[META] Finalizing knot 3/9 : 7:1:1
+==========================================================================================
+[META] SST ROBUSTNESS SWEEP v10.3_master - mode=IDEAL knot_id=7:1:1
+[META] output_dir=C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\7_1_1
+[META] ideal_source=ideal.txt (7:1:1, 222 modes, k_max=254)
+[META] local_sst_core_loaded=True local_cpp_scan_available=True sst_core_scan_provider='sst_core'
+[META] A_req=1/(4*pi)=0.07957747154594767
+[BACKEND] bs_backend=local_cpp_scan
+[THEOREM] target=no_contact closure means a_nc/r_c = sqrt(4*pi*A_K)
+[THEOREM] target=full_model exact closure requires F(1)=0 in the chosen contact model
+[THEOREM] contact_model=legacy root_selection_mode=continuation
+[THEOREM] v6_postcheck will rerun theorem-candidate fit rows with shift-free barrier after the legacy sweep
+[THEOREM] v7 root_solver_space=dimensionless_x xtol=1e-14 rtol=1e-13 ftol=1e-12
+[THEOREM] v7.1 targeted-x_nc selector enabled when requested
+[THEOREM] target window abs=0.005 rel=0.005
+[THEOREM] sweep_layout=matrix exact_pairs=[]
+[THEOREM] v9 tail check: need quasi-monotone contracting high-resolution tail before theorem-style OK
+[THEOREM] v10 batch knot comparison enabled at base_output_dir=C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run
+[THEOREM] v10 parallel theorem candidate fits=['plateau_0.04', 'plateau_0.06', 'plateau_0.08', 'plateau_0.10', 'plateau_0.12']
+[THEOREM] v10.3 parallel_scope=auto max_workers=auto
+[BEST] practical N_geom=8000 N_int=4000 A_K=0.07919747 A_ratio=0.995225 a_nc_over_rc=0.99760955
+[BEST] theorem_no_contact A_K=0.07919747 closure_x=0.99760955 closure_x_minus_1=-2.39044760e-03
+[BEST] theorem_full_model contact_model=legacy F_at_x1=1.28176580e-02 a_star_over_rc=0.99365698
+[V7] Running post-sweep shift-free barrier postcheck
+[V7] contact_model=barrier_flat_at_rc root_selection=targeted_x_nc fit_methods=['plateau_0.04', 'plateau_0.06', 'plateau_0.08', 'plateau_0.10', 'plateau_0.12'] seed_rows=18
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.06 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-6.16707866e-01 a_star_over_rc=1.2714982760047964 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.06 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-6.16707866e-01 a_star_over_rc=1.2679111455345355 delta_vs_legacy=0.00393232156789125
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.08 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.26104448e+00 a_star_over_rc=1.503676987861272 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.08 lambda_K=0.001 root_choice=targeted_x_nc_fallback F_at_x1=-1.26104448e+00 a_star_over_rc=1.4945145529534798 delta_vs_legacy=0.0038654437833445243
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.10 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.07130184e+00 a_star_over_rc=1.4392018081686155 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.10 lambda_K=0.001 root_choice=targeted_x_nc_fallback F_at_x1=-1.07130184e+00 a_star_over_rc=1.4319233126513606 delta_vs_legacy=0.0038882478168056345
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.12 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-8.81559205e-01 a_star_over_rc=1.3716993859618358 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.12 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-8.81559205e-01 a_star_over_rc=1.3660915136399465 delta_vs_legacy=0.003908295774297521
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.06 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-6.16707866e-01 a_star_over_rc=1.2714982760047964 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.06 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-6.16707866e-01 a_star_over_rc=1.26791063348582 delta_vs_legacy=0.003932719571437371
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.08 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.26104448e+00 a_star_over_rc=1.503676987861272 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.08 lambda_K=0.001 root_choice=targeted_x_nc_fallback F_at_x1=-1.26104448e+00 a_star_over_rc=1.4945131117492956 delta_vs_legacy=0.003865821453390428
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.10 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.07130184e+00 a_star_over_rc=1.439201808168615 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.10 lambda_K=0.001 root_choice=targeted_x_nc_fallback F_at_x1=-1.07130184e+00 a_star_over_rc=1.4319221995171147 delta_vs_legacy=0.003888632590852259
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.12 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-8.81559205e-01 a_star_over_rc=1.3716993859618345 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.12 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-8.81559205e-01 a_star_over_rc=1.366090680126151 delta_vs_legacy=0.00390868666046007
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.04 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-6.89168599e-01 a_star_over_rc=1.299680191120402 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.04 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-6.89168599e-01 a_star_over_rc=1.2955727677350124 delta_vs_legacy=0.003926561015755059
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.06 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-4.07140181e-01 a_star_over_rc=1.186229396424521 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.06 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-4.07140181e-01 a_star_over_rc=1.1840182285542844 delta_vs_legacy=0.00394896996733185
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.08 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-3.84130519e-01 a_star_over_rc=1.1764907646874818 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.08 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-3.84130519e-01 a_star_over_rc=1.1744199948796468 delta_vs_legacy=0.003950624256675805
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.10 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-3.61120858e-01 a_star_over_rc=1.1666708438322215 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.10 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-3.61120858e-01 a_star_over_rc=1.1647384672030197 delta_vs_legacy=0.003952254683345258
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.12 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-2.05614608e-01 a_star_over_rc=1.0980048306212145 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.12 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-2.05614608e-01 a_star_over_rc=1.0969575289255715 delta_vs_legacy=0.0039626855005989725
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.04 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-6.89168599e-01 a_star_over_rc=1.299680191120402 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.04 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-6.89168599e-01 a_star_over_rc=1.2955727677350124 delta_vs_legacy=0.003926561015755059
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.06 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-4.07140181e-01 a_star_over_rc=1.186229396424521 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.06 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-4.07140181e-01 a_star_over_rc=1.1840182285542844 delta_vs_legacy=0.00394896996733185
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.08 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-3.84130519e-01 a_star_over_rc=1.1764907646874818 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.08 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-3.84130519e-01 a_star_over_rc=1.1744199948796468 delta_vs_legacy=0.003950624256675805
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.10 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-3.61120858e-01 a_star_over_rc=1.1666708438322215 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.10 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-3.61120858e-01 a_star_over_rc=1.1647384672030197 delta_vs_legacy=0.003952254683345258
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.12 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-2.05614608e-01 a_star_over_rc=1.0980048306212145 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.12 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-2.05614608e-01 a_star_over_rc=1.0969575289255715 delta_vs_legacy=0.0039626855005989725
+
+[META] Sweep complete
+[META] CSV summary : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\7_1_1\robustness_summary_v10_3_ideal.csv
+[META] Best-estimate v10.3_master CSV/TXT/TeX : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\7_1_1
+[META] Shift-free postcheck v10.3_master CSV/TXT/TeX : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\7_1_1
+[META] Plateau diagnostics CSV/PNG : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\7_1_1
+[META] run_metadata_v10_3.json : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\7_1_1\run_metadata_v10_3.json
+[META] Raw scan archive CSV : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\7_1_1\raw_scan_curve_archive_v10_3.csv
+[META] Root candidate archive CSV : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\7_1_1\root_candidate_archive_v10_3.csv
+[META] Extrapolation v10.3_master CSV/TXT/TeX : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\7_1_1
+[META] Parallel theorem candidates v10.3_master CSV/TXT/TeX : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\7_1_1
+
+==========================================================================================
+[META] Finalizing knot 4/9 : 5:1:2
+==========================================================================================
+[META] SST ROBUSTNESS SWEEP v10.3_master - mode=IDEAL knot_id=5:1:2
+[META] output_dir=C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\5_1_2
+[META] ideal_source=ideal.txt (5:1:2, 241 modes, k_max=256)
+[META] local_sst_core_loaded=True local_cpp_scan_available=True sst_core_scan_provider='sst_core'
+[META] A_req=1/(4*pi)=0.07957747154594767
+[BACKEND] bs_backend=local_cpp_scan
+[THEOREM] target=no_contact closure means a_nc/r_c = sqrt(4*pi*A_K)
+[THEOREM] target=full_model exact closure requires F(1)=0 in the chosen contact model
+[THEOREM] contact_model=legacy root_selection_mode=continuation
+[THEOREM] v6_postcheck will rerun theorem-candidate fit rows with shift-free barrier after the legacy sweep
+[THEOREM] v7 root_solver_space=dimensionless_x xtol=1e-14 rtol=1e-13 ftol=1e-12
+[THEOREM] v7.1 targeted-x_nc selector enabled when requested
+[THEOREM] target window abs=0.005 rel=0.005
+[THEOREM] sweep_layout=matrix exact_pairs=[]
+[THEOREM] v9 tail check: need quasi-monotone contracting high-resolution tail before theorem-style OK
+[THEOREM] v10 batch knot comparison enabled at base_output_dir=C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run
+[THEOREM] v10 parallel theorem candidate fits=['plateau_0.04', 'plateau_0.06', 'plateau_0.08', 'plateau_0.10', 'plateau_0.12']
+[THEOREM] v10.3 parallel_scope=auto max_workers=auto
+[BEST] practical N_geom=8000 N_int=4000 A_K=0.07929961 A_ratio=0.996508 a_nc_over_rc=0.99825263
+[BEST] theorem_no_contact A_K=0.07929961 closure_x=0.99825263 closure_x_minus_1=-1.74736867e-03
+[BEST] theorem_full_model contact_model=legacy F_at_x1=1.15340360e-02 a_star_over_rc=0.99429407
+[V7] Running post-sweep shift-free barrier postcheck
+[V7] contact_model=barrier_flat_at_rc root_selection=targeted_x_nc fit_methods=['plateau_0.04', 'plateau_0.06', 'plateau_0.08', 'plateau_0.10', 'plateau_0.12'] seed_rows=20
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.04 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-4.76910209e-01 a_star_over_rc=1.2152819464488873 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.04 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-4.76910209e-01 a_star_over_rc=1.2126325490112806 delta_vs_legacy=0.003943731635261294
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.06 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.01805223e+00 a_star_over_rc=1.420581652594715 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.06 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-1.01805223e+00 a_star_over_rc=1.4137915924318518 delta_vs_legacy=0.003894454751852683
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.08 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-8.74754878e-01 a_star_over_rc=1.369216884849332 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.08 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-8.74754878e-01 a_star_over_rc=1.363664596573616 delta_vs_legacy=0.003909289625747325
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.10 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-7.03553772e-01 a_star_over_rc=1.305202578865428 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.10 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-7.03553772e-01 a_star_over_rc=1.3009892169517305 delta_vs_legacy=0.003925232453251493
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.12 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-4.76910209e-01 a_star_over_rc=1.2152819464488873 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.12 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-4.76910209e-01 a_star_over_rc=1.2126325490112806 delta_vs_legacy=0.003943731635261294
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.04 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-4.76910209e-01 a_star_over_rc=1.2152819464488873 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.04 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-4.76910209e-01 a_star_over_rc=1.212632497137379 delta_vs_legacy=0.003943787869955306
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.06 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.01805223e+00 a_star_over_rc=1.420581652594715 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.06 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-1.01805223e+00 a_star_over_rc=1.413791448045401 delta_vs_legacy=0.0038945089386721587
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.08 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-8.74754878e-01 a_star_over_rc=1.369216884849332 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.08 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-8.74754878e-01 a_star_over_rc=1.3636644810296612 delta_vs_legacy=0.003909344444067431
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.10 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-7.03553772e-01 a_star_over_rc=1.305202578865428 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.10 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-7.03553772e-01 a_star_over_rc=1.3009891315264475 delta_vs_legacy=0.003925287936851651
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.12 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-4.76910209e-01 a_star_over_rc=1.2152819464488873 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.12 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-4.76910209e-01 a_star_over_rc=1.212632497137379 delta_vs_legacy=0.003943787869955306
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.04 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-2.62289958e-01 a_star_over_rc=1.1235167814347962 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.04 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-2.62289958e-01 a_star_over_rc=1.1221567901461278 delta_vs_legacy=0.003958937662966289
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.06 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-4.76116563e-02 a_star_over_rc=1.0235290207376724 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.06 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-4.76116563e-02 a_star_over_rc=1.0232980620998147 delta_vs_legacy=0.00397228544107886
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.08 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-4.76116563e-02 a_star_over_rc=1.0235290207376724 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.08 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-4.76116563e-02 a_star_over_rc=1.0232980620998147 delta_vs_legacy=0.00397228544107886
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.10 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-2.73529298e-02 a_star_over_rc=1.0135841996552684 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.10 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-2.73529298e-02 a_star_over_rc=1.013452327196836 delta_vs_legacy=0.003973463984691117
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.12 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-2.73529298e-02 a_star_over_rc=1.0135841996552684 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.12 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-2.73529298e-02 a_star_over_rc=1.013452327196836 delta_vs_legacy=0.003973463984691117
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.04 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-2.62289958e-01 a_star_over_rc=1.1235167814347962 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.04 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-2.62289958e-01 a_star_over_rc=1.1221567901461278 delta_vs_legacy=0.003958937662966289
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.06 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-4.76116563e-02 a_star_over_rc=1.0235290207376724 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.06 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-4.76116563e-02 a_star_over_rc=1.0232980620998147 delta_vs_legacy=0.00397228544107886
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.08 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-4.76116563e-02 a_star_over_rc=1.0235290207376724 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.08 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-4.76116563e-02 a_star_over_rc=1.0232980620998147 delta_vs_legacy=0.00397228544107886
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.10 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-2.73529298e-02 a_star_over_rc=1.0135841996552684 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.10 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-2.73529298e-02 a_star_over_rc=1.013452327196836 delta_vs_legacy=0.003973463984691117
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.12 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-2.73529298e-02 a_star_over_rc=1.0135841996552684 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.12 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-2.73529298e-02 a_star_over_rc=1.013452327196836 delta_vs_legacy=0.003973463984691117
+
+[META] Sweep complete
+[META] CSV summary : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\5_1_2\robustness_summary_v10_3_ideal.csv
+[META] Best-estimate v10.3_master CSV/TXT/TeX : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\5_1_2
+[META] Shift-free postcheck v10.3_master CSV/TXT/TeX : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\5_1_2
+[META] Plateau diagnostics CSV/PNG : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\5_1_2
+[META] run_metadata_v10_3.json : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\5_1_2\run_metadata_v10_3.json
+[META] Raw scan archive CSV : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\5_1_2\raw_scan_curve_archive_v10_3.csv
+[META] Root candidate archive CSV : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\5_1_2\root_candidate_archive_v10_3.csv
+[META] Extrapolation v10.3_master CSV/TXT/TeX : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\5_1_2
+[META] Parallel theorem candidates v10.3_master CSV/TXT/TeX : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\5_1_2
+
+==========================================================================================
+[META] Finalizing knot 5/9 : 6:1:1
+==========================================================================================
+[META] SST ROBUSTNESS SWEEP v10.3_master - mode=IDEAL knot_id=6:1:1
+[META] output_dir=C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\6_1_1
+[META] ideal_source=ideal.txt (6:1:1, 240 modes, k_max=256)
+[META] local_sst_core_loaded=True local_cpp_scan_available=True sst_core_scan_provider='sst_core'
+[META] A_req=1/(4*pi)=0.07957747154594767
+[BACKEND] bs_backend=local_cpp_scan
+[THEOREM] target=no_contact closure means a_nc/r_c = sqrt(4*pi*A_K)
+[THEOREM] target=full_model exact closure requires F(1)=0 in the chosen contact model
+[THEOREM] contact_model=legacy root_selection_mode=continuation
+[THEOREM] v6_postcheck will rerun theorem-candidate fit rows with shift-free barrier after the legacy sweep
+[THEOREM] v7 root_solver_space=dimensionless_x xtol=1e-14 rtol=1e-13 ftol=1e-12
+[THEOREM] v7.1 targeted-x_nc selector enabled when requested
+[THEOREM] target window abs=0.005 rel=0.005
+[THEOREM] sweep_layout=matrix exact_pairs=[]
+[THEOREM] v9 tail check: need quasi-monotone contracting high-resolution tail before theorem-style OK
+[THEOREM] v10 batch knot comparison enabled at base_output_dir=C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run
+[THEOREM] v10 parallel theorem candidate fits=['plateau_0.04', 'plateau_0.06', 'plateau_0.08', 'plateau_0.10', 'plateau_0.12']
+[THEOREM] v10.3 parallel_scope=auto max_workers=auto
+[BEST] practical N_geom=8000 N_int=4000 A_K=0.07919293 A_ratio=0.995168 a_nc_over_rc=0.99758092
+[BEST] theorem_no_contact A_K=0.07919293 closure_x=0.99758092 closure_x_minus_1=-2.41908174e-03
+[BEST] theorem_full_model contact_model=legacy F_at_x1=1.28765423e-02 a_star_over_rc=0.99362777
+[V7] Running post-sweep shift-free barrier postcheck
+[V7] contact_model=barrier_flat_at_rc root_selection=targeted_x_nc fit_methods=['plateau_0.04', 'plateau_0.06', 'plateau_0.08', 'plateau_0.10', 'plateau_0.12'] seed_rows=18
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.06 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.10822040e+00 a_star_over_rc=1.4519712105491407 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.06 lambda_K=0.001 root_choice=targeted_x_nc_fallback F_at_x1=-1.10822040e+00 a_star_over_rc=1.4443413598495185 delta_vs_legacy=0.0038847939768045237
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.08 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.17730301e+00 a_star_over_rc=1.4755687076537543 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.08 lambda_K=0.001 root_choice=targeted_x_nc_fallback F_at_x1=-1.17730301e+00 a_star_over_rc=1.467263155612267 delta_vs_legacy=0.0038766222731341227
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.10 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-9.94865158e-01 a_star_over_rc=1.4123969547693456 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.10 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-9.94865158e-01 a_star_over_rc=1.4058137306922904 delta_vs_legacy=0.0038973988784725133
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.12 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-6.81967804e-01 a_star_over_rc=1.2969070145639514 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.12 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-6.81967804e-01 a_star_over_rc=1.292851746719317 delta_vs_legacy=0.0039275713218756
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.06 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.10822040e+00 a_star_over_rc=1.4519712105491407 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.06 lambda_K=0.001 root_choice=targeted_x_nc_fallback F_at_x1=-1.10822040e+00 a_star_over_rc=1.444340320148894 delta_vs_legacy=0.0038851338396681534
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.08 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.17730301e+00 a_star_over_rc=1.4755687076537543 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.08 lambda_K=0.001 root_choice=targeted_x_nc_fallback F_at_x1=-1.17730301e+00 a_star_over_rc=1.467262012167256 delta_vs_legacy=0.0038769598862329335
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.10 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-9.94865158e-01 a_star_over_rc=1.4123969547693456 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.10 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-9.94865158e-01 a_star_over_rc=1.405812848693015 delta_vs_legacy=0.003897742176409924
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.12 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-6.81967804e-01 a_star_over_rc=1.2969070145639514 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.12 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-6.81967804e-01 a_star_over_rc=1.2928512286021157 delta_vs_legacy=0.003927922634818337
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.04 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-6.41533299e-01 a_star_over_rc=1.2812233602596677 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.04 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-6.41533299e-01 a_star_over_rc=1.2774591822410375 delta_vs_legacy=0.003931471849447421
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.06 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-3.37097744e-01 a_star_over_rc=1.1563294270477638 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.06 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-3.37097744e-01 a_star_over_rc=1.1545389229215475 delta_vs_legacy=0.003954774877973355
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.08 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-3.37097744e-01 a_star_over_rc=1.1563294270477638 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.08 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-3.37097744e-01 a_star_over_rc=1.1545389229215475 delta_vs_legacy=0.003954774877973355
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.10 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-2.59735479e-01 a_star_over_rc=1.1223793829594426 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.10 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-2.59735479e-01 a_star_over_rc=1.1210333176329594 delta_vs_legacy=0.003960012850523498
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.12 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-2.12836074e-01 a_star_over_rc=1.1012883702351586 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.12 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-2.12836074e-01 a_star_over_rc=1.1002015259429574 delta_vs_legacy=0.003963070224729304
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.04 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-6.41533299e-01 a_star_over_rc=1.2812233602596677 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.04 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-6.41533299e-01 a_star_over_rc=1.2774591822410375 delta_vs_legacy=0.003931471849447421
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.06 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-3.37097744e-01 a_star_over_rc=1.1563294270477638 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.06 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-3.37097744e-01 a_star_over_rc=1.1545389229215475 delta_vs_legacy=0.003954774877973355
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.08 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-3.37097744e-01 a_star_over_rc=1.1563294270477638 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.08 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-3.37097744e-01 a_star_over_rc=1.1545389229215475 delta_vs_legacy=0.003954774877973355
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.10 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-2.59735479e-01 a_star_over_rc=1.1223793829594426 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.10 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-2.59735479e-01 a_star_over_rc=1.1210333176329594 delta_vs_legacy=0.003960012850523498
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.12 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-2.12836074e-01 a_star_over_rc=1.1012883702351586 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.12 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-2.12836074e-01 a_star_over_rc=1.1002015259429574 delta_vs_legacy=0.003963070224729304
+
+[META] Sweep complete
+[META] CSV summary : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\6_1_1\robustness_summary_v10_3_ideal.csv
+[META] Best-estimate v10.3_master CSV/TXT/TeX : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\6_1_1
+[META] Shift-free postcheck v10.3_master CSV/TXT/TeX : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\6_1_1
+[META] Plateau diagnostics CSV/PNG : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\6_1_1
+[META] run_metadata_v10_3.json : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\6_1_1\run_metadata_v10_3.json
+[META] Raw scan archive CSV : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\6_1_1\raw_scan_curve_archive_v10_3.csv
+[META] Root candidate archive CSV : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\6_1_1\root_candidate_archive_v10_3.csv
+[META] Extrapolation v10.3_master CSV/TXT/TeX : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\6_1_1
+[META] Parallel theorem candidates v10.3_master CSV/TXT/TeX : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\6_1_1
+
+==========================================================================================
+[META] Finalizing knot 6/9 : 7:1:2
+==========================================================================================
+[META] SST ROBUSTNESS SWEEP v10.3_master - mode=IDEAL knot_id=7:1:2
+[META] output_dir=C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\7_1_2
+[META] ideal_source=ideal.txt (7:1:2, 238 modes, k_max=255)
+[META] local_sst_core_loaded=True local_cpp_scan_available=True sst_core_scan_provider='sst_core'
+[META] A_req=1/(4*pi)=0.07957747154594767
+[BACKEND] bs_backend=local_cpp_scan
+[THEOREM] target=no_contact closure means a_nc/r_c = sqrt(4*pi*A_K)
+[THEOREM] target=full_model exact closure requires F(1)=0 in the chosen contact model
+[THEOREM] contact_model=legacy root_selection_mode=continuation
+[THEOREM] v6_postcheck will rerun theorem-candidate fit rows with shift-free barrier after the legacy sweep
+[THEOREM] v7 root_solver_space=dimensionless_x xtol=1e-14 rtol=1e-13 ftol=1e-12
+[THEOREM] v7.1 targeted-x_nc selector enabled when requested
+[THEOREM] target window abs=0.005 rel=0.005
+[THEOREM] sweep_layout=matrix exact_pairs=[]
+[THEOREM] v9 tail check: need quasi-monotone contracting high-resolution tail before theorem-style OK
+[THEOREM] v10 batch knot comparison enabled at base_output_dir=C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run
+[THEOREM] v10 parallel theorem candidate fits=['plateau_0.04', 'plateau_0.06', 'plateau_0.08', 'plateau_0.10', 'plateau_0.12']
+[THEOREM] v10.3 parallel_scope=auto max_workers=auto
+[BEST] practical N_geom=8000 N_int=4000 A_K=0.07904504 A_ratio=0.993309 a_nc_over_rc=0.99664899
+[BEST] theorem_no_contact A_K=0.07904504 closure_x=0.99664899 closure_x_minus_1=-3.35100632e-03
+[BEST] theorem_full_model contact_model=legacy F_at_x1=1.47354643e-02 a_star_over_rc=0.99270438
+[V7] Running post-sweep shift-free barrier postcheck
+[V7] contact_model=barrier_flat_at_rc root_selection=targeted_x_nc fit_methods=['plateau_0.04', 'plateau_0.06', 'plateau_0.08', 'plateau_0.10', 'plateau_0.12'] seed_rows=18
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.06 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-6.44822130e-01 a_star_over_rc=1.2825061910272528 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.06 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-6.44822130e-01 a_star_over_rc=1.2787183617605875 delta_vs_legacy=0.003931339557304625
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.08 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.30607649e+00 a_star_over_rc=1.5185771269109167 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.08 lambda_K=0.001 root_choice=targeted_x_nc_fallback F_at_x1=-1.30607649e+00 a_star_over_rc=1.5089280785996333 delta_vs_legacy=0.003860883817104366
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.10 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-9.08615743e-01 a_star_over_rc=1.381526598725801 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.10 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-9.08615743e-01 a_star_over_rc=1.3756895887269256 delta_vs_legacy=0.003906938763327039
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.12 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-7.76718937e-01 a_star_over_rc=1.332936208715577 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.12 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-7.76718937e-01 a_star_over_rc=1.328166487508246 delta_vs_legacy=0.003919678468851551
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.06 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-6.44822130e-01 a_star_over_rc=1.2825061910272513 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.06 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-6.44822130e-01 a_star_over_rc=1.2787181293993843 delta_vs_legacy=0.0039315096223897505
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.08 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.30607649e+00 a_star_over_rc=1.5185771269109167 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.08 lambda_K=0.001 root_choice=targeted_x_nc_fallback F_at_x1=-1.30607649e+00 a_star_over_rc=1.5089274248673905 delta_vs_legacy=0.0038610446757092465
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.10 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-9.08615743e-01 a_star_over_rc=1.3815265987258025 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.10 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-9.08615743e-01 a_star_over_rc=1.3756892159784957 delta_vs_legacy=0.003907105724189286
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.12 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-7.76718937e-01 a_star_over_rc=1.332936208715577 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.12 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-7.76718937e-01 a_star_over_rc=1.3281661889514376 delta_vs_legacy=0.003919847063997839
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.04 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-7.60674664e-01 a_star_over_rc=1.3269041652634554 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.04 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-7.60674664e-01 a_star_over_rc=1.3222581865587064 delta_vs_legacy=0.003921219108391272
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.06 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-4.27851205e-01 a_star_over_rc=1.1949272802246793 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.06 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-4.27851205e-01 a_star_over_rc=1.1925871493918887 delta_vs_legacy=0.0039485145796860355
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.08 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-3.78222810e-01 a_star_over_rc=1.1739773464175598 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.08 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-3.78222810e-01 a_star_over_rc=1.1719415650876666 delta_vs_legacy=0.003952102224419329
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.10 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-3.78222810e-01 a_star_over_rc=1.1739773464175598 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.10 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-3.78222810e-01 a_star_over_rc=1.1719415650876666 delta_vs_legacy=0.003952102224419329
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.12 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-2.23373917e-01 a_star_over_rc=1.1060623476369298 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.12 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-2.23373917e-01 a_star_over_rc=1.1049178305240823 delta_vs_legacy=0.003962608186063532
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.04 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-7.60674664e-01 a_star_over_rc=1.3269041652634554 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.04 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-7.60674664e-01 a_star_over_rc=1.3222581865587064 delta_vs_legacy=0.003921219108391272
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.06 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-4.27851205e-01 a_star_over_rc=1.194927280224678 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.06 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-4.27851205e-01 a_star_over_rc=1.1925871493918874 delta_vs_legacy=0.0039485145796860355
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.08 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-3.78222810e-01 a_star_over_rc=1.1739773464175598 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.08 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-3.78222810e-01 a_star_over_rc=1.1719415650876666 delta_vs_legacy=0.003952102224419329
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.10 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-3.78222810e-01 a_star_over_rc=1.1739773464175598 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.10 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-3.78222810e-01 a_star_over_rc=1.1719415650876666 delta_vs_legacy=0.003952102224419329
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.12 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-2.23373917e-01 a_star_over_rc=1.1060623476369311 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.12 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-2.23373917e-01 a_star_over_rc=1.1049178305240834 delta_vs_legacy=0.00396260818606331
+
+[META] Sweep complete
+[META] CSV summary : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\7_1_2\robustness_summary_v10_3_ideal.csv
+[META] Best-estimate v10.3_master CSV/TXT/TeX : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\7_1_2
+[META] Shift-free postcheck v10.3_master CSV/TXT/TeX : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\7_1_2
+[META] Plateau diagnostics CSV/PNG : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\7_1_2
+[META] run_metadata_v10_3.json : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\7_1_2\run_metadata_v10_3.json
+[META] Raw scan archive CSV : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\7_1_2\raw_scan_curve_archive_v10_3.csv
+[META] Root candidate archive CSV : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\7_1_2\root_candidate_archive_v10_3.csv
+[META] Extrapolation v10.3_master CSV/TXT/TeX : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\7_1_2
+[META] Parallel theorem candidates v10.3_master CSV/TXT/TeX : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\7_1_2
+
+==========================================================================================
+[META] Finalizing knot 7/9 : 8:1:1
+==========================================================================================
+[META] SST ROBUSTNESS SWEEP v10.3_master - mode=IDEAL knot_id=8:1:1
+[META] output_dir=C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\8_1_1
+[META] ideal_source=ideal.txt (8:1:1, 253 modes, k_max=255)
+[META] local_sst_core_loaded=True local_cpp_scan_available=True sst_core_scan_provider='sst_core'
+[META] A_req=1/(4*pi)=0.07957747154594767
+[BACKEND] bs_backend=local_cpp_scan
+[THEOREM] target=no_contact closure means a_nc/r_c = sqrt(4*pi*A_K)
+[THEOREM] target=full_model exact closure requires F(1)=0 in the chosen contact model
+[THEOREM] contact_model=legacy root_selection_mode=continuation
+[THEOREM] v6_postcheck will rerun theorem-candidate fit rows with shift-free barrier after the legacy sweep
+[THEOREM] v7 root_solver_space=dimensionless_x xtol=1e-14 rtol=1e-13 ftol=1e-12
+[THEOREM] v7.1 targeted-x_nc selector enabled when requested
+[THEOREM] target window abs=0.005 rel=0.005
+[THEOREM] sweep_layout=matrix exact_pairs=[]
+[THEOREM] v9 tail check: need quasi-monotone contracting high-resolution tail before theorem-style OK
+[THEOREM] v10 batch knot comparison enabled at base_output_dir=C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run
+[THEOREM] v10 parallel theorem candidate fits=['plateau_0.04', 'plateau_0.06', 'plateau_0.08', 'plateau_0.10', 'plateau_0.12']
+[THEOREM] v10.3 parallel_scope=auto max_workers=auto
+[BEST] practical N_geom=8000 N_int=4000 A_K=0.07897259 A_ratio=0.992399 a_nc_over_rc=0.99619214
+[BEST] theorem_no_contact A_K=0.07897259 closure_x=0.99619214 closure_x_minus_1=-3.80786204e-03
+[BEST] theorem_full_model contact_model=legacy F_at_x1=1.56485294e-02 a_star_over_rc=0.99225054
+[V7] Running post-sweep shift-free barrier postcheck
+[V7] contact_model=barrier_flat_at_rc root_selection=targeted_x_nc fit_methods=['plateau_0.04', 'plateau_0.06', 'plateau_0.08', 'plateau_0.10', 'plateau_0.12'] seed_rows=18
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.06 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-2.44644955e-01 a_star_over_rc=1.1156365695583934 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.06 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-2.44644955e-01 a_star_over_rc=1.114374406133186 delta_vs_legacy=0.003961792030695133
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.08 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.14541660e+00 a_star_over_rc=1.4647240701167876 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.08 lambda_K=0.001 root_choice=targeted_x_nc_fallback F_at_x1=-1.14541660e+00 a_star_over_rc=1.456730306586917 delta_vs_legacy=0.003881607990250391
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.10 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.43341933e+00 a_star_over_rc=1.5599420907845274 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.10 lambda_K=0.001 root_choice=targeted_x_nc_fallback F_at_x1=-1.43341933e+00 a_star_over_rc=1.5488515835979861 delta_vs_legacy=0.003843881002730365
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.12 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.22885115e+00 a_star_over_rc=1.4929337404855823 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.12 lambda_K=0.001 root_choice=targeted_x_nc_fallback F_at_x1=-1.22885115e+00 a_star_over_rc=1.4841001606281394 delta_vs_legacy=0.0038714263640249325
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.06 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-2.44644955e-01 a_star_over_rc=1.1156365695583934 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.06 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-2.44644955e-01 a_star_over_rc=1.1143741724261316 delta_vs_legacy=0.003962349969658607
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.08 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.14541660e+00 a_star_over_rc=1.4647240701167876 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.08 lambda_K=0.001 root_choice=targeted_x_nc_fallback F_at_x1=-1.14541660e+00 a_star_over_rc=1.4567286077177803 delta_vs_legacy=0.0038821333876999375
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.10 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.43341933e+00 a_star_over_rc=1.5599420907845274 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.10 lambda_K=0.001 root_choice=targeted_x_nc_fallback F_at_x1=-1.43341933e+00 a_star_over_rc=1.5488491250516692 delta_vs_legacy=0.0038443900385922714
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.12 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.22885115e+00 a_star_over_rc=1.4929337404855823 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.12 lambda_K=0.001 root_choice=targeted_x_nc_fallback F_at_x1=-1.22885115e+00 a_star_over_rc=1.484098259964713 delta_vs_legacy=0.003871947392914521
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.04 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-7.83571903e-01 a_star_over_rc=1.3355043628852155 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.04 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-7.83571903e-01 a_star_over_rc=1.3306790312250663 delta_vs_legacy=0.00392033948755488
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.06 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-6.35035522e-01 a_star_over_rc=1.278685075380984 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.06 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-6.35035522e-01 a_star_over_rc=1.2749651438005982 delta_vs_legacy=0.0039334728659257134
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.08 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-3.36274621e-01 a_star_over_rc=1.1559734516562996 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.08 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-3.36274621e-01 a_star_over_rc=1.1541868975705538 delta_vs_legacy=0.003956309561379934
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.10 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-2.73069267e-01 a_star_over_rc=1.1283037120785098 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.10 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-2.73069267e-01 a_star_over_rc=1.1268818589959897 delta_vs_legacy=0.003960609672636783
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.12 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.93164193e-01 a_star_over_rc=1.092320554100284 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.12 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-1.93164193e-01 a_star_over_rc=1.0913397415181887 delta_vs_legacy=0.003965814553028579
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.04 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-7.83571903e-01 a_star_over_rc=1.3355043628852155 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.04 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-7.83571903e-01 a_star_over_rc=1.3306790312250663 delta_vs_legacy=0.00392033948755488
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.06 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-6.35035522e-01 a_star_over_rc=1.278685075380984 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.06 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-6.35035522e-01 a_star_over_rc=1.2749651438005982 delta_vs_legacy=0.0039334728659257134
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.08 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-3.36274621e-01 a_star_over_rc=1.1559734516562996 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.08 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-3.36274621e-01 a_star_over_rc=1.1541868975705538 delta_vs_legacy=0.003956309561379934
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.10 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-2.73069267e-01 a_star_over_rc=1.1283037120785098 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.10 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-2.73069267e-01 a_star_over_rc=1.1268818589959897 delta_vs_legacy=0.003960609672636783
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.12 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.93164193e-01 a_star_over_rc=1.092320554100284 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.12 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-1.93164193e-01 a_star_over_rc=1.0913397415181887 delta_vs_legacy=0.003965814553028579
+
+[META] Sweep complete
+[META] CSV summary : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\8_1_1\robustness_summary_v10_3_ideal.csv
+[META] Best-estimate v10.3_master CSV/TXT/TeX : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\8_1_1
+[META] Shift-free postcheck v10.3_master CSV/TXT/TeX : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\8_1_1
+[META] Plateau diagnostics CSV/PNG : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\8_1_1
+[META] run_metadata_v10_3.json : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\8_1_1\run_metadata_v10_3.json
+[META] Raw scan archive CSV : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\8_1_1\raw_scan_curve_archive_v10_3.csv
+[META] Root candidate archive CSV : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\8_1_1\root_candidate_archive_v10_3.csv
+[META] Extrapolation v10.3_master CSV/TXT/TeX : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\8_1_1
+[META] Parallel theorem candidates v10.3_master CSV/TXT/TeX : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\8_1_1
+
+==========================================================================================
+[META] Finalizing knot 8/9 : 9:1:2
+==========================================================================================
+[META] SST ROBUSTNESS SWEEP v10.3_master - mode=IDEAL knot_id=9:1:2
+[META] output_dir=C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\9_1_2
+[META] ideal_source=ideal.txt (9:1:2, 245 modes, k_max=256)
+[META] local_sst_core_loaded=True local_cpp_scan_available=True sst_core_scan_provider='sst_core'
+[META] A_req=1/(4*pi)=0.07957747154594767
+[BACKEND] bs_backend=local_cpp_scan
+[THEOREM] target=no_contact closure means a_nc/r_c = sqrt(4*pi*A_K)
+[THEOREM] target=full_model exact closure requires F(1)=0 in the chosen contact model
+[THEOREM] contact_model=legacy root_selection_mode=continuation
+[THEOREM] v6_postcheck will rerun theorem-candidate fit rows with shift-free barrier after the legacy sweep
+[THEOREM] v7 root_solver_space=dimensionless_x xtol=1e-14 rtol=1e-13 ftol=1e-12
+[THEOREM] v7.1 targeted-x_nc selector enabled when requested
+[THEOREM] target window abs=0.005 rel=0.005
+[THEOREM] sweep_layout=matrix exact_pairs=[]
+[THEOREM] v9 tail check: need quasi-monotone contracting high-resolution tail before theorem-style OK
+[THEOREM] v10 batch knot comparison enabled at base_output_dir=C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run
+[THEOREM] v10 parallel theorem candidate fits=['plateau_0.04', 'plateau_0.06', 'plateau_0.08', 'plateau_0.10', 'plateau_0.12']
+[THEOREM] v10.3 parallel_scope=auto max_workers=auto
+[BEST] practical N_geom=8000 N_int=4000 A_K=0.07853304 A_ratio=0.986875 a_nc_over_rc=0.99341597
+[BEST] theorem_no_contact A_K=0.07853304 closure_x=0.99341597 closure_x_minus_1=-6.58402831e-03
+[BEST] theorem_full_model contact_model=legacy F_at_x1=2.11726302e-02 a_star_over_rc=0.98950003
+[V7] Running post-sweep shift-free barrier postcheck
+[V7] contact_model=barrier_flat_at_rc root_selection=targeted_x_nc fit_methods=['plateau_0.04', 'plateau_0.06', 'plateau_0.08', 'plateau_0.10', 'plateau_0.12'] seed_rows=16
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.08 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.42956491e+00 a_star_over_rc=1.5587061654966579 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.08 lambda_K=0.001 root_choice=targeted_x_nc_fallback F_at_x1=-1.42956491e+00 a_star_over_rc=1.547657596317466 delta_vs_legacy=0.0038451314114664736
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.10 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.56061556e+00 a_star_over_rc=1.600192351682128 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.10 lambda_K=0.001 root_choice=targeted_x_nc_fallback F_at_x1=-1.56061556e+00 a_star_over_rc=1.587540179619618 delta_vs_legacy=0.0038254142092697396
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.12 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.34502212e+00 a_star_over_rc=1.5313465062216909 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.12 lambda_K=0.001 root_choice=targeted_x_nc_fallback F_at_x1=-1.34502212e+00 a_star_over_rc=1.5212641727941727 delta_vs_legacy=0.0038569561170622713
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.08 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.42956491e+00 a_star_over_rc=1.5587061654966556 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.08 lambda_K=0.001 root_choice=targeted_x_nc_fallback F_at_x1=-1.42956491e+00 a_star_over_rc=1.547656062373332 delta_vs_legacy=0.0038454505979745868
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.10 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.56061556e+00 a_star_over_rc=1.600192351682128 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.10 lambda_K=0.001 root_choice=targeted_x_nc_fallback F_at_x1=-1.56061556e+00 a_star_over_rc=1.5875383897756863 delta_vs_legacy=0.0038257279372886366
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.12 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.34502212e+00 a_star_over_rc=1.5313465062216909 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.12 lambda_K=0.001 root_choice=targeted_x_nc_fallback F_at_x1=-1.34502212e+00 a_star_over_rc=1.521262790053287 delta_vs_legacy=0.003857278546295806
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.04 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-8.87584302e-01 a_star_over_rc=1.3738938467779838 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.04 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-8.87584302e-01 a_star_over_rc=1.3682296574155615 delta_vs_legacy=0.00391061962295125
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.06 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-6.97115616e-01 a_star_over_rc=1.3027339006983165 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.06 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-6.97115616e-01 a_star_over_rc=1.2985641111753456 delta_vs_legacy=0.003928432651523206
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.08 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-5.42388224e-01 a_star_over_rc=1.2419292345677413 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.08 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-5.42388224e-01 a_star_over_rc=1.2388477960476951 delta_vs_legacy=0.003941327081905532
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.10 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-4.59362132e-01 a_star_over_rc=1.2080406167387707 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.10 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-4.59362132e-01 a_star_over_rc=1.2055009114173465 delta_vs_legacy=0.003947725670379265
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.12 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-4.59362132e-01 a_star_over_rc=1.2080406167387707 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.12 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-4.59362132e-01 a_star_over_rc=1.2055009114173465 delta_vs_legacy=0.003947725670379265
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.04 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-8.87584302e-01 a_star_over_rc=1.3738938467779842 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.04 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-8.87584302e-01 a_star_over_rc=1.3682296574155624 delta_vs_legacy=0.003910619622951694
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.06 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-6.97115616e-01 a_star_over_rc=1.3027339006983158 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.06 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-6.97115616e-01 a_star_over_rc=1.2985641111753448 delta_vs_legacy=0.003928432651522984
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.08 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-5.42388224e-01 a_star_over_rc=1.2419292345677413 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.08 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-5.42388224e-01 a_star_over_rc=1.2388477960476951 delta_vs_legacy=0.003941327081905532
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.10 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-4.59362132e-01 a_star_over_rc=1.208040616738772 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.10 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-4.59362132e-01 a_star_over_rc=1.205500911417348 delta_vs_legacy=0.003947725670379709
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.12 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-4.59362132e-01 a_star_over_rc=1.208040616738772 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.12 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-4.59362132e-01 a_star_over_rc=1.205500911417348 delta_vs_legacy=0.003947725670379709
+
+[META] Sweep complete
+[META] CSV summary : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\9_1_2\robustness_summary_v10_3_ideal.csv
+[META] Best-estimate v10.3_master CSV/TXT/TeX : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\9_1_2
+[META] Shift-free postcheck v10.3_master CSV/TXT/TeX : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\9_1_2
+[META] Plateau diagnostics CSV/PNG : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\9_1_2
+[META] run_metadata_v10_3.json : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\9_1_2\run_metadata_v10_3.json
+[META] Raw scan archive CSV : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\9_1_2\raw_scan_curve_archive_v10_3.csv
+[META] Root candidate archive CSV : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\9_1_2\root_candidate_archive_v10_3.csv
+[META] Extrapolation v10.3_master CSV/TXT/TeX : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\9_1_2
+[META] Parallel theorem candidates v10.3_master CSV/TXT/TeX : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\9_1_2
+
+==========================================================================================
+[META] Finalizing knot 9/9 : 10:1:1
+==========================================================================================
+[META] SST ROBUSTNESS SWEEP v10.3_master - mode=IDEAL knot_id=10:1:1
+[META] output_dir=C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\10_1_1
+[META] ideal_source=ideal.txt (10:1:1, 240 modes, k_max=253)
+[META] local_sst_core_loaded=True local_cpp_scan_available=True sst_core_scan_provider='sst_core'
+[META] A_req=1/(4*pi)=0.07957747154594767
+[BACKEND] bs_backend=local_cpp_scan
+[THEOREM] target=no_contact closure means a_nc/r_c = sqrt(4*pi*A_K)
+[THEOREM] target=full_model exact closure requires F(1)=0 in the chosen contact model
+[THEOREM] contact_model=legacy root_selection_mode=continuation
+[THEOREM] v6_postcheck will rerun theorem-candidate fit rows with shift-free barrier after the legacy sweep
+[THEOREM] v7 root_solver_space=dimensionless_x xtol=1e-14 rtol=1e-13 ftol=1e-12
+[THEOREM] v7.1 targeted-x_nc selector enabled when requested
+[THEOREM] target window abs=0.005 rel=0.005
+[THEOREM] sweep_layout=matrix exact_pairs=[]
+[THEOREM] v9 tail check: need quasi-monotone contracting high-resolution tail before theorem-style OK
+[THEOREM] v10 batch knot comparison enabled at base_output_dir=C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run
+[THEOREM] v10 parallel theorem candidate fits=['plateau_0.04', 'plateau_0.06', 'plateau_0.08', 'plateau_0.10', 'plateau_0.12']
+[THEOREM] v10.3 parallel_scope=auto max_workers=auto
+[BEST] practical N_geom=8000 N_int=4000 A_K=0.07797844 A_ratio=0.979906 a_nc_over_rc=0.98990203
+[BEST] theorem_no_contact A_K=0.07797844 closure_x=0.98990203 closure_x_minus_1=-1.00979704e-02
+[BEST] theorem_full_model contact_model=legacy F_at_x1=2.81430801e-02 a_star_over_rc=0.98601816
+[V7] Running post-sweep shift-free barrier postcheck
+[V7] contact_model=barrier_flat_at_rc root_selection=targeted_x_nc fit_methods=['plateau_0.04', 'plateau_0.06', 'plateau_0.08', 'plateau_0.10', 'plateau_0.12'] seed_rows=16
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.08 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-7.87091421e-01 a_star_over_rc=1.336821387013015 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.08 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-7.87091421e-01 a_star_over_rc=1.3319670599870068 delta_vs_legacy=0.003920856366311565
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.10 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.57815052e+00 a_star_over_rc=1.605662019976186 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.10 lambda_K=0.001 root_choice=targeted_x_nc_fallback F_at_x1=-1.57815052e+00 a_star_over_rc=1.592780834797035 delta_vs_legacy=0.003823363317087436
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.12 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.68983403e+00 a_star_over_rc=1.6400713478650057 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=2000 fit=plateau_0.12 lambda_K=0.001 root_choice=targeted_x_nc_fallback F_at_x1=-1.68983403e+00 a_star_over_rc=1.62569802379109 delta_vs_legacy=0.0038049082268414303
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.08 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-7.87091421e-01 a_star_over_rc=1.3368213870130115 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.08 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-7.87091421e-01 a_star_over_rc=1.3319679325116314 delta_vs_legacy=0.003920373096666374
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.10 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.57815052e+00 a_star_over_rc=1.6056620199761849 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.10 lambda_K=0.001 root_choice=targeted_x_nc_fallback F_at_x1=-1.57815052e+00 a_star_over_rc=1.5927834368404852 delta_vs_legacy=0.003822917439810114
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.12 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-1.68983403e+00 a_star_over_rc=1.6400713478650046 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=2000 fit=plateau_0.12 lambda_K=0.001 root_choice=targeted_x_nc_fallback F_at_x1=-1.68983403e+00 a_star_over_rc=1.6257009731363206 delta_vs_legacy=0.003804469704471458
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.04 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-5.20009547e-01 a_star_over_rc=1.2328866722095937 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.04 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-5.20009547e-01 a_star_over_rc=1.2299534644095378 delta_vs_legacy=0.003943650093631401
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.06 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-9.19099498e-01 a_star_over_rc=1.3853156672042903 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.06 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-9.19099498e-01 a_star_over_rc=1.3793851262954215 delta_vs_legacy=0.0039079950081322146
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.08 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-5.98234613e-01 a_star_over_rc=1.264213040906884 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.08 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-5.98234613e-01 a_star_over_rc=1.2607502725233104 delta_vs_legacy=0.003937385833954865
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.10 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-5.20009547e-01 a_star_over_rc=1.2328866722095937 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.10 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-5.20009547e-01 a_star_over_rc=1.2299534644095378 delta_vs_legacy=0.003943650093631401
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.12 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-3.68890963e-01 a_star_over_rc=1.169996138056508 delta_vs_legacy=0.0
+[V7.1] N_geom=4000 N_int=4000 fit=plateau_0.12 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-3.68890963e-01 a_star_over_rc=1.1680151054988595 delta_vs_legacy=0.003954888891116948
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.04 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-5.20009547e-01 a_star_over_rc=1.2328866722095966 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.04 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-5.20009547e-01 a_star_over_rc=1.2299534644095407 delta_vs_legacy=0.003943650093631401
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.06 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-9.19099498e-01 a_star_over_rc=1.3853156672042903 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.06 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-9.19099498e-01 a_star_over_rc=1.3793851262954215 delta_vs_legacy=0.0039079950081322146
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.08 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-5.98234613e-01 a_star_over_rc=1.264213040906885 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.08 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-5.98234613e-01 a_star_over_rc=1.2607502725233117 delta_vs_legacy=0.003937385833954865
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.10 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-5.20009547e-01 a_star_over_rc=1.2328866722095966 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.10 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-5.20009547e-01 a_star_over_rc=1.2299534644095407 delta_vs_legacy=0.003943650093631401
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.12 lambda_K=0.0 root_choice=targeted_x_nc F_at_x1=-3.68890963e-01 a_star_over_rc=1.169996138056508 delta_vs_legacy=0.0
+[V7.1] N_geom=8000 N_int=4000 fit=plateau_0.12 lambda_K=0.001 root_choice=targeted_x_nc F_at_x1=-3.68890963e-01 a_star_over_rc=1.1680151054988595 delta_vs_legacy=0.003954888891116948
+
+[META] Sweep complete
+[META] CSV summary : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\10_1_1\robustness_summary_v10_3_ideal.csv
+[META] Best-estimate v10.3_master CSV/TXT/TeX : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\10_1_1
+[META] Shift-free postcheck v10.3_master CSV/TXT/TeX : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\10_1_1
+[META] Plateau diagnostics CSV/PNG : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\10_1_1
+[META] run_metadata_v10_3.json : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\10_1_1\run_metadata_v10_3.json
+[META] Raw scan archive CSV : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\10_1_1\raw_scan_curve_archive_v10_3.csv
+[META] Root candidate archive CSV : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\10_1_1\root_candidate_archive_v10_3.csv
+[META] Extrapolation v10.3_master CSV/TXT/TeX : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\10_1_1
+[META] Parallel theorem candidates v10.3_master CSV/TXT/TeX : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\10_1_1
+[META] Master archive written: C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\master_robustness_archive_v10_3.csv (556 rows)
+[META] Master archive written: C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\master_plateau_archive_v10_3.csv (324 rows)
+[META] Master archive written: C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\master_postcheck_archive_v10_3.csv (328 rows)
+[META] Master archive written: C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\master_raw_scan_curve_archive_v10_3.csv (864 rows)
+[META] Master archive written: C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\master_root_candidate_archive_v10_3.csv (556 rows)
+[META] Master batch manifest: C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run\master_batch_manifest_v10_3.json
+[TIME] total_script_s=19.742
+
+[META] Batch complete
+[META] Knot comparison CSV/TXT : C:\workspace\projects\SSTcore\trefoil_closure\exports\sst_knot_v10_3_gui_run
+
+[LOG_FOOTER] closed_wall=2026-03-27T11:38:59 total_script_s=19.742

@@ -1,0 +1,18 @@
+v10.3 post-sweep shift-free barrier theorem check
+================================================================
+Derived from legacy sweep rows only; no legacy outputs were modified.
+Preferred fit method       : plateau_0.8
+Parallel seed fit methods  : ['plateau_0.04', 'plateau_0.06', 'plateau_0.08', 'plateau_0.10', 'plateau_0.12']
+Shift-free contact model   : barrier_flat_at_rc
+Postcheck root selection   : targeted_x_nc
+Seed rows                  : 60
+Lambda list                : [0.0, 0.001, 0.003, 0.01]
+
+Structural condition at x=1:
+  contact_force_at_x1 (two-highest-N_int, lambda=0) = nan +- nan
+  F_at_x1                  (two-highest-N_int, lambda=0) = nan +- nan
+  a_star/r_c               (two-highest-N_int, lambda=0) = nan +- nan
+
+Interpretation:
+  This postcheck replaces the legacy contact term only in the post-sweep theorem test.
+  Because the barrier_flat_at_rc model is shift-free at x=1, any remaining mismatch is then dominated by A_K != 1/(4*pi), not by contact-term-induced drift.

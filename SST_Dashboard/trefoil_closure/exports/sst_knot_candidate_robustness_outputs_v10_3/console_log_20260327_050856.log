@@ -1,0 +1,24 @@
+[LOG_HEADER] SST robustness sweep console mirror
+[LOG_HEADER] script_version=v10.3 started_wall=2026-03-27T05:08:56
+[LOG_HEADER] log_path=C:\workspace\projects\SSTcore\trefoil_closure\sst_knot_candidate_robustness_outputs_v10_3\console_log_20260327_050856.log
+[LOG_HEADER] cwd=C:\workspace\projects\SSTcore\trefoil_closure
+[LOG_HEADER] argv=['C:\\workspace\\projects\\SSTcore\\trefoil_closure\\sst_knot_candidate_robustness_sweep_v10_3_repaired.py']
+[LOG_HEADER] python=3.12.12 platform=win32
+[LOG_HEADER] numpy=2.3.5 pandas=2.3.3 scipy=1.16.3 torch=2.5.1+cxx11.abi cuda_available=False
+[LOG_HEADER] output_base_dir=C:\workspace\projects\SSTcore\trefoil_closure\sst_knot_candidate_robustness_outputs_v10_3
+[LOG_HEADER] knot_ids=['0:1:1', '0:1:2', '2:2:1', '3:1:1', '4:1:1', '5:1:1', '5:1:2', '6:1:1', '7:1:1', '7:1:2', '8:1:1', '9:1:1', '9:1:2', '10:1:1']
+---
+[META] console_log_path=C:\workspace\projects\SSTcore\trefoil_closure\sst_knot_candidate_robustness_outputs_v10_3\console_log_20260327_050856.log
+[META] v10.3 knot batch = ['0:1:1', '0:1:2', '2:2:1', '3:1:1', '4:1:1', '5:1:1', '5:1:2', '6:1:1', '7:1:1', '7:1:2', '8:1:1', '9:1:1', '9:1:2', '10:1:1']
+[META] external_knotlib=auto spherogram_available=True
+
+==========================================================================================
+[META] Starting knot 1/14 : 0:1:1
+==========================================================================================
+[PAR] geometry-parallel execution enabled: workers=6 tasks=12 scope=geom
+[PAR] done 1/12 Ng=8000 Ni=8000 scan=0.305s fit=0.024s best_A_ratio=0.992169 best_a_nc_over_rc=0.996077
+[PAR] done 2/12 Ng=16000 Ni=16000 scan=1.490s fit=0.003s best_A_ratio=0.998275 best_a_nc_over_rc=0.999137
+[PAR] done 3/12 Ng=24000 Ni=24000 scan=3.599s fit=0.003s best_A_ratio=0.999265 best_a_nc_over_rc=0.999632
+[PAR] done 4/12 Ng=32000 Ni=32000 scan=5.355s fit=0.002s best_A_ratio=0.999055 best_a_nc_over_rc=0.999527
+[PAR] done 5/12 Ng=40000 Ni=40000 scan=7.419s fit=0.004s best_A_ratio=1.002974 best_a_nc_over_rc=1.001486
+[PAR] done 6/12 Ng=48000 Ni=48000 scan=14.437s fit=0.002s best_A_ratio=1.002603 best_a_nc_over_rc=1.001300

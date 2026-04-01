@@ -69,6 +69,17 @@ namespace sst {
               double Gamma = 1.0) {
       return BiotSavart::velocity(r, X, T, Gamma);
         }
+
+        // Cutoff-scanned Biot–Savart / Neumann-style filament energy (trefoil sweep kernel).
+        // points, tangents: row-major (n, 3); ds length n; a_values length m, sorted ascending.
+        // Returns E(a_k) for k = 0..m-1 with E_BS(a) = (1/8pi) * sum_{i!=j, dist>a} (t_i·t_j)/dist * ds_i ds_j.
+        std::vector<double> bs_cutoff_energy_scan(
+            const double* points,
+            const double* tangents,
+            const double* ds,
+            std::size_t n,
+            const double* a_values,
+            std::size_t m);
 }
 
 #endif //SWIRL_STRING_CORE_BIOT_SAVART_H

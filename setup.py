@@ -5,13 +5,15 @@ from pybind11.setup_helpers import Pybind11Extension, build_ext
 from pybind11 import get_cmake_dir
 import pybind11
 import os
+import re
 import glob
 import subprocess
+from pathlib import Path
 import tempfile
 import shutil
 import sys
 
-__version__ = "0.1.8"
+__version__ = "0.1.9"
 base_dir = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -176,10 +178,80 @@ class CustomBuild(build):
         print("npm package build completed")
         print("="*60 + "\n")
 
+def _escape_cpp_key(s: str) -> str:
+    """Escape a C++ double-quoted string literal used as a std::map key."""
+    return s.replace("\\", "\\\\").replace('"', '\\"')
+
+
+def _pick_raw_delim(chunk: str) -> str:
+    """Pick a raw-string delimiter so the chunk does not contain )DELIM\" (matches cmake/embed_knot_files.cmake)."""
+    delim = "SST_EMBED_DELIM"
+    if f"){delim}\"" in chunk:
+        for i in range(1, 201):
+            cand = f"SST_EMBED_DELIM_{i}"
+            if f"){cand}\"" not in chunk:
+                return cand
+    return delim
+
+
+def _write_chunked_map_assign(f, map_key: str, file_content: str, chunk_size: int = 8192) -> None:
+    """Emit files[\"key\"] = R\"delim(...)delim\" ... ; MSVC-safe (chunks under ~16k literal limit)."""
+    esc = _escape_cpp_key(map_key)
+    f.write(f'    files["{esc}"] =\n')
+    n = len(file_content)
+    offset = 0
+    while offset < n:
+        chunk = file_content[offset : offset + chunk_size]
+        delim = _pick_raw_delim(chunk)
+        f.write(f"        R\"{delim}({chunk}){delim}\"\n")
+        offset += chunk_size
+    f.write("    ;\n")
+
+
+def _knot_id_for_fseries(rel_under_knots: str, filename: str) -> str:
+    """Same knot_id rules as cmake/embed_knot_files.cmake."""
+    m = re.fullmatch(r"knot\.(.+)\.fseries", filename, flags=re.IGNORECASE)
+    if m:
+        return m.group(1)
+    stem = Path(filename).stem
+    rel = Path(rel_under_knots.replace("\\", "/"))
+    parent = rel.parent
+    pstr = parent.as_posix()
+    if pstr in (".", ""):
+        return stem
+    return f"{pstr}/{stem}"
+
+
+def _collect_ideal_rel_paths(resources_dir: Path):
+    """Relative paths under resources/ for ideal*.txt and ideal_12_data/*.txt (CMake parity)."""
+    rels = []
+    seen = set()
+    if not resources_dir.is_dir():
+        return rels
+    for p in sorted(resources_dir.rglob("ideal*.txt")):
+        if p.is_file():
+            rel = p.relative_to(resources_dir).as_posix()
+            if rel not in seen:
+                seen.add(rel)
+                rels.append(rel)
+    ideal12 = resources_dir / "ideal_12_data"
+    if ideal12.is_dir():
+        for p in sorted(ideal12.rglob("*.txt")):
+            if p.is_file():
+                rel = p.relative_to(resources_dir).as_posix()
+                if rel not in seen:
+                    seen.add(rel)
+                    rels.append(rel)
+    return rels
+
+
 def generate_embedded_knot_files():
-    """Generate embedded knot files C++ source during build. Always writes header and
-    source so the linker has sst::get_embedded_knot_files(); uses empty map if no
-    .fseries files are present."""
+    """Generate embedded knot / ideal C++ source for setuptools builds.
+
+    Must stay aligned with cmake/embed_knot_files.cmake: recursive .fseries under
+    resources/Knots_FourierSeries, ideal*.txt + ideal_12_data under resources/.
+    (The old resources/knot_fseries flat path was wrong and produced empty maps.)
+    """
     base_dir = os.path.dirname(os.path.abspath(__file__))
     src_dir = os.path.join(base_dir, "src")
     build_temp = os.path.join(base_dir, "build", "temp")
@@ -189,13 +261,12 @@ def generate_embedded_knot_files():
     header_file = os.path.join(src_dir, "knot_files_embedded.h")
     source_file = os.path.join(build_temp, "knot_files_embedded.cpp")
 
-    knot_fseries_dir = os.path.join(base_dir, "resources", "knot_fseries")
-    fseries_files = (
-        glob.glob(os.path.join(knot_fseries_dir, "*.fseries"))
-        if os.path.exists(knot_fseries_dir)
-        else []
-    )
-    
+    knots_fourier = Path(base_dir) / "resources" / "Knots_FourierSeries"
+    resources_dir = Path(base_dir) / "resources"
+
+    fseries_paths = sorted(knots_fourier.rglob("*.fseries")) if knots_fourier.is_dir() else []
+    ideal_rel_paths = _collect_ideal_rel_paths(resources_dir)
+
     # Generate header file (must match knot_dynamics.h: get_embedded_knot_files + get_embedded_ideal_files)
     with open(header_file, 'w', encoding='utf-8') as f:
         f.write("// Auto-generated header - do not edit manually\n")
@@ -208,46 +279,45 @@ def generate_embedded_knot_files():
         f.write("    std::map<std::string, std::string> get_embedded_ideal_files();\n")
         f.write("}\n\n")
         f.write("#endif // KNOT_FILES_EMBEDDED_H\n")
-    
-    # Generate source file (utf-8: .fseries files may contain Unicode e.g. Greek Σ)
+
+    # Generate source (utf-8: .fseries may contain Unicode)
     with open(source_file, 'w', encoding='utf-8') as f:
         f.write("// Auto-generated file - do not edit manually\n")
-        f.write("// This file contains embedded .fseries knot data\n\n")
+        f.write("// Embedded knot .fseries and ideal database (setuptools; mirrors cmake/embed_knot_files.cmake)\n\n")
         f.write('#include "knot_files_embedded.h"\n')
         f.write("#include <map>\n")
         f.write("#include <string>\n\n")
         f.write("namespace sst {\n\n")
         f.write("std::map<std::string, std::string> get_embedded_knot_files() {\n")
         f.write("    std::map<std::string, std::string> files;\n\n")
-        
-        for fseries_file in fseries_files:
-            filename = os.path.basename(fseries_file)
-            # Extract knot ID (e.g., "3_1" from "knot.3_1.fseries")
-            if filename.startswith("knot."):
-                knot_id = filename[5:].split(".")[0]
-            else:
-                knot_id = filename.replace(".fseries", "")
-            
-            # Read file content
-            with open(fseries_file, 'r', encoding='utf-8') as kf:
-                file_content = kf.read()
-            
-            # Use raw string literal with custom delimiter
-            delim = "KNOT_FILE_DELIM"
-            # Escape any occurrences of the delimiter in content (unlikely but safe)
-            file_content_escaped = file_content.replace(f"){delim}\"", f"){delim}\\\"")
-            
-            f.write(f'    files["{knot_id}"] = R"{delim}({file_content_escaped}){delim}";\n')
-        
+
+        for abs_path in fseries_paths:
+            rel = abs_path.relative_to(knots_fourier).as_posix()
+            filename = abs_path.name
+            knot_id = _knot_id_for_fseries(rel, filename)
+            file_content = abs_path.read_text(encoding='utf-8')
+            _write_chunked_map_assign(f, knot_id, file_content)
+
         f.write("\n    return files;\n")
         f.write("}\n\n")
         f.write("std::map<std::string, std::string> get_embedded_ideal_files() {\n")
-        f.write("    std::map<std::string, std::string> files;\n")
-        f.write("    return files;\n")
+        f.write("    std::map<std::string, std::string> files;\n\n")
+
+        for rel_txt in ideal_rel_paths:
+            abs_txt = resources_dir / rel_txt
+            if not abs_txt.is_file():
+                continue
+            txt_content = abs_txt.read_text(encoding='utf-8')
+            _write_chunked_map_assign(f, rel_txt.replace("\\", "/"), txt_content)
+
+        f.write("\n    return files;\n")
         f.write("}\n\n")
         f.write("} // namespace sst\n")
-    
-    print(f"Generated embedded knot files: {len(fseries_files)} .fseries files embedded")
+
+    print(
+        f"Generated embedded resources: {len(fseries_paths)} .fseries, "
+        f"{len(ideal_rel_paths)} ideal text files (setuptools)"
+    )
     return header_file, source_file
 
 # Generate embedded files before building

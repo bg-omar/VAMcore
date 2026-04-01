@@ -25,6 +25,14 @@ from gui_tabs.tab_mass_sweep import TabMassSweep
 from gui_tabs.tab_fseries_tools import TabFseriesTools
 from gui_tabs.tab_tools import TabTools
 
+try:
+    from gui_tabs.tab_knot_robustness_v10_3 import TabKnotRobustnessV103
+except Exception as _v103_exc:
+    TabKnotRobustnessV103 = None  # type: ignore[misc, assignment]
+    _KNOT_ROBUSTNESS_V103_ERROR = _v103_exc
+else:
+    _KNOT_ROBUSTNESS_V103_ERROR = None
+
 
 
 
@@ -100,13 +108,21 @@ class SSTDashboard(QMainWindow):
 
         # Linker tabs: Knot Fseries werkt samen met rechter visualisatie-tab
         self.tabs.addTab(TabKnotFseriesMaster(global_vis=self.knot_vis_panel), "Knot Fseries (Master)")
+
+        if TabKnotRobustnessV103 is not None:
+            self.tabs.addTab(TabKnotRobustnessV103(), "Knot robustness v10.3")
+        else:
+            self.tabs.addTab(
+                QLabel(f"Knot robustness v10.3 niet geladen:\n{_KNOT_ROBUSTNESS_V103_ERROR}"),
+                "Knot robustness v10.3",
+            )
+        self.tabs.addTab(TabFseriesTools(), "Fseries Tools")
+        self.tabs.addTab(TabTools(), "Tools / Launcher")
         self.tabs.addTab(TabAbInitio(), "Ab Initio Mass")
         self.tabs.addTab(TabAbInitioSweep(), "Full Ab Initio Sweep")
         self.tabs.addTab(TabMassSweep(), "Mass Sweep (Embedded)")
         self.tabs.addTab(TabHydrogen(), "Hydrogen Spectrum")
         self.tabs.addTab(TabTheory(), "Theory & Equations")
-        self.tabs.addTab(TabFseriesTools(), "Fseries Tools")
-        self.tabs.addTab(TabTools(), "Tools / Launcher")
         left_layout.addWidget(self.tabs)
 
         main_layout.addWidget(left_panel, 45)

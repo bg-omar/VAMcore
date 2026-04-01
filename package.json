@@ -1,6 +1,6 @@
 {
   "name": "swirl-string-core",
-  "version": "0.1.3",
+  "version": "0.1.9",
   "description": "Swirl String Theory Canonical Core - High-performance C++ library for knot dynamics, vortex systems, and fluid mechanics",
   "main": "index.js",
   "module": "index.js",

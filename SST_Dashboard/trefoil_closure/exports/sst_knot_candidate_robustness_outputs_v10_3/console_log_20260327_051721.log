@@ -1,0 +1,32 @@
+[LOG_HEADER] SST robustness sweep console mirror
+[LOG_HEADER] script_version=v10.3 started_wall=2026-03-27T05:17:21
+[LOG_HEADER] log_path=C:\workspace\projects\SSTcore\trefoil_closure\sst_knot_candidate_robustness_outputs_v10_3\console_log_20260327_051721.log
+[LOG_HEADER] cwd=C:\workspace\projects\SSTcore\trefoil_closure
+[LOG_HEADER] argv=['C:\\workspace\\projects\\SSTcore\\trefoil_closure\\sst_knot_candidate_robustness_sweep_v10_3_auto_heavy.py']
+[LOG_HEADER] python=3.12.12 platform=win32
+[LOG_HEADER] numpy=2.3.5 pandas=2.3.3 scipy=1.16.3 torch=2.5.1+cxx11.abi cuda_available=False
+[LOG_HEADER] output_base_dir=C:\workspace\projects\SSTcore\trefoil_closure\sst_knot_candidate_robustness_outputs_v10_3
+[LOG_HEADER] knot_ids=['0:1:1', '0:1:2', '2:2:1', '3:1:1', '4:1:1', '5:1:1', '5:1:2', '6:1:1', '7:1:1', '7:1:2', '8:1:1', '9:1:1', '9:1:2', '10:1:1']
+---
+[META] console_log_path=C:\workspace\projects\SSTcore\trefoil_closure\sst_knot_candidate_robustness_outputs_v10_3\console_log_20260327_051721.log
+[META] v10.3 knot batch = ['0:1:1', '0:1:2', '2:2:1', '3:1:1', '4:1:1', '5:1:1', '5:1:2', '6:1:1', '7:1:1', '7:1:2', '8:1:1', '9:1:1', '9:1:2', '10:1:1']
+[META] external_knotlib=auto spherogram_available=True
+
+==========================================================================================
+[PAR][GLOBAL] enabled: workers=10 total_tasks=168 knots=14 scope=global
+==========================================================================================
+[META] Queue knot 1/14 : 0:1:1 -> 12 tasks
+[META] Queue knot 2/14 : 0:1:2 -> 12 tasks
+[META] Queue knot 3/14 : 2:2:1 -> 12 tasks
+[META] Queue knot 4/14 : 3:1:1 -> 12 tasks
+[META] Queue knot 5/14 : 4:1:1 -> 12 tasks
+[META] Queue knot 6/14 : 5:1:1 -> 12 tasks
+[META] Queue knot 7/14 : 5:1:2 -> 12 tasks
+[META] Queue knot 8/14 : 6:1:1 -> 12 tasks
+[META] Queue knot 9/14 : 7:1:1 -> 12 tasks
+[META] Queue knot 10/14 : 7:1:2 -> 12 tasks
+[META] Queue knot 11/14 : 8:1:1 -> 12 tasks
+[META] Queue knot 12/14 : 9:1:1 -> 12 tasks
+[META] Queue knot 13/14 : 9:1:2 -> 12 tasks
+[META] Queue knot 14/14 : 10:1:1 -> 12 tasks
+[PAR][GLOBAL] done 1/168 knot=0:1:1 1/12 Ng=8000 Ni=8000 scan=102.878s fit=0.004s best_A_ratio=0.992169 best_a_nc_over_rc=0.996077

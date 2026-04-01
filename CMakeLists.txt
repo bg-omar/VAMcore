@@ -62,6 +62,7 @@ add_custom_target(knot_files_embedded ALL
 # Core SST library sources
 add_library(sstcore_lib STATIC
         src/ab_initio_mass.cpp
+        src/trefoil_closure_kernels.cpp
         src/biot_savart.cpp
         src/fluid_dynamics.cpp
         src/field_kernels.cpp
