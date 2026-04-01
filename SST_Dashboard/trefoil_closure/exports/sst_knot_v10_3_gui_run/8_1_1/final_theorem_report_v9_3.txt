@@ -1,0 +1,12 @@
+SST ideal-trefoil theorem-style extrapolation report v10.3_master
+========================================================================
+Preferred fit method                 : plateau_0.12
+Extrapolation minimum N_int_actual   : 8001
+Sweep layout                         : matrix
+Exact target pairs appended          : []
+
+Interpretation:
+v9 keeps the asymptotic fit y(N)=y_inf + c N^{-alpha}, but now refuses a theorem-style
+conclusion unless the high-resolution tail is also quasi-monotone/contracting toward the
+target. The shift-free postcheck includes both targeted_x_nc and targeted_x_nc_fallback rows,
+and reports which branch labels were actually used in the asymptotic tail.

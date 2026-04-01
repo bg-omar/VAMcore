@@ -37,6 +37,24 @@ jobs:
           python -m build --wheel
         shell: bash
 
+      - name: Repair Linux wheels with auditwheel
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          pip install auditwheel
+          auditwheel repair dist/*.whl -w dist/
+          rm dist/*-linux_*.whl
+        shell: bash
+
+      - name: Repair macOS wheels with delocate
+        if: matrix.os == 'macos-latest'
+        run: |
+          pip install delocate
+          delocate-wheel -w dist/fixed -v dist/*.whl
+          mv dist/fixed/*.whl dist/
+          rm -rf dist/fixed
+          rm dist/*-macosx_*.whl || true
+        shell: bash
+
       - name: Store wheel artifact
         uses: actions/upload-artifact@v4
         with:
@@ -92,5 +110,5 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
-          skip_existing: true
+          skip-existing: true
 

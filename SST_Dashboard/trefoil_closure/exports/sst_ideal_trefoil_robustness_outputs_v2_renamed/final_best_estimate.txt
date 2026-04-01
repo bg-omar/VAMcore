@@ -1,0 +1,11 @@
+SST ideal-trefoil final best-estimate (v2)
+================================================
+Preferred fit method       : plateau_0.12
+Best grid                  : N_geom=16000, N_int=4000
+A_K_best                   : 0.07953038 +- 0.00682773 (systematic half-range)
+A_ratio_best               : 0.99940817 +- 0.08579981
+a_nc/r_c_best                : 0.99970404 +- 0.04145896
+a*/r_c provisional center  : 0.99132335 +- 0.03871640
+Branch mode                : closest_to_a_nc
+
+Interpretation: A_K_best and a_nc/r_c_best are the cleanest current closure estimates. The full-model a*/r_c remains provisional until branch sensitivity and Biot-Savart resolution are better constrained.

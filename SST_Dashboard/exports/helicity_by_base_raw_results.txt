@@ -1,0 +1,368 @@
+C:\Users\mr\anaconda3\envs\VAM\python.exe C:\workspace\projects\VAM\VAM-20_String_Theory\Python_Computations\py_knots\HelicityCalculationVAMcore.py
+
+=== Compute against another ===
+========== knot.12a_1202.fseries ============
+knot.12a_1202.fseries:  a_mu(32) = -0.69066040   [Hc=-1.017e+04, Hm=2.667e+04]
+knot.12a_1202.fseries:  a_mu(48) = -0.48362664   [Hc=2.013e+03, Hm=6.146e+04]
+knot.12a_1202.fseries:  a_mu(64) = -0.43959405   [Hc=3.080e+04, Hm=2.549e+05]
+========== knot.12a_1202z6.fseries ============
+knot.12a_1202z6.fseries:  a_mu(32) = -0.50000000   [Hc=5.717e-06, Hm=8.978e+03]
+knot.12a_1202z6.fseries:  a_mu(48) = -0.50000000   [Hc=2.965e-06, Hm=3.871e+04]
+knot.12a_1202z6.fseries:  a_mu(64) = -0.50000000   [Hc=4.280e-06, Hm=3.136e+05]
+========== knot.15331.fseries ============
+knot.15331.fseries:  a_mu(32) = -0.50000000   [Hc=-1.818e-05, Hm=4.993e+04]
+knot.15331.fseries:  a_mu(48) = -0.50000000   [Hc=-8.313e-06, Hm=5.618e+04]
+knot.15331.fseries:  a_mu(64) = -0.50000000   [Hc=-8.901e-06, Hm=3.863e+05]
+========== knot.1_1.fseries ============
+knot.1_1.fseries:  a_mu(32) = -0.50000000   [Hc=6.687e-15, Hm=2.226e+05]
+knot.1_1.fseries:  a_mu(48) = -0.50000000   [Hc=3.378e-15, Hm=1.078e+07]
+knot.1_1.fseries:  a_mu(64) = -0.50000000   [Hc=2.350e-15, Hm=8.029e+06]
+========== knot.3_1.fseries ============
+knot.3_1.fseries:  a_mu(32) = -0.50076974   [Hc=-2.673e+02, Hm=1.736e+05]
+knot.3_1.fseries:  a_mu(48) = -0.49717435   [Hc=5.383e+03, Hm=9.525e+05]
+knot.3_1.fseries:  a_mu(64) = -0.49776744   [Hc=3.670e+04, Hm=8.218e+06]
+========== knot.3_1p.fseries ============
+knot.3_1p.fseries:  a_mu(32) = -0.46398934   [Hc=3.159e+03, Hm=4.386e+04]
+knot.3_1p.fseries:  a_mu(48) = -0.45112745   [Hc=9.352e+03, Hm=9.568e+04]
+knot.3_1p.fseries:  a_mu(64) = -0.48337302   [Hc=1.637e+04, Hm=4.923e+05]
+========== knot.3_1u.fseries ============
+knot.3_1u.fseries:  a_mu(32) = -0.49000954   [Hc=3.811e+03, Hm=1.907e+05]
+knot.3_1u.fseries:  a_mu(48) = -0.49752912   [Hc=1.074e+04, Hm=2.174e+06]
+knot.3_1u.fseries:  a_mu(64) = -0.49820744   [Hc=1.746e+04, Hm=4.870e+06]
+========== knot.4_1.fseries ============
+knot.4_1.fseries:  a_mu(32) = -0.49444096   [Hc=7.087e+02, Hm=6.374e+04]
+knot.4_1.fseries:  a_mu(48) = -0.49595249   [Hc=1.273e+03, Hm=1.573e+05]
+knot.4_1.fseries:  a_mu(64) = -0.49624456   [Hc=9.182e+03, Hm=1.222e+06]
+========== knot.4_1d.fseries ============
+knot.4_1d.fseries:  a_mu(32) = -0.51605576   [Hc=-1.572e+03, Hm=4.896e+04]
+knot.4_1d.fseries:  a_mu(48) = -0.51273502   [Hc=-5.988e+03, Hm=2.351e+05]
+knot.4_1d.fseries:  a_mu(64) = -0.50048223   [Hc=-6.775e+02, Hm=7.025e+05]
+========== knot.4_1p.fseries ============
+knot.4_1p.fseries:  a_mu(32) = -0.50348657   [Hc=-1.370e+03, Hm=1.965e+05]
+knot.4_1p.fseries:  a_mu(48) = -0.49880401   [Hc=1.923e+02, Hm=8.038e+04]
+knot.4_1p.fseries:  a_mu(64) = -0.50167940   [Hc=-6.135e+03, Hm=1.827e+06]
+========== knot.4_1z.fseries ============
+knot.4_1z.fseries:  a_mu(32) = -0.50000001   [Hc=-2.116e-03, Hm=1.393e+05]
+knot.4_1z.fseries:  a_mu(48) = -0.50000000   [Hc=-2.130e-04, Hm=3.600e+05]
+knot.4_1z.fseries:  a_mu(64) = -0.50000000   [Hc=-1.925e-04, Hm=1.220e+06]
+========== knot.5_1.fseries ============
+knot.5_1.fseries:  a_mu(32) = -0.49706057   [Hc=1.553e+03, Hm=2.642e+05]
+knot.5_1.fseries:  a_mu(48) = -0.49515609   [Hc=1.344e+04, Hm=1.388e+06]
+knot.5_1.fseries:  a_mu(64) = -0.49628804   [Hc=4.268e+04, Hm=5.749e+06]
+========== knot.5_1p.fseries ============
+knot.5_1p.fseries:  a_mu(32) = -0.47380837   [Hc=3.845e+03, Hm=7.341e+04]
+knot.5_1p.fseries:  a_mu(48) = -0.43226575   [Hc=1.462e+04, Hm=1.079e+05]
+knot.5_1p.fseries:  a_mu(64) = -0.46119458   [Hc=3.326e+04, Hm=4.286e+05]
+========== knot.5_1u.fseries ============
+knot.5_1u.fseries:  a_mu(32) = -0.47207938   [Hc=1.947e+04, Hm=3.487e+05]
+knot.5_1u.fseries:  a_mu(48) = -0.49831641   [Hc=1.055e+04, Hm=3.132e+06]
+knot.5_1u.fseries:  a_mu(64) = -0.49811966   [Hc=3.917e+04, Hm=1.041e+07]
+========== knot.5_2.fseries ============
+knot.5_2.fseries:  a_mu(32) = -0.46038120   [Hc=4.286e+03, Hm=5.409e+04]
+knot.5_2.fseries:  a_mu(48) = -0.46167358   [Hc=1.238e+04, Hm=1.615e+05]
+knot.5_2.fseries:  a_mu(64) = -0.47401127   [Hc=3.548e+04, Hm=6.825e+05]
+========== knot.5_2d.fseries ============
+knot.5_2d.fseries:  a_mu(32) = -0.58953484   [Hc=-6.202e+03, Hm=3.463e+04]
+knot.5_2d.fseries:  a_mu(48) = -0.50377497   [Hc=-2.630e+03, Hm=3.483e+05]
+knot.5_2d.fseries:  a_mu(64) = -0.53128049   [Hc=-2.648e+04, Hm=4.233e+05]
+========== knot.5_2r.fseries ============
+knot.5_2r.fseries:  a_mu(32) = -0.48394498   [Hc=2.851e+03, Hm=8.880e+04]
+knot.5_2r.fseries:  a_mu(48) = -0.47597356   [Hc=8.635e+03, Hm=1.797e+05]
+knot.5_2r.fseries:  a_mu(64) = -0.47767933   [Hc=2.590e+04, Hm=5.801e+05]
+========== knot.6_1.fseries ============
+knot.6_1.fseries:  a_mu(32) = -0.48102762   [Hc=2.629e+03, Hm=6.930e+04]
+knot.6_1.fseries:  a_mu(48) = -0.49090564   [Hc=3.560e+03, Hm=1.957e+05]
+knot.6_1.fseries:  a_mu(64) = -0.49883641   [Hc=1.654e+03, Hm=7.106e+05]
+========== knot.6_2.fseries ============
+knot.6_2.fseries:  a_mu(32) = -0.48666523   [Hc=1.850e+03, Hm=6.935e+04]
+knot.6_2.fseries:  a_mu(48) = -0.48452672   [Hc=3.860e+03, Hm=1.247e+05]
+knot.6_2.fseries:  a_mu(64) = -0.48958432   [Hc=1.900e+04, Hm=9.119e+05]
+========== knot.6_2d.fseries ============
+knot.6_2d.fseries:  a_mu(32) = -0.44109360   [Hc=2.698e+03, Hm=2.290e+04]
+knot.6_2d.fseries:  a_mu(48) = -0.42565935   [Hc=8.790e+03, Hm=5.912e+04]
+knot.6_2d.fseries:  a_mu(64) = -0.49320693   [Hc=2.025e+04, Hm=1.491e+06]
+========== knot.6_2p.fseries ============
+knot.6_2p.fseries:  a_mu(32) = -0.45917075   [Hc=2.525e+03, Hm=3.092e+04]
+knot.6_2p.fseries:  a_mu(48) = -0.46679877   [Hc=6.833e+03, Hm=1.029e+05]
+knot.6_2p.fseries:  a_mu(64) = -0.48230620   [Hc=1.532e+04, Hm=4.330e+05]
+========== knot.6_3d.fseries ============
+knot.6_3d.fseries:  a_mu(32) = -0.46843746   [Hc=1.451e+03, Hm=2.298e+04]
+knot.6_3d.fseries:  a_mu(48) = -0.44913300   [Hc=6.709e+03, Hm=6.595e+04]
+knot.6_3d.fseries:  a_mu(64) = -0.51341298   [Hc=-1.054e+04, Hm=3.927e+05]
+========== knot.6_3z.fseries ============
+knot.6_3z.fseries:  a_mu(32) = -0.50000000   [Hc=-4.309e-05, Hm=3.041e+04]
+knot.6_3z.fseries:  a_mu(48) = -0.50000000   [Hc=3.608e-05, Hm=1.092e+05]
+knot.6_3z.fseries:  a_mu(64) = -0.50000000   [Hc=5.860e-05, Hm=3.998e+05]
+========== knot.7_1.fseries ============
+knot.7_1.fseries:  a_mu(32) = -0.49391857   [Hc=4.039e+03, Hm=3.321e+05]
+knot.7_1.fseries:  a_mu(48) = -0.49404943   [Hc=1.643e+04, Hm=1.381e+06]
+knot.7_1.fseries:  a_mu(64) = -0.49584493   [Hc=4.791e+04, Hm=5.765e+06]
+========== knot.7_1p.fseries ============
+knot.7_1p.fseries:  a_mu(32) = -0.42648846   [Hc=6.145e+03, Hm=4.180e+04]
+knot.7_1p.fseries:  a_mu(48) = -0.40728009   [Hc=2.026e+04, Hm=1.092e+05]
+knot.7_1p.fseries:  a_mu(64) = -0.43412546   [Hc=3.712e+04, Hm=2.817e+05]
+========== knot.7_2.fseries ============
+knot.7_2.fseries:  a_mu(32) = -0.39869783   [Hc=9.263e+03, Hm=4.572e+04]
+knot.7_2.fseries:  a_mu(48) = -0.47285569   [Hc=8.576e+03, Hm=1.580e+05]
+knot.7_2.fseries:  a_mu(64) = -0.47199382   [Hc=3.689e+04, Hm=6.587e+05]
+========== knot.7_2d.fseries ============
+knot.7_2d.fseries:  a_mu(32) = -0.37338122   [Hc=5.182e+03, Hm=2.046e+04]
+knot.7_2d.fseries:  a_mu(48) = -0.46012996   [Hc=1.858e+04, Hm=2.330e+05]
+knot.7_2d.fseries:  a_mu(64) = -0.46119447   [Hc=3.005e+04, Hm=3.872e+05]
+========== knot.7_2r.fseries ============
+knot.7_2r.fseries:  a_mu(32) = -0.50365327   [Hc=-2.217e+03, Hm=3.034e+05]
+knot.7_2r.fseries:  a_mu(48) = -0.43592382   [Hc=1.463e+04, Hm=1.141e+05]
+knot.7_2r.fseries:  a_mu(64) = -0.47649218   [Hc=2.746e+04, Hm=5.841e+05]
+========== knot.7_3.fseries ============
+knot.7_3.fseries:  a_mu(32) = -0.55362411   [Hc=-5.076e+03, Hm=4.732e+04]
+knot.7_3.fseries:  a_mu(48) = -0.51210319   [Hc=-5.750e+03, Hm=2.375e+05]
+knot.7_3.fseries:  a_mu(64) = -0.51133167   [Hc=-2.175e+04, Hm=9.596e+05]
+========== knot.7_3d.fseries ============
+knot.7_3d.fseries:  a_mu(32) = -0.16785798   [Hc=4.117e+03, Hm=6.197e+03]
+knot.7_3d.fseries:  a_mu(48) = -0.21338987   [Hc=1.345e+04, Hm=2.347e+04]
+knot.7_3d.fseries:  a_mu(64) = -0.42252999   [Hc=3.157e+04, Hm=2.038e+05]
+========== knot.7_4.fseries ============
+knot.7_4.fseries:  a_mu(32) = -0.58018496   [Hc=-5.915e+03, Hm=3.688e+04]
+knot.7_4.fseries:  a_mu(48) = -0.53599811   [Hc=-1.485e+04, Hm=2.062e+05]
+knot.7_4.fseries:  a_mu(64) = -0.52190370   [Hc=-3.868e+04, Hm=8.830e+05]
+========== knot.7_5.fseries ============
+knot.7_5.fseries:  a_mu(32) = -0.42909651   [Hc=7.530e+03, Hm=5.310e+04]
+knot.7_5.fseries:  a_mu(48) = -0.47961247   [Hc=1.161e+04, Hm=2.848e+05]
+knot.7_5.fseries:  a_mu(64) = -0.47857418   [Hc=2.672e+04, Hm=6.235e+05]
+========== knot.7_5d.fseries ============
+knot.7_5d.fseries:  a_mu(32) = -0.67298232   [Hc=-6.626e+03, Hm=1.915e+04]
+knot.7_5d.fseries:  a_mu(48) = -0.58504807   [Hc=-1.492e+04, Hm=8.771e+04]
+knot.7_5d.fseries:  a_mu(64) = -0.59691270   [Hc=-4.672e+04, Hm=2.410e+05]
+========== knot.7_6d.fseries ============
+knot.7_6d.fseries:  a_mu(32) = -0.46375549   [Hc=1.806e+03, Hm=2.491e+04]
+knot.7_6d.fseries:  a_mu(48) = -0.46056774   [Hc=4.550e+03, Hm=5.769e+04]
+knot.7_6d.fseries:  a_mu(64) = -0.43344842   [Hc=8.384e+04, Hm=6.299e+05]
+========== knot.7_6s.fseries ============
+knot.7_6s.fseries:  a_mu(32) = -0.45598752   [Hc=3.519e+03, Hm=3.998e+04]
+knot.7_6s.fseries:  a_mu(48) = -0.40460760   [Hc=1.460e+04, Hm=7.651e+04]
+knot.7_6s.fseries:  a_mu(64) = -0.50755606   [Hc=-3.737e+03, Hm=2.473e+05]
+========== knot.7_7d.fseries ============
+knot.7_7d.fseries:  a_mu(32) = -0.54128280   [Hc=-2.470e+03, Hm=2.992e+04]
+knot.7_7d.fseries:  a_mu(48) = -0.53275805   [Hc=-1.030e+04, Hm=1.572e+05]
+knot.7_7d.fseries:  a_mu(64) = -0.52764135   [Hc=-2.240e+04, Hm=4.051e+05]
+========== knot.8_1.fseries ============
+knot.8_1.fseries:  a_mu(32) = -0.42358903   [Hc=3.993e+03, Hm=2.613e+04]
+knot.8_1.fseries:  a_mu(48) = -0.49141044   [Hc=2.694e+03, Hm=1.568e+05]
+knot.8_1.fseries:  a_mu(64) = -0.47796614   [Hc=1.879e+04, Hm=4.263e+05]
+========== knot.8_10s.fseries ============
+knot.8_10s.fseries:  a_mu(32) = -0.55152928   [Hc=-3.632e+03, Hm=3.524e+04]
+knot.8_10s.fseries:  a_mu(48) = -0.51774710   [Hc=-3.351e+03, Hm=9.442e+04]
+knot.8_10s.fseries:  a_mu(64) = -0.50902242   [Hc=-6.552e+03, Hm=3.631e+05]
+========== knot.8_11.fseries ============
+knot.8_11.fseries:  a_mu(32) = -0.41916035   [Hc=5.406e+03, Hm=3.343e+04]
+knot.8_11.fseries:  a_mu(48) = -0.46139911   [Hc=1.146e+04, Hm=1.484e+05]
+knot.8_11.fseries:  a_mu(64) = -0.47483169   [Hc=1.607e+04, Hm=3.192e+05]
+========== knot.8_11d.fseries ============
+knot.8_11d.fseries:  a_mu(32) = -0.42756727   [Hc=2.609e+03, Hm=1.801e+04]
+knot.8_11d.fseries:  a_mu(48) = -0.39651560   [Hc=1.239e+04, Hm=5.988e+04]
+knot.8_11d.fseries:  a_mu(64) = -0.46094139   [Hc=1.885e+04, Hm=2.413e+05]
+========== knot.8_12d.fseries ============
+knot.8_12d.fseries:  a_mu(32) = -0.32756686   [Hc=7.275e+03, Hm=2.110e+04]
+knot.8_12d.fseries:  a_mu(48) = -0.53193887   [Hc=-3.862e+03, Hm=6.046e+04]
+knot.8_12d.fseries:  a_mu(64) = -0.52763794   [Hc=-1.399e+04, Hm=2.532e+05]
+========== knot.8_12z.fseries ============
+knot.8_12z.fseries:  a_mu(32) = -0.50000000   [Hc=-1.446e-04, Hm=4.425e+04]
+knot.8_12z.fseries:  a_mu(48) = -0.50000000   [Hc=-2.867e-05, Hm=1.778e+05]
+knot.8_12z.fseries:  a_mu(64) = -0.50000000   [Hc=-3.135e-05, Hm=2.279e+05]
+========== knot.8_13d.fseries ============
+knot.8_13d.fseries:  a_mu(32) = -0.42307347   [Hc=6.323e+03, Hm=4.110e+04]
+knot.8_13d.fseries:  a_mu(48) = -0.50380285   [Hc=-1.970e+03, Hm=2.590e+05]
+knot.8_13d.fseries:  a_mu(64) = -0.48402864   [Hc=7.360e+03, Hm=2.304e+05]
+========== knot.8_13p.fseries ============
+knot.8_13p.fseries:  a_mu(32) = -0.53458078   [Hc=-1.783e+03, Hm=2.578e+04]
+knot.8_13p.fseries:  a_mu(48) = -0.51752824   [Hc=-1.553e+03, Hm=4.430e+04]
+knot.8_13p.fseries:  a_mu(64) = -0.51926590   [Hc=-1.601e+04, Hm=4.156e+05]
+========== knot.8_14d.fseries ============
+knot.8_14d.fseries:  a_mu(32) = -0.41202024   [Hc=4.021e+03, Hm=2.285e+04]
+knot.8_14d.fseries:  a_mu(48) = -0.41694929   [Hc=8.069e+03, Hm=4.858e+04]
+knot.8_14d.fseries:  a_mu(64) = -0.56770082   [Hc=-5.253e+04, Hm=3.879e+05]
+========== knot.8_14r.fseries ============
+knot.8_14r.fseries:  a_mu(32) = -0.43412691   [Hc=5.154e+03, Hm=3.912e+04]
+knot.8_14r.fseries:  a_mu(48) = -0.48501642   [Hc=4.372e+03, Hm=1.459e+05]
+knot.8_14r.fseries:  a_mu(64) = -0.49988026   [Hc=2.296e+03, Hm=9.587e+06]
+========== knot.8_15.fseries ============
+knot.8_15.fseries:  a_mu(32) = -0.37806900   [Hc=7.320e+03, Hm=3.002e+04]
+knot.8_15.fseries:  a_mu(48) = -0.46824771   [Hc=1.348e+04, Hm=2.122e+05]
+knot.8_15.fseries:  a_mu(64) = -0.49112381   [Hc=2.629e+04, Hm=1.481e+06]
+========== knot.8_15d.fseries ============
+knot.8_15d.fseries:  a_mu(32) = -0.27816885   [Hc=1.309e+04, Hm=2.950e+04]
+knot.8_15d.fseries:  a_mu(48) = -0.41333092   [Hc=1.378e+04, Hm=7.949e+04]
+knot.8_15d.fseries:  a_mu(64) = -0.42307588   [Hc=5.144e+04, Hm=3.344e+05]
+========== knot.8_15p.fseries ============
+knot.8_15p.fseries:  a_mu(32) = -0.44432068   [Hc=7.072e+03, Hm=6.351e+04]
+knot.8_15p.fseries:  a_mu(48) = -0.43516984   [Hc=1.730e+04, Hm=1.334e+05]
+knot.8_15p.fseries:  a_mu(64) = -0.48462804   [Hc=4.072e+04, Hm=1.324e+06]
+========== knot.8_16.fseries ============
+knot.8_16.fseries:  a_mu(32) = -0.52505866   [Hc=-1.792e+03, Hm=3.576e+04]
+knot.8_16.fseries:  a_mu(48) = -0.46919447   [Hc=6.697e+03, Hm=1.087e+05]
+knot.8_16.fseries:  a_mu(64) = -0.48969031   [Hc=1.751e+04, Hm=8.490e+05]
+========== knot.8_17.fseries ============
+knot.8_17.fseries:  a_mu(32) = -0.50198075   [Hc=-3.626e+02, Hm=9.154e+04]
+knot.8_17.fseries:  a_mu(48) = -0.50203723   [Hc=-2.186e+03, Hm=5.366e+05]
+knot.8_17.fseries:  a_mu(64) = -0.50039757   [Hc=-4.183e+03, Hm=5.261e+06]
+========== knot.8_18.fseries ============
+knot.8_18.fseries:  a_mu(32) = -0.40824035   [Hc=4.251e+03, Hm=2.316e+04]
+knot.8_18.fseries:  a_mu(48) = -0.47405538   [Hc=2.687e+03, Hm=5.179e+04]
+knot.8_18.fseries:  a_mu(64) = -0.51255198   [Hc=-4.891e+03, Hm=1.948e+05]
+========== knot.8_18z.fseries ============
+knot.8_18z.fseries:  a_mu(32) = -0.53941944   [Hc=-9.880e+02, Hm=1.253e+04]
+knot.8_18z.fseries:  a_mu(48) = -0.54269222   [Hc=-3.049e+03, Hm=3.571e+04]
+knot.8_18z.fseries:  a_mu(64) = -0.51050107   [Hc=-7.128e+03, Hm=3.394e+05]
+========== knot.8_19t.fseries ============
+knot.8_19t.fseries:  a_mu(32) = -0.48585713   [Hc=6.726e+03, Hm=2.378e+05]
+knot.8_19t.fseries:  a_mu(48) = -0.49446635   [Hc=1.971e+04, Hm=1.781e+06]
+knot.8_19t.fseries:  a_mu(64) = -0.49759489   [Hc=2.254e+04, Hm=4.687e+06]
+========== knot.8_19u.fseries ============
+knot.8_19u.fseries:  a_mu(32) = -0.49548765   [Hc=5.517e+03, Hm=6.113e+05]
+knot.8_19u.fseries:  a_mu(48) = -0.50044290   [Hc=-8.027e+03, Hm=9.062e+06]
+knot.8_19u.fseries:  a_mu(64) = -0.49932196   [Hc=1.854e+05, Hm=1.367e+08]
+========== knot.8_1d.fseries ============
+knot.8_1d.fseries:  a_mu(32) = -0.50628299   [Hc=-4.067e+02, Hm=3.236e+04]
+knot.8_1d.fseries:  a_mu(48) = -0.58612254   [Hc=-1.876e+04, Hm=1.089e+05]
+knot.8_1d.fseries:  a_mu(64) = -0.55102132   [Hc=-4.601e+04, Hm=4.509e+05]
+========== knot.8_2.fseries ============
+knot.8_2.fseries:  a_mu(32) = -0.39409200   [Hc=5.788e+03, Hm=2.733e+04]
+knot.8_2.fseries:  a_mu(48) = -0.45575265   [Hc=1.274e+04, Hm=1.439e+05]
+knot.8_2.fseries:  a_mu(64) = -0.47548823   [Hc=2.565e+04, Hm=5.231e+05]
+========== knot.8_20r.fseries ============
+knot.8_20r.fseries:  a_mu(32) = -0.46186295   [Hc=2.561e+03, Hm=3.357e+04]
+knot.8_20r.fseries:  a_mu(48) = -0.52768922   [Hc=-8.947e+03, Hm=1.616e+05]
+knot.8_20r.fseries:  a_mu(64) = -0.51299629   [Hc=-1.059e+04, Hm=4.073e+05]
+========== knot.8_21d.fseries ============
+knot.8_21d.fseries:  a_mu(32) = -0.40323374   [Hc=5.023e+03, Hm=2.596e+04]
+knot.8_21d.fseries:  a_mu(48) = -0.41186631   [Hc=1.298e+04, Hm=7.364e+04]
+knot.8_21d.fseries:  a_mu(64) = -0.48234817   [Hc=1.284e+04, Hm=3.638e+05]
+========== knot.8_21p.fseries ============
+knot.8_21p.fseries:  a_mu(32) = -0.40273336   [Hc=5.721e+03, Hm=2.941e+04]
+knot.8_21p.fseries:  a_mu(48) = -0.45688700   [Hc=9.561e+03, Hm=1.109e+05]
+knot.8_21p.fseries:  a_mu(64) = -0.49916094   [Hc=2.857e+03, Hm=1.702e+06]
+========== knot.8_21r.fseries ============
+knot.8_21r.fseries:  a_mu(32) = -0.48710898   [Hc=1.843e+03, Hm=7.149e+04]
+knot.8_21r.fseries:  a_mu(48) = -0.46165341   [Hc=9.611e+03, Hm=1.253e+05]
+knot.8_21r.fseries:  a_mu(64) = -0.49023128   [Hc=1.476e+04, Hm=7.553e+05]
+========== knot.8_2d.fseries ============
+knot.8_2d.fseries:  a_mu(32) = -0.38122339   [Hc=6.965e+03, Hm=2.932e+04]
+knot.8_2d.fseries:  a_mu(48) = -0.40930140   [Hc=1.109e+04, Hm=6.115e+04]
+knot.8_2d.fseries:  a_mu(64) = -0.44130863   [Hc=2.972e+04, Hm=2.532e+05]
+========== knot.8_3d.fseries ============
+knot.8_3d.fseries:  a_mu(32) = -0.55437782   [Hc=-1.509e+03, Hm=1.387e+04]
+knot.8_3d.fseries:  a_mu(48) = -0.51813385   [Hc=-2.034e+03, Hm=5.609e+04]
+knot.8_3d.fseries:  a_mu(64) = -0.47187709   [Hc=2.227e+04, Hm=3.959e+05]
+========== knot.8_3z.fseries ============
+knot.8_3z.fseries:  a_mu(32) = -0.49999999   [Hc=2.824e-04, Hm=2.021e+04]
+knot.8_3z.fseries:  a_mu(48) = -0.50000000   [Hc=5.374e-05, Hm=8.076e+04]
+knot.8_3z.fseries:  a_mu(64) = -0.50000000   [Hc=5.567e-05, Hm=2.183e+05]
+========== knot.8_4d.fseries ============
+knot.8_4d.fseries:  a_mu(32) = -0.62413636   [Hc=-4.724e+03, Hm=1.903e+04]
+knot.8_4d.fseries:  a_mu(48) = -0.48834011   [Hc=1.300e+03, Hm=5.573e+04]
+knot.8_4d.fseries:  a_mu(64) = -0.51699401   [Hc=-1.578e+04, Hm=4.644e+05]
+========== knot.8_5.fseries ============
+knot.8_5.fseries:  a_mu(32) = -1.99430972   [Hc=-9.753e+04, Hm=3.263e+04]
+knot.8_5.fseries:  a_mu(48) = -2.25213672   [Hc=-1.459e+05, Hm=4.163e+04]
+knot.8_5.fseries:  a_mu(64) = -2.50142352   [Hc=-2.770e+05, Hm=6.921e+04]
+========== knot.8_6.fseries ============
+knot.8_6.fseries:  a_mu(32) = -0.46988930   [Hc=3.367e+03, Hm=5.591e+04]
+knot.8_6.fseries:  a_mu(48) = -0.48561993   [Hc=5.313e+03, Hm=1.847e+05]
+knot.8_6.fseries:  a_mu(64) = -0.49818118   [Hc=2.189e+03, Hm=6.016e+05]
+========== knot.8_6p.fseries ============
+knot.8_6p.fseries:  a_mu(32) = -0.45634674   [Hc=2.339e+03, Hm=2.679e+04]
+knot.8_6p.fseries:  a_mu(48) = -0.46684123   [Hc=1.227e+04, Hm=1.850e+05]
+knot.8_6p.fseries:  a_mu(64) = -0.49293280   [Hc=2.300e+04, Hm=1.627e+06]
+========== knot.8_7d.fseries ============
+knot.8_7d.fseries:  a_mu(32) = -0.54849096   [Hc=-6.541e+03, Hm=6.744e+04]
+knot.8_7d.fseries:  a_mu(48) = -0.73506852   [Hc=-2.893e+04, Hm=6.154e+04]
+knot.8_7d.fseries:  a_mu(64) = -0.61603121   [Hc=-5.422e+04, Hm=2.337e+05]
+========== knot.8_7s.fseries ============
+knot.8_7s.fseries:  a_mu(32) = -0.52736428   [Hc=-2.898e+03, Hm=5.295e+04]
+knot.8_7s.fseries:  a_mu(48) = -0.53244861   [Hc=-6.212e+03, Hm=9.572e+04]
+knot.8_7s.fseries:  a_mu(64) = -0.50560507   [Hc=-9.415e+03, Hm=8.398e+05]
+========== knot.8_8d.fseries ============
+knot.8_8d.fseries:  a_mu(32) = -0.59102508   [Hc=-4.603e+03, Hm=2.528e+04]
+knot.8_8d.fseries:  a_mu(48) = -0.62006555   [Hc=-1.354e+04, Hm=5.638e+04]
+knot.8_8d.fseries:  a_mu(64) = -0.52008558   [Hc=-7.417e+03, Hm=1.846e+05]
+========== knot.8_9d.fseries ============
+knot.8_9d.fseries:  a_mu(32) = -0.51342383   [Hc=-4.801e+02, Hm=1.788e+04]
+knot.8_9d.fseries:  a_mu(48) = -0.71440532   [Hc=-4.652e+04, Hm=1.085e+05]
+knot.8_9d.fseries:  a_mu(64) = -0.44088677   [Hc=1.533e+04, Hm=1.297e+05]
+
+=== VAM Muon Anomaly via Helicity ===
+knot.12a_1202.fseries:  a_mu^VAM = -0.69066040  [Hc=-10170.31, Hm=26671.27]
+knot.12a_1202z6.fseries:  a_mu^VAM = -0.50000000  [Hc=0.00, Hm=8978.16]
+knot.15331.fseries:  a_mu^VAM = -0.50000000  [Hc=-0.00, Hm=49934.67]
+knot.1_1.fseries:  a_mu^VAM = -0.50000000  [Hc=0.00, Hm=222627.41]
+knot.3_1.fseries:  a_mu^VAM = -0.50076974  [Hc=-267.33, Hm=173647.97]
+knot.3_1p.fseries:  a_mu^VAM = -0.46398934  [Hc=3158.82, Hm=43859.59]
+knot.3_1u.fseries:  a_mu^VAM = -0.49000954  [Hc=3811.16, Hm=190740.14]
+knot.4_1.fseries:  a_mu^VAM = -0.49444096  [Hc=708.65, Hm=63738.60]
+knot.4_1d.fseries:  a_mu^VAM = -0.51605576  [Hc=-1572.23, Hm=48961.47]
+knot.4_1p.fseries:  a_mu^VAM = -0.50348657  [Hc=-1370.00, Hm=196467.59]
+knot.4_1z.fseries:  a_mu^VAM = -0.50000001  [Hc=-0.00, Hm=139297.43]
+knot.5_1.fseries:  a_mu^VAM = -0.49706057  [Hc=1553.48, Hm=264247.77]
+knot.5_1p.fseries:  a_mu^VAM = -0.47380837  [Hc=3845.34, Hm=73407.73]
+knot.5_1u.fseries:  a_mu^VAM = -0.47207938  [Hc=19473.24, Hm=348724.99]
+knot.5_2.fseries:  a_mu^VAM = -0.46038120  [Hc=4286.20, Hm=54093.06]
+knot.5_2d.fseries:  a_mu^VAM = -0.58953484  [Hc=-6201.67, Hm=34632.71]
+knot.5_2r.fseries:  a_mu^VAM = -0.48394498  [Hc=2851.39, Hm=88800.52]
+knot.6_1.fseries:  a_mu^VAM = -0.48102762  [Hc=2629.50, Hm=69298.06]
+knot.6_2.fseries:  a_mu^VAM = -0.48666523  [Hc=1849.65, Hm=69354.33]
+knot.6_2d.fseries:  a_mu^VAM = -0.44109360  [Hc=2697.64, Hm=22897.72]
+knot.6_2p.fseries:  a_mu^VAM = -0.45917075  [Hc=2525.18, Hm=30923.65]
+knot.6_3d.fseries:  a_mu^VAM = -0.46843746  [Hc=1450.61, Hm=22979.90]
+knot.6_3z.fseries:  a_mu^VAM = -0.50000000  [Hc=-0.00, Hm=30412.35]
+knot.7_1.fseries:  a_mu^VAM = -0.49391857  [Hc=4039.32, Hm=332102.47]
+knot.7_1p.fseries:  a_mu^VAM = -0.42648846  [Hc=6144.99, Hm=41796.09]
+knot.7_2.fseries:  a_mu^VAM = -0.39869783  [Hc=9262.99, Hm=45719.60]
+knot.7_2d.fseries:  a_mu^VAM = -0.37338122  [Hc=5182.22, Hm=20463.88]
+knot.7_2r.fseries:  a_mu^VAM = -0.50365327  [Hc=-2216.86, Hm=303407.47]
+knot.7_3.fseries:  a_mu^VAM = -0.55362411  [Hc=-5075.51, Hm=47324.88]
+knot.7_3d.fseries:  a_mu^VAM = -0.16785798  [Hc=4116.75, Hm=6197.27]
+knot.7_4.fseries:  a_mu^VAM = -0.58018496  [Hc=-5915.09, Hm=36884.04]
+knot.7_5.fseries:  a_mu^VAM = -0.42909651  [Hc=7530.09, Hm=53101.01]
+knot.7_5d.fseries:  a_mu^VAM = -0.67298232  [Hc=-6625.98, Hm=19152.20]
+knot.7_6d.fseries:  a_mu^VAM = -0.46375549  [Hc=1805.68, Hm=24909.65]
+knot.7_6s.fseries:  a_mu^VAM = -0.45598752  [Hc=3518.98, Hm=39977.09]
+knot.7_7d.fseries:  a_mu^VAM = -0.54128280  [Hc=-2470.41, Hm=29920.53]
+knot.8_1.fseries:  a_mu^VAM = -0.42358903  [Hc=3992.71, Hm=26126.57]
+knot.8_10s.fseries:  a_mu^VAM = -0.55152928  [Hc=-3632.18, Hm=35243.84]
+knot.8_11.fseries:  a_mu^VAM = -0.41916035  [Hc=5405.64, Hm=33434.36]
+knot.8_11d.fseries:  a_mu^VAM = -0.42756727  [Hc=2609.11, Hm=18010.54]
+knot.8_12d.fseries:  a_mu^VAM = -0.32756686  [Hc=7275.33, Hm=21096.10]
+knot.8_12z.fseries:  a_mu^VAM = -0.50000000  [Hc=-0.00, Hm=44245.95]
+knot.8_13d.fseries:  a_mu^VAM = -0.42307347  [Hc=6323.08, Hm=41098.17]
+knot.8_13p.fseries:  a_mu^VAM = -0.53458078  [Hc=-1782.96, Hm=25779.63]
+knot.8_14d.fseries:  a_mu^VAM = -0.41202024  [Hc=4020.55, Hm=22849.29]
+knot.8_14r.fseries:  a_mu^VAM = -0.43412691  [Hc=5154.02, Hm=39120.81]
+knot.8_15.fseries:  a_mu^VAM = -0.37806900  [Hc=7320.08, Hm=30017.30]
+knot.8_15d.fseries:  a_mu^VAM = -0.27816885  [Hc=13088.23, Hm=29500.44]
+knot.8_15p.fseries:  a_mu^VAM = -0.44432068  [Hc=7072.00, Hm=63506.56]
+knot.8_16.fseries:  a_mu^VAM = -0.52505866  [Hc=-1792.42, Hm=35764.41]
+knot.8_17.fseries:  a_mu^VAM = -0.50198075  [Hc=-362.64, Hm=91540.59]
+knot.8_18.fseries:  a_mu^VAM = -0.40824035  [Hc=4250.76, Hm=23162.47]
+knot.8_18z.fseries:  a_mu^VAM = -0.53941944  [Hc=-988.05, Hm=12532.51]
+knot.8_19t.fseries:  a_mu^VAM = -0.48585713  [Hc=6725.92, Hm=237784.92]
+knot.8_19u.fseries:  a_mu^VAM = -0.49548765  [Hc=5516.77, Hm=611297.15]
+knot.8_1d.fseries:  a_mu^VAM = -0.50628299  [Hc=-406.68, Hm=32363.59]
+knot.8_2.fseries:  a_mu^VAM = -0.39409200  [Hc=5788.03, Hm=27325.73]
+knot.8_20r.fseries:  a_mu^VAM = -0.46186295  [Hc=2560.79, Hm=33573.54]
+knot.8_21d.fseries:  a_mu^VAM = -0.40323374  [Hc=5023.36, Hm=25956.18]
+knot.8_21p.fseries:  a_mu^VAM = -0.40273336  [Hc=5721.29, Hm=29410.34]
+knot.8_21r.fseries:  a_mu^VAM = -0.48710898  [Hc=1843.04, Hm=71485.33]
+knot.8_2d.fseries:  a_mu^VAM = -0.38122339  [Hc=6964.92, Hm=29319.41]
+knot.8_3d.fseries:  a_mu^VAM = -0.55437782  [Hc=-1508.74, Hm=13872.71]
+knot.8_3z.fseries:  a_mu^VAM = -0.49999999  [Hc=0.00, Hm=20211.83]
+knot.8_4d.fseries:  a_mu^VAM = -0.62413636  [Hc=-4723.56, Hm=19025.71]
+knot.8_5.fseries:  a_mu^VAM = -1.99430972  [Hc=-97528.48, Hm=32633.29]
+knot.8_6.fseries:  a_mu^VAM = -0.46988930  [Hc=3366.93, Hm=55909.20]
+knot.8_6p.fseries:  a_mu^VAM = -0.45634674  [Hc=2338.57, Hm=26785.78]
+knot.8_7d.fseries:  a_mu^VAM = -0.54849096  [Hc=-6540.93, Hm=67444.88]
+knot.8_7s.fseries:  a_mu^VAM = -0.52736428  [Hc=-2897.96, Hm=52951.56]
+knot.8_8d.fseries:  a_mu^VAM = -0.59102508  [Hc=-4602.82, Hm=25283.27]
+knot.8_9d.fseries:  a_mu^VAM = -0.51342383  [Hc=-480.10, Hm=17882.20]
+Wrote VAM_helicity_by_base.csv
+
+Process finished with exit code 0

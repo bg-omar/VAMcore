@@ -10,16 +10,16 @@ matplotlib.use('TkAgg')
 # --- Import C++ bindings (with fallback to Python) ---
 USE_CPP = False
 try:
-    import swirl_string_core
-    from swirl_string_core import load_all_knots
+    import sstcore
+    from sstcore import load_all_knots
     USE_CPP = True
     print("[INFO] Using C++ bindings for calculations")
 except ImportError:
     try:
-        import swirl_string_core as swirl_string_core
-        from swirl_string_core import load_all_knots
+        import sstcore as sstcore
+        from sstcore import load_all_knots
         USE_CPP = True
-        print("[INFO] Using C++ bindings (swirl_string_core) for calculations")
+        print("[INFO] Using C++ bindings (sstcore) for calculations")
     except ImportError:
         print("[INFO] C++ bindings not available, using Python fallback")
         USE_CPP = False

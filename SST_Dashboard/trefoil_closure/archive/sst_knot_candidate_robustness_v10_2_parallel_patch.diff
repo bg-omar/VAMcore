@@ -1,0 +1,723 @@
+--- sst_knot_candidate_robustness_sweep_v10_1.py
++++ sst_knot_candidate_robustness_sweep_v10_2.py
+@@ -49,6 +49,7 @@
+ import argparse
+ import importlib
+ import time
++import concurrent.futures as cf
+ from dataclasses import dataclass
+ from typing import Dict, List, Optional, Tuple, Sequence, Union
+ 
+@@ -68,7 +69,7 @@
+     torch = None  # type: ignore[assignment]
+     _TORCH_AVAILABLE = False
+ 
+-SCRIPT_VERSION = "v10.1"
++SCRIPT_VERSION = "v10.2"
+ 
+ # -----------------------------------------------------------------------------
+ # Paths and defaults (overridable by CLI)
+@@ -81,6 +82,12 @@
+ # Backend: "auto" | "local_cpp_scan" | "torch" | "numpy"
+ BS_BACKEND_MODE = "auto"
+ BS_BACKEND_ALLOWED = ("auto", "local_cpp_scan", "torch", "numpy")
++
++# Parallel execution controls (CLI can override)
++PARALLEL_SCOPE = "auto"   # auto | none | geom
++MAX_WORKERS = 0            # 0 => auto
++AUTO_PARALLEL_MIN_TASKS = 2
++
+ 
+ # Project integration flags (CLI can override via --no-*)
+ USE_LOCAL_IDEAL_DB = True
+@@ -200,7 +207,7 @@
+ RUN_V6_SHIFT_FREE_POSTCHECK = True
+ SHIFTFREE_POSTCHECK_CONTACT_MODEL = "barrier_flat_at_rc"
+ 
+-OUTPUT_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "sst_knot_candidate_robustness_outputs_v10_1"))
++OUTPUT_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "sst_knot_candidate_robustness_outputs_v10_2"))
+ KNOT_ID = "3:1:1"
+ MAX_FOURIER_MODE: Optional[int] = None
+ 
+@@ -2557,7 +2564,7 @@
+                     root_choice, row["F_at_x1"], row["a_star_over_rc"], row["delta_a_star_vs_legacy"]
+                 ))
+ 
+-        csv_path = os.path.join(outdir, "shiftfree_postcheck_v10_0.csv")
++        csv_path = os.path.join(outdir, "shiftfree_postcheck_v10_2.csv")
+         write_csv(shift_rows, csv_path)
+         save_shiftfree_postcheck_plot(shift_rows, outdir)
+ 
+@@ -2580,7 +2587,7 @@
+         best_zero = max(zero_rows, key=lambda r: (r["N_int_actual"], r["N_geom"])) if zero_rows else None
+         best_max = max(max_rows, key=lambda r: (r["N_int_actual"], r["N_geom"])) if max_rows else None
+ 
+-        txt_path = os.path.join(outdir, "shiftfree_postcheck_v10_0.txt")
++        txt_path = os.path.join(outdir, "shiftfree_postcheck_v10_2.txt")
+         with open(txt_path, "w", encoding="utf-8") as f:
+             f.write(f"{SCRIPT_VERSION} post-sweep shift-free barrier theorem check\n")
+             f.write("=" * 64 + "\n")
+@@ -2619,7 +2626,7 @@
+             f.write("  This postcheck replaces the legacy contact term only in the post-sweep theorem test.\n")
+             f.write("  Because the barrier_flat_at_rc model is shift-free at x=1, any remaining mismatch is then dominated by A_K != 1/(4*pi), not by contact-term-induced drift.\n")
+ 
+-        tex_path = os.path.join(outdir, "shiftfree_postcheck_v10_0.tex")
++        tex_path = os.path.join(outdir, "shiftfree_postcheck_v10_2.tex")
+         with open(tex_path, "w", encoding="utf-8") as f:
+             f.write(f"\\paragraph{{{SCRIPT_VERSION} post-sweep shift-free barrier check.}}\n")
+             f.write("After the full legacy sweep, the preferred-fit rows were re-evaluated with the shift-free barrier contact model ")
+@@ -2674,7 +2681,7 @@
+         "run_start_iso": time.strftime("%Y-%m-%dT%H:%M:%S", time.localtime(run_start)),
+     }
+     meta["script_version"] = SCRIPT_VERSION
+-    path = os.path.join(outdir, "run_metadata_v10_1.json")
++    path = os.path.join(outdir, "run_metadata_v10_2.json")
+     with open(path, "w", encoding="utf-8") as f:
+         json.dump(meta, f, indent=2)
+ 
+@@ -2712,6 +2719,8 @@
+     preset = _prompt_choice("Preset", ["fast", "full"], "full")
+     sweep_layout = _prompt_choice("Sweep layout", ["matrix", "exact_pairs_only", "theorem_ladder"], "theorem_ladder")
+     backend = _prompt_choice("Backend", list(BS_BACKEND_ALLOWED), "auto")
++    parallel_scope = _prompt_choice("Parallel scope", ["auto", "none", "geom"], "auto")
++    max_workers = _prompt_text("Max workers (0 = auto)", "0")
+     contact_model = _prompt_choice("Main sweep contact model", ["legacy", "barrier_flat_at_rc"], "legacy")
+     root_mode = _prompt_choice("Root selection mode", ["continuation", "targeted_x_nc", "closest_to_a_nc", "lowest_energy"], "continuation")
+     run_postcheck = _prompt_choice("Run shift-free postcheck", ["1", "0"], "1")
+@@ -2733,6 +2742,8 @@
+         "--knot-id", knot_id,
+         "--preset", preset,
+         "--backend", backend,
++        "--parallel-scope", parallel_scope,
++        "--max-workers", max_workers,
+         "--contact-model", contact_model,
+         "--root-selection-mode", root_mode,
+         "--run-v6-shiftfree-postcheck", run_postcheck,
+@@ -2760,6 +2771,401 @@
+     return argv
+ 
+ 
++
++
++def build_geom_configs_for_mode(mode: str) -> List[Tuple[int, int, Optional[float]]]:
++    if mode == "torus":
++        R_ratio_grid = np.linspace(2.0, 2.6, 7)
++        geom_configs = [(Ng, Ni, R) for Ng in N_GEOM_LIST for Ni in N_INT_LIST for R in R_ratio_grid]
++    else:
++        if SWEEP_LAYOUT in ("exact_pairs_only", "theorem_ladder"):
++            exact_pairs = EXTRA_TARGET_PAIRS[:] if EXTRA_TARGET_PAIRS else DEFAULT_THEOREM_TARGET_PAIRS[:]
++            geom_configs = [(Ng, Ni, None) for (Ng, Ni) in exact_pairs]
++        else:
++            geom_configs = [(Ng, Ni, None) for Ng in N_GEOM_LIST for Ni in N_INT_LIST]
++
++    existing_gc = set()
++    tmp_gc: List[Tuple[int, int, Optional[float]]] = []
++    for item in geom_configs:
++        key = (item[0], item[1], item[2])
++        if key not in existing_gc:
++            tmp_gc.append(item)
++            existing_gc.add(key)
++
++    if mode == "ideal" and SWEEP_LAYOUT == "matrix":
++        for (Ng_extra, Ni_extra) in EXTRA_TARGET_PAIRS:
++            key = (Ng_extra, Ni_extra, None)
++            if key not in existing_gc:
++                tmp_gc.append(key)
++                existing_gc.add(key)
++    return tmp_gc
++
++
++def _resolved_worker_count(task_count: int) -> int:
++    if task_count <= 0:
++        return 1
++    if MAX_WORKERS and MAX_WORKERS > 0:
++        return max(1, min(int(MAX_WORKERS), task_count))
++    cpu_n = os.cpu_count() or 1
++    return max(1, min(task_count, max(1, cpu_n - 1)))
++
++
++def _should_parallelize_geom(task_count: int) -> bool:
++    scope = str(PARALLEL_SCOPE).lower()
++    if scope == "none":
++        return False
++    if task_count < AUTO_PARALLEL_MIN_TASKS:
++        return False
++    if scope == "geom":
++        return _resolved_worker_count(task_count) > 1
++    if scope == "auto":
++        return _resolved_worker_count(task_count) > 1
++    return False
++
++
++def _apply_parallel_worker_settings(settings: Dict[str, object]) -> None:
++    global OUTPUT_DIR, KNOT_ID, MAX_FOURIER_MODE, CONTACT_MODEL, ROOT_SELECTION_MODE
++    global BRANCH_MODE, USE_LOCAL_IDEAL_DB, USE_LOCAL_SST_CORE, AUTO_COMPILE_SST_CORE
++    global ENABLE_TORCH_ACCEL, BS_BACKEND_MODE, SAVE_PER_RUN_DIAGNOSTICS, SAVE_LOCAL_A_CURVES
++    global EMIT_V5_LOGS, LAMBDA_LIST, PLATEAU_FRACS
++
++    OUTPUT_DIR = str(settings["OUTPUT_DIR"])
++    KNOT_ID = str(settings["KNOT_ID"])
++    MAX_FOURIER_MODE = settings["MAX_FOURIER_MODE"]
++    CONTACT_MODEL = str(settings["CONTACT_MODEL"])
++    ROOT_SELECTION_MODE = str(settings["ROOT_SELECTION_MODE"])
++    BRANCH_MODE = str(settings["BRANCH_MODE"])
++    USE_LOCAL_IDEAL_DB = bool(settings["USE_LOCAL_IDEAL_DB"])
++    USE_LOCAL_SST_CORE = bool(settings["USE_LOCAL_SST_CORE"])
++    AUTO_COMPILE_SST_CORE = bool(settings["AUTO_COMPILE_SST_CORE"])
++    ENABLE_TORCH_ACCEL = bool(settings["ENABLE_TORCH_ACCEL"])
++    BS_BACKEND_MODE = str(settings["BS_BACKEND_MODE"])
++    SAVE_PER_RUN_DIAGNOSTICS = bool(settings["SAVE_PER_RUN_DIAGNOSTICS"])
++    SAVE_LOCAL_A_CURVES = bool(settings["SAVE_LOCAL_A_CURVES"])
++    EMIT_V5_LOGS = bool(settings.get("EMIT_V5_LOGS", False))
++    LAMBDA_LIST = [float(x) for x in settings["LAMBDA_LIST"]]
++    PLATEAU_FRACS = [float(x) for x in settings["PLATEAU_FRACS"]]
++
++
++def _compute_geom_config_result(payload: Dict[str, object]) -> Dict[str, object]:
++    settings = payload["settings"]
++    _apply_parallel_worker_settings(settings)
++    mode = str(payload["mode"])
++    N_geom = int(payload["N_geom"])
++    N_int_target = int(payload["N_int_target"])
++    R_ratio = payload.get("R_ratio")
++    backend_used = str(payload["backend_used"])
++
++    os.makedirs(OUTPUT_DIR, exist_ok=True)
++    initialize_project_sources(KNOT_ID, MAX_FOURIER_MODE, USE_LOCAL_IDEAL_DB, USE_LOCAL_SST_CORE, AUTO_COMPILE_SST_CORE)
++
++    t_block_start = time.perf_counter()
++    if mode == "torus" and R_ratio is not None:
++        geom = build_torus_geometry(N_geom, N_int_target, float(R_ratio), 1.0)
++        ideal_source_str = "Torus R_t/r_t={:.2f}".format(float(R_ratio))
++    else:
++        geom = build_geometry(N_geom, N_int_target)
++        ideal_source_str = IDEAL_SOURCE_DESC
++
++    t_geom_end = time.perf_counter()
++    t_geometry_s = t_geom_end - t_block_start
++
++    t_scan_start = time.perf_counter()
++    a_scan, E_vals, backend_this = scan_BS_energy_backend(geom, backend_used)
++    t_scan_end = time.perf_counter()
++    t_scan_s = t_scan_end - t_scan_start
++
++    t_fit_start = time.perf_counter()
++    fit_results, diagnostics = extract_fits(a_scan, E_vals, geom.L_dimless_full, geom.d_min_full)
++    t_fit_end = time.perf_counter()
++    t_fit_s = t_fit_end - t_fit_start
++
++    if SAVE_PER_RUN_DIAGNOSTICS:
++        save_geometry_plot(geom, os.path.join(OUTPUT_DIR, "geom_Ng{}_Ni{}.png".format(N_geom, geom.N_int_actual)))
++        save_bs_diagnostics(a_scan, E_vals, fit_results, diagnostics, os.path.join(OUTPUT_DIR, "bs_diagnostics_Ng{}_Ni{}.png".format(N_geom, geom.N_int_actual)))
++    if SAVE_LOCAL_A_CURVES:
++        save_local_A_curve_csv(diagnostics, geom.d_min_full, os.path.join(OUTPUT_DIR, "local_A_curve_Ng{}_Ni{}.csv".format(N_geom, geom.N_int_actual)))
++
++    plateau_diag_rows: List[dict] = []
++    plateau_diag = diagnostics.get("plateau_diag", {})
++    for method_name, st in plateau_diag.items():
++        plateau_diag_rows.append({
++            "knot_id": KNOT_ID,
++            "N_geom": N_geom, "N_int_target": N_int_target, "N_int_actual": geom.N_int_actual,
++            "L_dimless": geom.L_dimless_full, "d_min_dimless": geom.d_min_full,
++            "frac": st["frac"], "method_name": method_name, "n_plateau": st["n_plateau"],
++            "a_lo": st["a_lo"], "a_hi": st["a_hi"], "a_span": st["a_span"],
++            "a_span_over_dmin": st["a_span_over_dmin"], "a_ref": st["a_ref"], "A_ref": st["A_ref"],
++            "A_median": st["A_median"], "A_std": st["A_std"], "A_min": st["A_min"], "A_max": st["A_max"],
++            "A_median_minus_Areq": (st["A_median"] - A_req) if np.isfinite(st["A_median"]) else np.nan,
++            "rel_dE_median": st["rel_dE_median"], "rel_dE_min": st["rel_dE_min"], "rel_dE_max": st["rel_dE_max"],
++            "rel_dE_thresh": REL_DE_THRESH, "ideal_source": ideal_source_str, "bs_backend": backend_this,
++        })
++
++    rows: List[dict] = []
++    for fr in fit_results:
++        if not np.isfinite(fr.A_K):
++            continue
++        A_ratio = fr.A_K / A_req
++        a_nc = r_c_canon * np.sqrt(4.0 * np.pi * fr.A_K)
++        a_nc_over_rc = a_nc / r_c_canon
++        x_closure = closure_x_from_A(fr.A_K)
++
++        prev_a_star: Optional[float] = None
++        lam_iter = sorted(LAMBDA_LIST) if LAMBDA_CONTINUATION_SORT else list(LAMBDA_LIST)
++        for lam_K in lam_iter:
++            for p_exp in P_LIST:
++                candidates = find_root_candidates(fr.A_K, fr.a_K, geom.L_dimless_full, geom.d_min_full, lam_K, p_exp, CONTACT_MODEL)
++                if ROOT_SELECTION_MODE == "continuation":
++                    a_star, is_min, E_star, root_count, min_root_count, root_choice = choose_root_continuation(candidates, prev_a_star, a_nc, BRANCH_MODE)
++                elif ROOT_SELECTION_MODE == "targeted_x_nc":
++                    a_star, is_min, E_star, root_count, min_root_count, root_choice = choose_root_targeted_x_nc(candidates, a_nc)
++                else:
++                    a_star, is_min, E_star, root_count, min_root_count, root_choice = choose_root(candidates, a_nc, BRANCH_MODE)
++
++                a_star_over_rc = a_star / r_c_canon if np.isfinite(a_star) else np.nan
++                prev_val = prev_a_star / r_c_canon if (prev_a_star is not None and np.isfinite(prev_a_star)) else np.nan
++                continuation_jump = abs(a_star_over_rc - prev_val) if (np.isfinite(a_star_over_rc) and np.isfinite(prev_val)) else np.nan
++                if np.isfinite(a_star):
++                    prev_a_star = a_star
++
++                beta_dimless = dimensionless_beta(geom.d_min_full * L_natural)
++                F_at_x1 = F_dimensionless(1.0, fr.A_K, beta_dimless, lam_K, p_exp, CONTACT_MODEL)
++                contact_force_at_x1 = contact_force_dimensionless(1.0, beta_dimless, lam_K, p_exp, CONTACT_MODEL)
++                F_at_root = F_dimensionless(a_star_over_rc, fr.A_K, beta_dimless, lam_K, p_exp, CONTACT_MODEL) if np.isfinite(a_star_over_rc) else np.nan
++
++                delta_lambda_over_rc = abs(a_star_over_rc - 1.0) if np.isfinite(a_star_over_rc) else np.nan
++                status = classify_run(A_ratio, a_star_over_rc, is_min)
++                theorem_candidate_no_contact = bool(np.isfinite(x_closure) and abs(x_closure - 1.0) <= V8_THEOREM_TOL_AINF)
++                theorem_candidate_full_model = bool(np.isfinite(a_star_over_rc) and np.isfinite(F_at_x1) and abs(a_star_over_rc - 1.0) <= V8_THEOREM_TOL_XINF and abs(F_at_x1) <= V8_THEOREM_TOL_FINF)
++                t_total_block_s = time.perf_counter() - t_block_start
++                notes = []
++                if fr.fit_method in THEOREM_CANDIDATE_FIT_METHODS:
++                    notes.append("parallel_theorem_candidate")
++                rows.append({
++                    "knot_id": KNOT_ID, "mode": mode,
++                    "N_geom": N_geom, "N_int_target": N_int_target, "N_int_actual": geom.N_int_actual,
++                    "R_t_over_r_t": R_ratio if R_ratio is not None else np.nan,
++                    "L_dimless": geom.L_dimless_full, "d_min_dimless": geom.d_min_full,
++                    "fit_method": fr.fit_method, "plateau_frac": fr.plateau_frac, "n_plateau": fr.n_plateau,
++                    "A_K": fr.A_K, "A_spread": fr.A_spread, "A_ratio": A_ratio, "a_K": fr.a_K, "a_fit_ref": fr.a_fit_ref,
++                    "a_nc_m": a_nc, "a_nc_over_rc": a_nc_over_rc, "lambda_K": lam_K, "p_exp": p_exp,
++                    "root_count": root_count, "min_root_count": min_root_count, "root_choice": root_choice,
++                    "a_star_m": a_star, "a_star_over_rc": a_star_over_rc, "E_star_J": E_star, "delta_lambda_over_rc": delta_lambda_over_rc,
++                    "is_min": is_min, "status": status, "uses_local_sst_core": _SST_CORE_AVAILABLE,
++                    "ideal_source": ideal_source_str, "notes": "; ".join(notes), "bs_backend": backend_this,
++                    "t_geometry_s": t_geometry_s, "t_scan_s": t_scan_s, "t_fit_s": t_fit_s, "t_total_block_s": t_total_block_s,
++                    "contact_model": CONTACT_MODEL, "root_selection_mode": ROOT_SELECTION_MODE,
++                    "closure_x_from_A": x_closure, "closure_x_minus_1": float(x_closure - 1.0),
++                    "beta_dimless": beta_dimless, "F_at_x1": F_at_x1, "contact_force_at_x1": contact_force_at_x1,
++                    "continuation_prev_a_star_over_rc": prev_val, "continuation_jump": continuation_jump,
++                    "theorem_candidate_no_contact": theorem_candidate_no_contact,
++                    "theorem_candidate_full_model": theorem_candidate_full_model,
++                    "root_solver_space": ROOT_SOLVER_SPACE, "F_at_root": F_at_root, "root_xtol": ROOT_XTOL, "root_rtol": ROOT_RTOL,
++                })
++
++    best = select_best_row(rows)
++    summary = {
++        "N_geom": N_geom,
++        "N_int_target": N_int_target,
++        "N_int_actual": int(geom.N_int_actual),
++        "R_ratio": R_ratio if R_ratio is not None else np.nan,
++        "L_dimless_full": float(geom.L_dimless_full),
++        "d_min_full": float(geom.d_min_full),
++        "t_geometry_s": float(t_geometry_s),
++        "t_scan_s": float(t_scan_s),
++        "t_fit_s": float(t_fit_s),
++        "backend": backend_this,
++        "best_fit_method": best["fit_method"] if best else "",
++        "best_A_ratio": float(best["A_ratio"]) if best else np.nan,
++        "best_a_nc_over_rc": float(best["a_nc_over_rc"]) if best else np.nan,
++    }
++    return {"rows": rows, "plateau_diag_rows": plateau_diag_rows, "summary": summary}
++
++
++def _execute_geom_configs(mode: str, knot_id: str, output_dir: str, geom_configs: List[Tuple[int, int, Optional[float]]], backend_used: str) -> Tuple[List[dict], List[dict]]:
++    settings: Dict[str, object] = {
++        "OUTPUT_DIR": output_dir,
++        "KNOT_ID": knot_id,
++        "MAX_FOURIER_MODE": MAX_FOURIER_MODE,
++        "CONTACT_MODEL": CONTACT_MODEL,
++        "ROOT_SELECTION_MODE": ROOT_SELECTION_MODE,
++        "BRANCH_MODE": BRANCH_MODE,
++        "USE_LOCAL_IDEAL_DB": USE_LOCAL_IDEAL_DB,
++        "USE_LOCAL_SST_CORE": USE_LOCAL_SST_CORE,
++        "AUTO_COMPILE_SST_CORE": AUTO_COMPILE_SST_CORE,
++        "ENABLE_TORCH_ACCEL": ENABLE_TORCH_ACCEL,
++        "BS_BACKEND_MODE": BS_BACKEND_MODE,
++        "SAVE_PER_RUN_DIAGNOSTICS": SAVE_PER_RUN_DIAGNOSTICS,
++        "SAVE_LOCAL_A_CURVES": SAVE_LOCAL_A_CURVES,
++        "EMIT_V5_LOGS": False,
++        "LAMBDA_LIST": list(LAMBDA_LIST),
++        "PLATEAU_FRACS": list(PLATEAU_FRACS),
++    }
++
++    rows: List[dict] = []
++    plateau_diag_rows: List[dict] = []
++    if not _should_parallelize_geom(len(geom_configs)):
++        last_backend_printed = backend_used
++        for idx, (N_geom, N_int_target, R_ratio) in enumerate(geom_configs):
++            t_block_start = time.perf_counter()
++            print("-" * 78)
++            if mode == "torus" and R_ratio is not None:
++                print("[GEOM] Building torus N_geom={} N_int={} R_t/r_t={:.2f}".format(N_geom, N_int_target, R_ratio))
++                geom = build_torus_geometry(N_geom, N_int_target, R_ratio, 1.0)
++                ideal_source_str = "Torus R_t/r_t={:.2f}".format(R_ratio)
++            else:
++                print("[GEOM] Building geometry N_geom={} N_int_target={}".format(N_geom, N_int_target))
++                geom = build_geometry(N_geom, N_int_target)
++                ideal_source_str = IDEAL_SOURCE_DESC
++                print("[GEOM] L_dimless_full={:.6f} d_min_full={:.6f} N_int_actual={} d_min_int={:.6f}".format(geom.L_dimless_full, geom.d_min_full, geom.N_int_actual, geom.d_min_int))
++
++            t_geom_end = time.perf_counter()
++            t_geometry_s = t_geom_end - t_block_start
++            print("[TIME] geometry_s={:.3f}".format(t_geometry_s))
++
++            t_scan_start = time.perf_counter()
++            a_scan, E_vals, backend_this = scan_BS_energy_backend(geom, backend_used)
++            if backend_this != last_backend_printed:
++                print("[BACKEND] bs_backend={}".format(backend_this))
++                last_backend_printed = backend_this
++            t_scan_end = time.perf_counter()
++            t_scan_s = t_scan_end - t_scan_start
++            print("[TIME] scan_s={:.3f}".format(t_scan_s))
++
++            t_fit_start = time.perf_counter()
++            fit_results, diagnostics = extract_fits(a_scan, E_vals, geom.L_dimless_full, geom.d_min_full)
++            t_fit_end = time.perf_counter()
++            t_fit_s = t_fit_end - t_fit_start
++            print("[TIME] fit_s={:.3f}".format(t_fit_s))
++
++            if SAVE_PER_RUN_DIAGNOSTICS:
++                save_geometry_plot(geom, os.path.join(OUTPUT_DIR, "geom_Ng{}_Ni{}.png".format(N_geom, geom.N_int_actual)))
++                save_bs_diagnostics(a_scan, E_vals, fit_results, diagnostics, os.path.join(OUTPUT_DIR, "bs_diagnostics_Ng{}_Ni{}.png".format(N_geom, geom.N_int_actual)))
++            if SAVE_LOCAL_A_CURVES:
++                save_local_A_curve_csv(diagnostics, geom.d_min_full, os.path.join(OUTPUT_DIR, "local_A_curve_Ng{}_Ni{}.csv".format(N_geom, geom.N_int_actual)))
++
++            plateau_diag = diagnostics.get("plateau_diag", {})
++            for method_name, st in plateau_diag.items():
++                plateau_diag_rows.append({
++                    "knot_id": KNOT_ID,
++                    "N_geom": N_geom, "N_int_target": N_int_target, "N_int_actual": geom.N_int_actual,
++                    "L_dimless": geom.L_dimless_full, "d_min_dimless": geom.d_min_full,
++                    "frac": st["frac"], "method_name": method_name, "n_plateau": st["n_plateau"],
++                    "a_lo": st["a_lo"], "a_hi": st["a_hi"], "a_span": st["a_span"],
++                    "a_span_over_dmin": st["a_span_over_dmin"], "a_ref": st["a_ref"], "A_ref": st["A_ref"],
++                    "A_median": st["A_median"], "A_std": st["A_std"], "A_min": st["A_min"], "A_max": st["A_max"],
++                    "A_median_minus_Areq": (st["A_median"] - A_req) if np.isfinite(st["A_median"]) else np.nan,
++                    "rel_dE_median": st["rel_dE_median"], "rel_dE_min": st["rel_dE_min"], "rel_dE_max": st["rel_dE_max"],
++                    "rel_dE_thresh": REL_DE_THRESH, "ideal_source": ideal_source_str, "bs_backend": backend_this,
++                })
++
++            if EMIT_V5_LOGS and plateau_diag_rows:
++                key = "plateau_0.12"
++                st = plateau_diag.get(key)
++                if st is not None:
++                    print("[PLATEAU] N_geom={} N_int={} frac=0.12 n_plateau={} a_lo={} a_hi={} A_median_minus_Areq={:.8e}".format(N_geom, geom.N_int_actual, st["n_plateau"], st["a_lo"], st["a_hi"], (st["A_median"] - A_req) if np.isfinite(st["A_median"]) else float("nan")))
++
++            for fr in fit_results:
++                if not np.isfinite(fr.A_K):
++                    continue
++                A_ratio = fr.A_K / A_req
++                a_nc = r_c_canon * np.sqrt(4.0 * np.pi * fr.A_K)
++                a_nc_over_rc = a_nc / r_c_canon
++                x_closure = closure_x_from_A(fr.A_K)
++                if EMIT_V5_LOGS:
++                    print("[FIT] N_geom={} N_int={} method={} A_K={:.8f} A_ratio={:.6f} a_nc_over_rc={:.6f}".format(N_geom, geom.N_int_actual, fr.fit_method, fr.A_K, A_ratio, a_nc_over_rc))
++                    print("[CHECK] N_geom={} N_int={} method={} closure_x={:.8f} closure_x_minus_1={:.8e}".format(N_geom, geom.N_int_actual, fr.fit_method, x_closure, x_closure - 1.0))
++
++                prev_a_star: Optional[float] = None
++                lam_iter = sorted(LAMBDA_LIST) if LAMBDA_CONTINUATION_SORT else list(LAMBDA_LIST)
++                for lam_K in lam_iter:
++                    for p_exp in P_LIST:
++                        candidates = find_root_candidates(fr.A_K, fr.a_K, geom.L_dimless_full, geom.d_min_full, lam_K, p_exp, CONTACT_MODEL)
++                        if ROOT_SELECTION_MODE == "continuation":
++                            a_star, is_min, E_star, root_count, min_root_count, root_choice = choose_root_continuation(candidates, prev_a_star, a_nc, BRANCH_MODE)
++                        elif ROOT_SELECTION_MODE == "targeted_x_nc":
++                            a_star, is_min, E_star, root_count, min_root_count, root_choice = choose_root_targeted_x_nc(candidates, a_nc)
++                        else:
++                            a_star, is_min, E_star, root_count, min_root_count, root_choice = choose_root(candidates, a_nc, BRANCH_MODE)
++
++                        a_star_over_rc = a_star / r_c_canon if np.isfinite(a_star) else np.nan
++                        prev_val = prev_a_star / r_c_canon if (prev_a_star is not None and np.isfinite(prev_a_star)) else np.nan
++                        continuation_jump = abs(a_star_over_rc - prev_val) if (np.isfinite(a_star_over_rc) and np.isfinite(prev_val)) else np.nan
++                        if np.isfinite(a_star):
++                            prev_a_star = a_star
++
++                        beta_dimless = dimensionless_beta(geom.d_min_full * L_natural)
++                        F_at_x1 = F_dimensionless(1.0, fr.A_K, beta_dimless, lam_K, p_exp, CONTACT_MODEL)
++                        contact_force_at_x1 = contact_force_dimensionless(1.0, beta_dimless, lam_K, p_exp, CONTACT_MODEL)
++                        F_at_root = F_dimensionless(a_star_over_rc, fr.A_K, beta_dimless, lam_K, p_exp, CONTACT_MODEL) if np.isfinite(a_star_over_rc) else np.nan
++                        if EMIT_V5_LOGS:
++                            print("[ROOTX] lambda_K={} a_star_over_rc={} F_at_root={:.8e} solver={}".format(lam_K, a_star_over_rc, F_at_root if np.isfinite(F_at_root) else float("nan"), ROOT_SOLVER_SPACE))
++                            if ROOT_SELECTION_MODE == "continuation":
++                                print("[CONT] lambda_K={} prev_a_star_over_rc={} a_star_over_rc={} jump={} root_choice={}".format(lam_K, prev_val, a_star_over_rc, continuation_jump, root_choice))
++                            print("[BARRIER] lambda_K={} beta={:.8f} contact_force_at_x1={:.8e} F_at_x1={:.8e} contact_model={}".format(lam_K, beta_dimless, contact_force_at_x1 if np.isfinite(contact_force_at_x1) else float("nan"), F_at_x1 if np.isfinite(F_at_x1) else float("nan"), CONTACT_MODEL))
++
++                        delta_lambda_over_rc = abs(a_star_over_rc - 1.0) if np.isfinite(a_star_over_rc) else np.nan
++                        status = classify_run(A_ratio, a_star_over_rc, is_min)
++                        theorem_candidate_no_contact = bool(np.isfinite(x_closure) and abs(x_closure - 1.0) <= V8_THEOREM_TOL_AINF)
++                        theorem_candidate_full_model = bool(np.isfinite(a_star_over_rc) and np.isfinite(F_at_x1) and abs(a_star_over_rc - 1.0) <= V8_THEOREM_TOL_XINF and abs(F_at_x1) <= V8_THEOREM_TOL_FINF)
++                        t_total_block_s = time.perf_counter() - t_block_start
++                        notes = []
++                        if fr.fit_method in THEOREM_CANDIDATE_FIT_METHODS:
++                            notes.append("parallel_theorem_candidate")
++                        rows.append({
++                            "knot_id": KNOT_ID, "mode": mode,
++                            "N_geom": N_geom, "N_int_target": N_int_target, "N_int_actual": geom.N_int_actual,
++                            "R_t_over_r_t": R_ratio if R_ratio is not None else np.nan,
++                            "L_dimless": geom.L_dimless_full, "d_min_dimless": geom.d_min_full,
++                            "fit_method": fr.fit_method, "plateau_frac": fr.plateau_frac, "n_plateau": fr.n_plateau,
++                            "A_K": fr.A_K, "A_spread": fr.A_spread, "A_ratio": A_ratio, "a_K": fr.a_K, "a_fit_ref": fr.a_fit_ref,
++                            "a_nc_m": a_nc, "a_nc_over_rc": a_nc_over_rc, "lambda_K": lam_K, "p_exp": p_exp,
++                            "root_count": root_count, "min_root_count": min_root_count, "root_choice": root_choice,
++                            "a_star_m": a_star, "a_star_over_rc": a_star_over_rc, "E_star_J": E_star, "delta_lambda_over_rc": delta_lambda_over_rc,
++                            "is_min": is_min, "status": status, "uses_local_sst_core": _SST_CORE_AVAILABLE,
++                            "ideal_source": ideal_source_str, "notes": "; ".join(notes), "bs_backend": backend_this,
++                            "t_geometry_s": t_geometry_s, "t_scan_s": t_scan_s, "t_fit_s": t_fit_s, "t_total_block_s": t_total_block_s,
++                            "contact_model": CONTACT_MODEL, "root_selection_mode": ROOT_SELECTION_MODE,
++                            "closure_x_from_A": x_closure, "closure_x_minus_1": float(x_closure - 1.0),
++                            "beta_dimless": beta_dimless, "F_at_x1": F_at_x1, "contact_force_at_x1": contact_force_at_x1,
++                            "continuation_prev_a_star_over_rc": prev_val, "continuation_jump": continuation_jump,
++                            "theorem_candidate_no_contact": theorem_candidate_no_contact,
++                            "theorem_candidate_full_model": theorem_candidate_full_model,
++                            "root_solver_space": ROOT_SOLVER_SPACE, "F_at_root": F_at_root, "root_xtol": ROOT_XTOL, "root_rtol": ROOT_RTOL,
++                        })
++                        print("[ROOT] lambda_K={} a_star_over_rc={} is_min={} status={}".format(lam_K, a_star_over_rc, is_min, status))
++        return rows, plateau_diag_rows
++
++    worker_count = _resolved_worker_count(len(geom_configs))
++    print("[PAR] geometry-parallel execution enabled: workers={} tasks={} scope={}".format(worker_count, len(geom_configs), PARALLEL_SCOPE))
++    payloads = []
++    for (N_geom, N_int_target, R_ratio) in geom_configs:
++        payloads.append({
++            "settings": settings,
++            "mode": mode,
++            "N_geom": N_geom,
++            "N_int_target": N_int_target,
++            "R_ratio": R_ratio,
++            "backend_used": backend_used,
++        })
++
++    with cf.ProcessPoolExecutor(max_workers=worker_count) as ex:
++        fut_map = {ex.submit(_compute_geom_config_result, payload): (payload["N_geom"], payload["N_int_target"], payload.get("R_ratio")) for payload in payloads}
++        done = 0
++        for fut in cf.as_completed(fut_map):
++            N_geom, N_int_target, R_ratio = fut_map[fut]
++            res = fut.result()
++            rows.extend(res.get("rows", []))
++            plateau_diag_rows.extend(res.get("plateau_diag_rows", []))
++            done += 1
++            summ = res.get("summary", {})
++            if mode == "torus" and R_ratio is not None:
++                print("[PAR] done {}/{} torus Ng={} Ni={} R={:.2f} scan={:.3f}s fit={:.3f}s best_A_ratio={:.6f} best_a_nc_over_rc={:.6f}".format(done, len(payloads), N_geom, N_int_target, float(R_ratio), float(summ.get("t_scan_s", float('nan'))), float(summ.get("t_fit_s", float('nan'))), float(summ.get("best_A_ratio", float('nan'))), float(summ.get("best_a_nc_over_rc", float('nan')))))
++            else:
++                print("[PAR] done {}/{} Ng={} Ni={} scan={:.3f}s fit={:.3f}s best_A_ratio={:.6f} best_a_nc_over_rc={:.6f}".format(done, len(payloads), N_geom, int(summ.get("N_int_actual", N_int_target)), float(summ.get("t_scan_s", float('nan'))), float(summ.get("t_fit_s", float('nan'))), float(summ.get("best_A_ratio", float('nan'))), float(summ.get("best_a_nc_over_rc", float('nan')))))
++    return rows, plateau_diag_rows
++
+ def run_single_knot_sweep(args: argparse.Namespace, mode: str, knot_id: str, output_dir: str, run_start_wall: float, base_output_dir: str) -> Dict[str, object]:
+     global OUTPUT_DIR, KNOT_ID, MAX_FOURIER_MODE, CONTACT_MODEL, ROOT_SELECTION_MODE
+ 
+@@ -2789,170 +3195,14 @@
+         print("[THEOREM] v9 tail check: need quasi-monotone contracting high-resolution tail before theorem-style OK")
+         print("[THEOREM] v10 batch knot comparison enabled at base_output_dir={}".format(base_output_dir))
+         print("[THEOREM] v10 parallel theorem candidate fits={}".format(THEOREM_CANDIDATE_FIT_METHODS))
++        print("[THEOREM] v10.2 parallel_scope={} max_workers={}".format(PARALLEL_SCOPE, MAX_WORKERS if MAX_WORKERS else "auto"))
+     write_run_metadata(OUTPUT_DIR, mode, BS_BACKEND_MODE, backend_used, KNOT_ID, run_start_wall)
+ 
+     rows: List[dict] = []
+     postcheck_rows: List[dict] = []
+     plateau_diag_rows: List[dict] = []
+-    if mode == "torus":
+-        R_ratio_grid = np.linspace(2.0, 2.6, 7)
+-        geom_configs = [(Ng, Ni, R) for Ng in N_GEOM_LIST for Ni in N_INT_LIST for R in R_ratio_grid]
+-    else:
+-        if SWEEP_LAYOUT in ("exact_pairs_only", "theorem_ladder"):
+-            exact_pairs = EXTRA_TARGET_PAIRS[:] if EXTRA_TARGET_PAIRS else DEFAULT_THEOREM_TARGET_PAIRS[:]
+-            geom_configs = [(Ng, Ni, None) for (Ng, Ni) in exact_pairs]
+-        else:
+-            geom_configs = [(Ng, Ni, None) for Ng in N_GEOM_LIST for Ni in N_INT_LIST]
+-
+-    existing_gc = set()
+-    tmp_gc: List[Tuple[int, int, Optional[float]]] = []
+-    for item in geom_configs:
+-        key = (item[0], item[1], item[2])
+-        if key not in existing_gc:
+-            tmp_gc.append(item)
+-            existing_gc.add(key)
+-
+-    if mode == "ideal" and SWEEP_LAYOUT == "matrix":
+-        for (Ng_extra, Ni_extra) in EXTRA_TARGET_PAIRS:
+-            key = (Ng_extra, Ni_extra, None)
+-            if key not in existing_gc:
+-                tmp_gc.append(key)
+-                existing_gc.add(key)
+-
+-    geom_configs = tmp_gc
+-
+-    last_backend_printed = backend_used
+-    for idx, (N_geom, N_int_target, R_ratio) in enumerate(geom_configs):
+-        t_block_start = time.perf_counter()
+-        print("-" * 78)
+-        if mode == "torus" and R_ratio is not None:
+-            print("[GEOM] Building torus N_geom={} N_int={} R_t/r_t={:.2f}".format(N_geom, N_int_target, R_ratio))
+-            geom = build_torus_geometry(N_geom, N_int_target, R_ratio, 1.0)
+-            ideal_source_str = "Torus R_t/r_t={:.2f}".format(R_ratio)
+-        else:
+-            print("[GEOM] Building geometry N_geom={} N_int_target={}".format(N_geom, N_int_target))
+-            geom = build_geometry(N_geom, N_int_target)
+-            ideal_source_str = IDEAL_SOURCE_DESC
+-            print("[GEOM] L_dimless_full={:.6f} d_min_full={:.6f} N_int_actual={} d_min_int={:.6f}".format(geom.L_dimless_full, geom.d_min_full, geom.N_int_actual, geom.d_min_int))
+-
+-        t_geom_end = time.perf_counter()
+-        t_geometry_s = t_geom_end - t_block_start
+-        print("[TIME] geometry_s={:.3f}".format(t_geometry_s))
+-
+-        t_scan_start = time.perf_counter()
+-        a_scan, E_vals, backend_this = scan_BS_energy_backend(geom, backend_used)
+-        if backend_this != last_backend_printed:
+-            print("[BACKEND] bs_backend={}".format(backend_this))
+-            last_backend_printed = backend_this
+-        t_scan_end = time.perf_counter()
+-        t_scan_s = t_scan_end - t_scan_start
+-        print("[TIME] scan_s={:.3f}".format(t_scan_s))
+-
+-        t_fit_start = time.perf_counter()
+-        fit_results, diagnostics = extract_fits(a_scan, E_vals, geom.L_dimless_full, geom.d_min_full)
+-        t_fit_end = time.perf_counter()
+-        t_fit_s = t_fit_end - t_fit_start
+-        print("[TIME] fit_s={:.3f}".format(t_fit_s))
+-
+-        if SAVE_PER_RUN_DIAGNOSTICS:
+-            save_geometry_plot(geom, os.path.join(OUTPUT_DIR, "geom_Ng{}_Ni{}.png".format(N_geom, geom.N_int_actual)))
+-            save_bs_diagnostics(a_scan, E_vals, fit_results, diagnostics, os.path.join(OUTPUT_DIR, "bs_diagnostics_Ng{}_Ni{}.png".format(N_geom, geom.N_int_actual)))
+-        if SAVE_LOCAL_A_CURVES:
+-            save_local_A_curve_csv(diagnostics, geom.d_min_full, os.path.join(OUTPUT_DIR, "local_A_curve_Ng{}_Ni{}.csv".format(N_geom, geom.N_int_actual)))
+-
+-        plateau_diag = diagnostics.get("plateau_diag", {})
+-        for method_name, st in plateau_diag.items():
+-            plateau_diag_rows.append({
+-                "knot_id": KNOT_ID,
+-                "N_geom": N_geom, "N_int_target": N_int_target, "N_int_actual": geom.N_int_actual,
+-                "L_dimless": geom.L_dimless_full, "d_min_dimless": geom.d_min_full,
+-                "frac": st["frac"], "method_name": method_name, "n_plateau": st["n_plateau"],
+-                "a_lo": st["a_lo"], "a_hi": st["a_hi"], "a_span": st["a_span"],
+-                "a_span_over_dmin": st["a_span_over_dmin"], "a_ref": st["a_ref"], "A_ref": st["A_ref"],
+-                "A_median": st["A_median"], "A_std": st["A_std"], "A_min": st["A_min"], "A_max": st["A_max"],
+-                "A_median_minus_Areq": (st["A_median"] - A_req) if np.isfinite(st["A_median"]) else np.nan,
+-                "rel_dE_median": st["rel_dE_median"], "rel_dE_min": st["rel_dE_min"], "rel_dE_max": st["rel_dE_max"],
+-                "rel_dE_thresh": REL_DE_THRESH, "ideal_source": ideal_source_str, "bs_backend": backend_this,
+-            })
+-
+-        if EMIT_V5_LOGS and plateau_diag_rows:
+-            key = "plateau_0.12"
+-            st = plateau_diag.get(key)
+-            if st is not None:
+-                print("[PLATEAU] N_geom={} N_int={} frac=0.12 n_plateau={} a_lo={} a_hi={} A_median_minus_Areq={:.8e}".format(N_geom, geom.N_int_actual, st["n_plateau"], st["a_lo"], st["a_hi"], (st["A_median"] - A_req) if np.isfinite(st["A_median"]) else float("nan")))
+-
+-        for fr in fit_results:
+-            if not np.isfinite(fr.A_K):
+-                continue
+-            A_ratio = fr.A_K / A_req
+-            a_nc = r_c_canon * np.sqrt(4.0 * np.pi * fr.A_K)
+-            a_nc_over_rc = a_nc / r_c_canon
+-            x_closure = closure_x_from_A(fr.A_K)
+-            if EMIT_V5_LOGS:
+-                print("[FIT] N_geom={} N_int={} method={} A_K={:.8f} A_ratio={:.6f} a_nc_over_rc={:.6f}".format(N_geom, geom.N_int_actual, fr.fit_method, fr.A_K, A_ratio, a_nc_over_rc))
+-                print("[CHECK] N_geom={} N_int={} method={} closure_x={:.8f} closure_x_minus_1={:.8e}".format(N_geom, geom.N_int_actual, fr.fit_method, x_closure, x_closure - 1.0))
+-
+-            prev_a_star: Optional[float] = None
+-            if LAMBDA_CONTINUATION_SORT:
+-                lam_iter = sorted(LAMBDA_LIST)
+-            else:
+-                lam_iter = list(LAMBDA_LIST)
+-            for lam_K in lam_iter:
+-                for p_exp in P_LIST:
+-                    candidates = find_root_candidates(fr.A_K, fr.a_K, geom.L_dimless_full, geom.d_min_full, lam_K, p_exp, CONTACT_MODEL)
+-                    if ROOT_SELECTION_MODE == "continuation":
+-                        a_star, is_min, E_star, root_count, min_root_count, root_choice = choose_root_continuation(candidates, prev_a_star, a_nc, BRANCH_MODE)
+-                    elif ROOT_SELECTION_MODE == "targeted_x_nc":
+-                        a_star, is_min, E_star, root_count, min_root_count, root_choice = choose_root_targeted_x_nc(candidates, a_nc)
+-                    else:
+-                        a_star, is_min, E_star, root_count, min_root_count, root_choice = choose_root(candidates, a_nc, BRANCH_MODE)
+-
+-                    a_star_over_rc = a_star / r_c_canon if np.isfinite(a_star) else np.nan
+-                    prev_val = prev_a_star / r_c_canon if (prev_a_star is not None and np.isfinite(prev_a_star)) else np.nan
+-                    continuation_jump = abs(a_star_over_rc - prev_val) if (np.isfinite(a_star_over_rc) and np.isfinite(prev_val)) else np.nan
+-                    if np.isfinite(a_star):
+-                        prev_a_star = a_star
+-
+-                    beta_dimless = dimensionless_beta(geom.d_min_full * L_natural)
+-                    F_at_x1 = F_dimensionless(1.0, fr.A_K, beta_dimless, lam_K, p_exp, CONTACT_MODEL)
+-                    contact_force_at_x1 = contact_force_dimensionless(1.0, beta_dimless, lam_K, p_exp, CONTACT_MODEL)
+-                    F_at_root = F_dimensionless(a_star_over_rc, fr.A_K, beta_dimless, lam_K, p_exp, CONTACT_MODEL) if np.isfinite(a_star_over_rc) else np.nan
+-                    if EMIT_V5_LOGS:
+-                        print("[ROOTX] lambda_K={} a_star_over_rc={} F_at_root={:.8e} solver={}".format(lam_K, a_star_over_rc, F_at_root if np.isfinite(F_at_root) else float("nan"), ROOT_SOLVER_SPACE))
+-                        if ROOT_SELECTION_MODE == "continuation":
+-                            print("[CONT] lambda_K={} prev_a_star_over_rc={} a_star_over_rc={} jump={} root_choice={}".format(lam_K, prev_val, a_star_over_rc, continuation_jump, root_choice))
+-                        print("[BARRIER] lambda_K={} beta={:.8f} contact_force_at_x1={:.8e} F_at_x1={:.8e} contact_model={}".format(lam_K, beta_dimless, contact_force_at_x1 if np.isfinite(contact_force_at_x1) else float("nan"), F_at_x1 if np.isfinite(F_at_x1) else float("nan"), CONTACT_MODEL))
+-
+-                    delta_lambda_over_rc = abs(a_star_over_rc - 1.0) if np.isfinite(a_star_over_rc) else np.nan
+-                    status = classify_run(A_ratio, a_star_over_rc, is_min)
+-                    theorem_candidate_no_contact = bool(np.isfinite(x_closure) and abs(x_closure - 1.0) <= V8_THEOREM_TOL_AINF)
+-                    theorem_candidate_full_model = bool(np.isfinite(a_star_over_rc) and np.isfinite(F_at_x1) and abs(a_star_over_rc - 1.0) <= V8_THEOREM_TOL_XINF and abs(F_at_x1) <= V8_THEOREM_TOL_FINF)
+-                    t_total_block_s = time.perf_counter() - t_block_start
+-                    notes = []
+-                    if fr.fit_method in THEOREM_CANDIDATE_FIT_METHODS:
+-                        notes.append("parallel_theorem_candidate")
+-                    rows.append({
+-                        "knot_id": KNOT_ID, "mode": mode,
+-                        "N_geom": N_geom, "N_int_target": N_int_target, "N_int_actual": geom.N_int_actual,
+-                        "R_t_over_r_t": R_ratio if R_ratio is not None else np.nan,
+-                        "L_dimless": geom.L_dimless_full, "d_min_dimless": geom.d_min_full,
+-                        "fit_method": fr.fit_method, "plateau_frac": fr.plateau_frac, "n_plateau": fr.n_plateau,
+-                        "A_K": fr.A_K, "A_spread": fr.A_spread, "A_ratio": A_ratio, "a_K": fr.a_K, "a_fit_ref": fr.a_fit_ref,
+-                        "a_nc_m": a_nc, "a_nc_over_rc": a_nc_over_rc, "lambda_K": lam_K, "p_exp": p_exp,
+-                        "root_count": root_count, "min_root_count": min_root_count, "root_choice": root_choice,
+-                        "a_star_m": a_star, "a_star_over_rc": a_star_over_rc, "E_star_J": E_star, "delta_lambda_over_rc": delta_lambda_over_rc,
+-                        "is_min": is_min, "status": status, "uses_local_sst_core": _SST_CORE_AVAILABLE,
+-                        "ideal_source": ideal_source_str, "notes": "; ".join(notes), "bs_backend": backend_this,
+-                        "t_geometry_s": t_geometry_s, "t_scan_s": t_scan_s, "t_fit_s": t_fit_s, "t_total_block_s": t_total_block_s,
+-                        "contact_model": CONTACT_MODEL, "root_selection_mode": ROOT_SELECTION_MODE,
+-                        "closure_x_from_A": x_closure, "closure_x_minus_1": float(x_closure - 1.0),
+-                        "beta_dimless": beta_dimless, "F_at_x1": F_at_x1, "contact_force_at_x1": contact_force_at_x1,
+-                        "continuation_prev_a_star_over_rc": prev_val, "continuation_jump": continuation_jump,
+-                        "theorem_candidate_no_contact": theorem_candidate_no_contact,
+-                        "theorem_candidate_full_model": theorem_candidate_full_model,
+-                        "root_solver_space": ROOT_SOLVER_SPACE, "F_at_root": F_at_root, "root_xtol": ROOT_XTOL, "root_rtol": ROOT_RTOL,
+-                    })
+-                    print("[ROOT] lambda_K={} a_star_over_rc={} is_min={} status={}".format(lam_K, a_star_over_rc, is_min, status))
++    geom_configs = build_geom_configs_for_mode(mode)
++    rows, plateau_diag_rows = _execute_geom_configs(mode, KNOT_ID, OUTPUT_DIR, geom_configs, backend_used)
+ 
+     best = select_best_row(rows)
+     if best:
+@@ -2972,14 +3222,14 @@
+             else:
+                 print("[BEST] theorem_full_model contact_model={} F_at_x1=nan a_star_over_rc=nan".format(CONTACT_MODEL))
+ 
+-    csv_path = os.path.join(OUTPUT_DIR, "robustness_summary_v10_{}.csv".format(mode))
++    csv_path = os.path.join(OUTPUT_DIR, "robustness_summary_v10_2_{}.csv".format(mode))
+     write_csv(rows, csv_path)
+     if SAVE_SUMMARY_PLOTS:
+         save_summary_plots(rows, OUTPUT_DIR)
+     if SAVE_PLATEAU_DIAGNOSTICS:
+-        plateau_csv = os.path.join(OUTPUT_DIR, "plateau_mask_diagnostics_v10_0.csv")
++        plateau_csv = os.path.join(OUTPUT_DIR, "plateau_mask_diagnostics_v10_2.csv")
+         write_plateau_diagnostics_csv(plateau_diag_rows, plateau_csv)
+-        save_plateau_diagnostics_summary_plot(plateau_diag_rows, os.path.join(OUTPUT_DIR, "plateau_mask_summary_v10_0.png"))
++        save_plateau_diagnostics_summary_plot(plateau_diag_rows, os.path.join(OUTPUT_DIR, "plateau_mask_summary_v10_2.png"))
+     write_best_estimate(rows, OUTPUT_DIR)
+ 
+     if RUN_V6_SHIFT_FREE_POSTCHECK:
+@@ -2992,7 +3242,7 @@
+         print("[META] Shift-free postcheck {} CSV/TXT/TeX : {}".format(SCRIPT_VERSION, OUTPUT_DIR))
+     if SAVE_PLATEAU_DIAGNOSTICS:
+         print("[META] Plateau diagnostics CSV/PNG : {}".format(OUTPUT_DIR))
+-    print("[META] run_metadata_v10_1.json : {}".format(os.path.join(OUTPUT_DIR, "run_metadata_v10_1.json")))
++    print("[META] run_metadata_v10_2.json : {}".format(os.path.join(OUTPUT_DIR, "run_metadata_v10_2.json")))
+ 
+     if WRITE_V8_EXTRAPOLATION:
+         if not postcheck_rows:
+@@ -3031,13 +3281,13 @@
+     global OUTPUT_DIR, KNOT_ID, MAX_FOURIER_MODE, N_GEOM_LIST, N_INT_LIST, LAMBDA_LIST, PLATEAU_FRACS
+     global USE_LOCAL_SST_CORE, AUTO_COMPILE_SST_CORE, ENABLE_TORCH_ACCEL, BS_BACKEND_MODE
+     global CONTACT_MODEL, ROOT_SELECTION_MODE, EMIT_V5_LOGS, BRANCH_MODE
+-    global RUN_V6_SHIFT_FREE_POSTCHECK
++    global RUN_V6_SHIFT_FREE_POSTCHECK, PARALLEL_SCOPE, MAX_WORKERS
+     global WRITE_V8_EXTRAPOLATION, EXTRAP_MIN_NINT, EXTRA_TARGET_PAIRS, SWEEP_LAYOUT
+ 
+     parser = argparse.ArgumentParser(description=f"SST Robustness Sweep {SCRIPT_VERSION}")
+     parser.add_argument("--mode", choices=["ideal", "torus"], default="ideal")
+     parser.add_argument("--preset", choices=["fast", "full"], default="full", help="fast = smaller sweep for UI testing; full = full sweep")
+-    parser.add_argument("--output-dir", default="", help="Output directory (default: .../sst_knot_candidate_robustness_outputs_v10_1)")
++    parser.add_argument("--output-dir", default="", help="Output directory (default: .../sst_knot_candidate_robustness_outputs_v10_2)")
+     parser.add_argument("--backend", choices=BS_BACKEND_ALLOWED, default="auto")
+     parser.add_argument("--knot-id", default=DEFAULT_KNOT_LIST[0], help="Single knot id for the sweep, e.g. 3:1:1")
+     parser.add_argument("--knot-list", default="", help="Whitespace/comma-separated batch knot ids, e.g. 3:1:1,4:1:1,5:1:1,5:2:1; @group names allowed")
+@@ -3080,6 +3330,8 @@
+     EMIT_V5_LOGS = bool(args.emit_v5_logs)
+     BRANCH_MODE = args.branch_mode
+     RUN_V6_SHIFT_FREE_POSTCHECK = bool(args.run_v6_shiftfree_postcheck)
++    PARALLEL_SCOPE = str(args.parallel_scope)
++    MAX_WORKERS = int(args.max_workers)
+ 
+     if args.no_local_sst_core:
+         USE_LOCAL_SST_CORE = False

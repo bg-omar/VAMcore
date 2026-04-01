@@ -1,0 +1,6 @@
+fit_method,n_main_rows,A_inf,A_inf_minus_target,A_alpha,A_tail_quasi_monotone,anc_inf,anc_inf_minus_1,anc_alpha,anc_tail_quasi_monotone,theorem_no_contact_ok,n_shiftfree_rows,astar_inf,astar_inf_minus_1,astar_alpha,astar_tail_quasi_monotone,F1_inf,F1_inf_minus_0,F1_alpha,F1_tail_quasi_monotone,shiftfree_root_choice_summary,theorem_shiftfree_ok
+plateau_0.04,0,nan,nan,nan,False,nan,nan,nan,False,False,0,nan,nan,nan,False,nan,nan,nan,False,,False
+plateau_0.06,0,nan,nan,nan,False,nan,nan,nan,False,False,0,nan,nan,nan,False,nan,nan,nan,False,,False
+plateau_0.08,0,nan,nan,nan,False,nan,nan,nan,False,False,0,nan,nan,nan,False,nan,nan,nan,False,,False
+plateau_0.10,0,nan,nan,nan,False,nan,nan,nan,False,False,0,nan,nan,nan,False,nan,nan,nan,False,,False
+plateau_0.12,0,nan,nan,nan,False,nan,nan,nan,False,False,0,nan,nan,nan,False,nan,nan,nan,False,,False

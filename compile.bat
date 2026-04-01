@@ -1,0 +1,1 @@
+pyinstaller --name "SSTcore_Dashboard" --windowed --add-data "swirl_string_core.cp312-win_amd64.pyd;." --add-data "examples/ideal_database.txt;src/knot_fseries" sst_dashboard.py

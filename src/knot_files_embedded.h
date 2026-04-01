@@ -7,6 +7,7 @@
 
 namespace sst {
     std::map<std::string, std::string> get_embedded_knot_files();
+    std::map<std::string, std::string> get_embedded_ideal_files();
 }
 
 #endif // KNOT_FILES_EMBEDDED_H

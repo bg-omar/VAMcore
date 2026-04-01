@@ -1,6 +1,6 @@
-# ⚙️ Swirl_String_core: Hybrid Benchmark Engine for the Swirl-String Theory
+# ⚙️ SSTcore: Hybrid Benchmark Engine for the Swirl-String Theory
 
-Welcome to **Swirl_String_core**, the computational backbone for the Swirl-String Theory (SST).  
+Welcome to **SSTcore**, the computational backbone for the Swirl-String Theory (SST).  
 This hybrid C++/Python engine is designed to benchmark field-based gravity, time dilation, and EM swirl-field dynamics using modern numerical methods and a large helping of theoretical audacity. This repository contains the core engine, simulation scripts, and visualizations to explore the swirling depths of æther dynamics.
 We build the C++ SST-Bindings first, and then we can import it into benchmark Python code. When using the C++  SST-bindings to do hard calculations we can run / render Python simulations 10-100x faster.
 
@@ -14,6 +14,9 @@ We build the C++ SST-Bindings first, and then we can import it into benchmark Py
 - 🐍 **Python Frontend**  
   For visualization, parameter sweeps, and interactive experiments using `matplotlib`, `numpy`, and `PyBind11` integration.
 
+- 📦 **npm Package**  
+  Available for Node.js and browser (WebAssembly) via `npm install sstcore`. Perfect for Angular and other JavaScript/TypeScript applications.
+
 - 🧲 **EM Field Simulations**  
   Supports generation and animation of **rotating 3-phase bivort** electric and magnetic field structures.
 
@@ -22,15 +25,33 @@ We build the C++ SST-Bindings first, and then we can import it into benchmark Py
 
 ---
 
-## 🧪 Sample Outputs
 
-| Simulation | Output |
-|-----------|--------|
-| Time Dilation Field | ![Time Dilation](examples/time_dilation.png) |
-| Æther Inflow Velocity | ![Inflow](examples/inflow_quiver.png) |
-| Rotating EM Vortex | ![EM Vortices](examples/em_quiver.gif) |
 
----
+### Installation Options
+
+#### Python Package
+
+```bash
+pip install sstcore
+```
+
+**Resources na pip install (via import)**  
+Na `pip install` kun je het resources-pad (o.a. `Knots_FourierSeries`, `ideal.txt`) zo aanroepen:
+
+```python
+import sstcore
+
+# Basis resources-map (ideal.txt, Knots_FourierSeries, …)
+resources_dir = sstcore.get_resources_dir()
+
+# Alleen Knots_FourierSeries-map
+kfs_dir = sstcore.get_knots_fourier_series_dir()
+
+# Pad naar ideal.txt
+ideal_path = sstcore.get_ideal_txt_path()
+```
+
+Optioneel: stel `SSTCORE_RESOURCES` in om een vaste map te forceren.
 
 ### SSTCORE Installation Guide (Windows)
 
@@ -114,7 +135,6 @@ mkdir extern/pybind11
 git clone https://github.com/pybind/pybind11.git extern/pybind11
 ````
 
-
 ### 🔨 Build C++ Core
 Before building, ensure you have CMake installed and your environment is set up correctly.
 Download and install CMake https://cmake.org/download/
@@ -125,10 +145,19 @@ You can now use the following commands (from project root) to build the C++ core
 mkdir build
 cd build
 cmake ..
-cmake --build . --config Debug  # or Release
+cmake --build . --config Release # or Debug
 
 ```
 This command compiles the C++ core and generates the Python bindings using `pybind11`.
+
+pip install PyQtWebEngine PyQt5 pyinstaller numpy
+#### npm Package (Node.js / Browser)
+
+```bash
+npm install sstcore
+```
+
+See [README_NPM.md](README_NPM.md) for detailed usage instructions.
 
 ### 📦 Test if python receives SST Bindings `
 ```bash
@@ -210,11 +239,23 @@ Open an issue or whisper into the æther.
 This code is listening. Always.
 ---
 
-This document provides a summary of implemented functions in the SST C++/Python library along with their corresponding physical and mathematical formulas.
-
+### 1. Installeer PyTorch en de specifieke Intel Extension for PyTorch (IPEX) voor Windows XPU
 ```bash
-conda create -n SSTcore intelpython3_full python=3.11 -c https://software.repos.intel.com/python/conda -c conda-forge --override-channels
-conda activate SSTcore
+conda create -n SSTcore11 intelpython3_full python=3.11 -c https://software.repos.intel.com/python/conda -c conda-forge --override-channels
+conda activate SSTcore11
+conda config --add channels conda-forge
+conda config --set channel_priority flexible
+conda install scikit-learn-intelex xgboost numpy scipy numexpr -c https://software.repos.intel.com/python/conda/ -c conda-forge
+```
+### 2. Installeer de Coqui TTS bibliotheek (die XTTSv2 bevat) & Zorg ervoor dat de nieuwste versie van torchaudio's backend (soundfile) beschikbaar is. Toevoeging voor de GPU-acceleratie van Neurale Netwerken (XTTS)
+```bash
+python -m pip install torch==2.1.0.post3 torchvision==0.16.0.post3 torchaudio==2.1.0.post3 intel-extension-for-pytorch==2.1.10+xpu --extra-index-url https://pytorch-extension.intel.com/release-whl/stable/xpu/us/
+python -m pip install TTS soundfile
+```
+### 3. Other setup steps for Python dependencies (if needed)
+```bash
+conda create -n SSTcore11 intelpython3_full python=3.11 -c https://software.repos.intel.com/python/conda -c conda-forge --override-channels
+conda activate SSTcore11
 
 conda install conda -c https://software.repos.intel.com/python/conda/
 conda install conda -c conda-forge
@@ -229,547 +270,33 @@ conda install numpy -c https://software.repos.intel.com/python/conda/ -c conda-f
 conda install scipy -c https://software.repos.intel.com/python/conda/ -c conda-forge
 conda install numexpr -c https://software.repos.intel.com/python/conda/ -c conda-forge
 ```
-# Swirl String Theory (SST) Core Library Reference
-**Version:** 2.1.0 (Parser Upgrade) | **Generated:** 2025-11-21
 
-This document is **automatically compiled** from the C++ Source Code (`src_bindings/`).
-It supports both `R"pbdoc` and Standard String documentation.
-
----
-
-## 1. SST Gravity & Metric Engineering
-
-### `biot_savart_vector_potential_grid`
-🛠️ *[Auto-Extracted from py_field_kernels.cpp]*
-
-**Description:** Computes Magnetic Vector Potential A on a grid.
-
-**Equation:**
-$$
-Computes Magnetic Vector Potential A on a grid.
-$$
-
----
-### `compute_beltrami_shear`
-✅ **[SST Canon]**
-
-**Description:** Calculates the Beltrami Shear Stress (Vacuum Tearing). Measures deviation from Force-Free state.
-
-**Equation:**
-$$
-S = \left\| \vec{B} \times (\nabla \times \vec{B}) \right\|
-$$
-
----
-### `compute_gravitational_potential`
-✅ **[SST Canon]**
-
-**Description:** Computes the effective gravitational potential derived from the vorticity distribution.
-
-**Equation:**
-$$
-\Phi_G(\vec{r}) = -G \int \frac{|\vec{\omega}(\vec{r}')|^2}{|\vec{r} - \vec{r}'|} d^3r'
-$$
-
----
-### `compute_gravity_dilation`
-✅ **[SST Canon]**
-
-**Description:** Computes the scalar Gravity Dilation Map (G_local). Limits to 0 as induced velocity approaches swirl velocity.
-
-**Equation:**
-$$
-G_{local} = G_0 \left[ 1 - \left( \frac{|\vec{B}| \cdot \log_{10}(\omega)}{\rho_{vac} \cdot v_{swirl}} \right)^2 \right]
-$$
-
----
-### `compute_time_dilation_map`
-✅ **[SST Canon]**
-
-**Description:** Computes local time dilation based on the transverse velocity of the vortex filaments.
-
-**Equation:**
-$$
-\Delta t' = \Delta t \sqrt{1 - \frac{v_t^2}{c_{eth}^2}}
-$$
-
----
-### `potential_temperature`
-✅ **[SST Canon]**
-
-**Description:** Temperature a fluid parcel would attain if brought adiabatically to standard pressure.
-
-**Equation:**
-$$
-\theta = T \left( \frac{P_0}{P} \right)^{R/c_p}
-$$
-
----
-### `potential_vorticity`
-✅ **[SST Canon]**
-
-**Description:** Computes Ertel Potential Vorticity, conserved in adiabatic flow.
-
-**Equation:**
-$$
-PV = \frac{\vec{\omega} \cdot \nabla \theta}{\rho}
-$$
-
----
-## 2. Fluid Dynamics & Vortex Solvers
-
-### `bernoulli_pressure`
-🛠️ *[Auto-Extracted from py_potential_flow.cpp]*
-
-**Description:** See Description
-
-**Equation:**
-$$
-See Description
-$$
-
----
-### `biot_savart_vector_potential_grid`
-🛠️ *[Auto-Extracted from py_field_kernels.cpp]*
-
-**Description:** Computes Magnetic Vector Potential A on a grid.
-
-**Equation:**
-$$
-Computes Magnetic Vector Potential A on a grid.
-$$
-
----
-### `biot_savart_velocity`
-✅ **[SST Canon]**
-
-**Description:** Computes the induced velocity (B-field) via Biot-Savart Law.
-
-**Equation:**
-$$
-\vec{v}(\vec{r}) = \frac{\Gamma}{4\pi} \oint_C \frac{d\vec{l} \times (\vec{r} - \vec{r}')}{|\vec{r} - \vec{r}'|^3}
-$$
-
----
-### `biot_savart_velocity_grid`
-✅ **[SST Canon]**
-
-**Description:** Vectorized Biot-Savart solver for arbitrary 3D grids.
-
-**Equation:**
-$$
-\vec{v}_{ij k} = \sum_{seg} \text{BiotSavart}(\vec{r}_{ijk}, \vec{l}_{seg})
-$$
-
----
-### `biot_savart_wire_grid`
-✅ **[SST Canon]**
-
-**Description:** Optimized kernel for polyline-to-grid field induction.
-
-**Equation:**
-$$
-\vec{B}(\vec{x}) = \frac{\mu_0 I}{4\pi} \sum \frac{d\vec{l} \times \hat{r}}{r^2}
-$$
-
----
-### `compute_bernoulli_pressure`
-✅ **[SST Canon]**
-
-**Description:** Alias for pressure field computation.
-
-**Equation:**
-$$
-P + \frac{1}{2}\rho v^2 = \text{const}
-$$
-
----
-### `compute_pressure_field`
-✅ **[SST Canon]**
-
-**Description:** Computes the macroscopic pressure field using the Bernoulli principle for incompressible flow.
-
-**Equation:**
-$$
-P = P_{\infty} - \frac{1}{2} \rho_{ae} |\vec{v}|^2
-$$
-
----
-### `compute_swirl_field`
-🛠️ *[Auto-Extracted from py_swirl_field.cpp]*
-
-**Description:** Compute 2D swirl force field at a given resolution and time.
-
-**Equation:**
-$$
-Compute 2D swirl force field at a given resolution and time.
-$$
-
----
-### `compute_velocity_magnitude`
-🛠️ *[Auto-Extracted from py_fluid_dynamics.cpp]*
-
-**Description:** Compute magnitude |v| from vector velocity field.
-
-**Equation:**
-$$
-Compute magnitude |\vec{v}| from vector velocity field.
-$$
-
----
-### `compute_vorticity`
-🛠️ *[Auto-Extracted from py_vorticity_dynamics.cpp]*
-
-**Description:** See Description (Arg Name Detected)
-
-**Equation:**
-$$
-See Description (Arg Name Detected)
-$$
-
----
-### `compute_vorticity_rhs`
-🛠️ *[Auto-Extracted from py_vorticity_transport.cpp]*
-
-**Description:** Vorticity transport RHS
-
-**Equation:**
-$$
-Vorticity transport RHS
-$$
-
----
-### `couette_vorticity`
-🛠️ *[Auto-Extracted from py_vorticity_dynamics.cpp]*
-
-**Description:** See Description (Arg Name Detected)
-
-**Equation:**
-$$
-See Description (Arg Name Detected)
-$$
-
----
-### `hill_velocity`
-🛠️ *[Auto-Extracted from py_vortex_ring.cpp]*
-
-**Description:** See Description
-
-**Equation:**
-$$
-See Description
-$$
-
----
-### `hill_vorticity`
-🛠️ *[Auto-Extracted from py_vortex_ring.cpp]*
-
-**Description:** See Description
-
-**Equation:**
-$$
-See Description
-$$
-
----
-### `lamb_oseen_velocity`
-🛠️ *[Auto-Extracted from py_vortex_ring.cpp]*
-
-**Description:** See Description
-
-**Equation:**
-$$
-See Description
-$$
-
----
-### `lamb_oseen_vorticity`
-🛠️ *[Auto-Extracted from py_vortex_ring.cpp]*
-
-**Description:** See Description
-
-**Equation:**
-$$
-See Description
-$$
-
----
-### `potential_vorticity`
-✅ **[SST Canon]**
-
-**Description:** Computes Ertel Potential Vorticity, conserved in adiabatic flow.
-
-**Equation:**
-$$
-PV = \frac{\vec{\omega} \cdot \nabla \theta}{\rho}
-$$
-
----
-### `pressure_gradient`
-🛠️ *[Auto-Extracted from py_pressure_field.cpp]*
-
-**Description:** Compute spatial pressure gradient vector field.
-
-**Equation:**
-$$
-Compute spatial pressure gradient vector field.
-$$
-
----
-### `solid_body_rotation_vorticity`
-🛠️ *[Auto-Extracted from py_vorticity_dynamics.cpp]*
-
-**Description:** See Description (Arg Name Detected)
-
-**Equation:**
-$$
-See Description (Arg Name Detected)
-$$
-
----
-### `swirl_clock_rate`
-✅ **[SST Canon]**
-
-**Description:** The local tick-rate of the fluid element, derived from the 2D curl component.
-
-**Equation:**
-$$
-\Omega_z = \frac{1}{2} \left( \frac{\partial v}{\partial x} - \frac{\partial u}{\partial y} \right)
-$$
-
----
-### `swirl_energy`
-✅ **[SST Canon]**
-
-**Description:** Rotational kinetic energy density of the vortex system.
-
-**Equation:**
-$$
-E_k = \frac{1}{2} \rho \int_V |\vec{\omega}|^2 \, dV
-$$
-
----
-### `vortex_pressure_drop`
-🛠️ *[Auto-Extracted from py_fluid_dynamics.cpp]*
-
-**Description:** Pressure drop 0.5 * ρ * c^2 in a vortex core.
-
-**Equation:**
-$$
-Pressure drop \frac{1}{2} ρ c^2 in a vortex core.
-$$
-
----
-### `vortex_transverse_pressure_diff`
-🛠️ *[Auto-Extracted from py_fluid_dynamics.cpp]*
-
-**Description:** Transverse pressure difference 0.25 * ρ * c^2.
-
-**Equation:**
-$$
-Transverse pressure difference \frac{1}{4} ρ c^2.
-$$
-
----
-### `vorticity_from_curvature`
-✅ **[SST Canon]**
-
-**Description:** Approximates vorticity for curved laminar flow based on path radius.
-
-**Equation:**
-$$
-|\vec{\omega}| \approx \frac{v}{R_{curve}}
-$$
-
----
-### `vorticity_z_2D`
-🛠️ *[Auto-Extracted from py_vorticity_dynamics.cpp]*
-
-**Description:** Compute 2D vorticity
-
-**Equation:**
-$$
-\frac{\partial v}{\partial x} - \frac{\partial u}{\partial y}
-$$
-
----
-## 3. Topological Metrics
-
-### `compute_centerline_helicity`
-✅ **[SST Canon]**
-
-**Description:** Total helicity decomposed into Writhe and Twist.
-
-**Equation:**
-$$
-H = Wr + Tw
-$$
-
-![Topology Diagram](topology_concept.png)
-
----
-### `compute_helicity`
-✅ **[SST Canon]**
-
-**Description:** Computes Hydrodynamic Helicity (Knottedness).
-
-**Equation:**
-$$
-\mathcal{H} = \int_V \vec{v} \cdot \vec{\omega} \, dV
-$$
-
-![Topology Diagram](topology_concept.png)
-
----
-### `compute_linking_number`
-✅ **[SST Canon]**
-
-**Description:** Gauss Linking Number between two closed loops.
-
-**Equation:**
-$$
-Lk = \frac{1}{4\pi} \oint_{\gamma_1} \oint_{\gamma_2} \frac{\vec{r}_{12} \cdot (d\vec{r}_1 \times d\vec{r}_2)}{r_{12}^3}
-$$
-
----
-### `compute_writhe`
-✅ **[SST Canon]**
-
-**Description:** The Writhe number (Gauss integral), measuring global coiling.
-
-**Equation:**
-$$
-Wr = \frac{1}{4\pi} \iint \frac{(\vec{r}_1-\vec{r}_2) \cdot (d\vec{r}_1 \times d\vec{r}_2)}{|\vec{r}_1-\vec{r}_2|^3}
-$$
-
-![Topology Diagram](topology_concept.png)
-
----
-### `evaluate_fourier_block`
-🛠️ *[Auto-Extracted from py_fourier_knot.cpp]*
-
-**Description:** Evaluate r(s) for the given Fourier block.
-
-**Equation:**
-$$
-Evaluate r(s) for the given Fourier block.
-$$
-
----
-### `evaluate_fourier_series`
-✅ **[SST Canon]**
-
-**Description:** Reconstructs knot geometry from Fourier coefficients.
-
-**Equation:**
-$$
-\vec{r}(t) = \sum [ \vec{a}_n \cos(nt) + \vec{b}_n \sin(nt) ]
-$$
-
----
-### `evolve_vortex_knot`
-🛠️ *[Auto-Extracted from py_frenet_helicity.cpp]*
-
-**Description:** Evolve vortex knot filaments using Biot–Savart dynamics.
-
-**Equation:**
-$$
-Evolve vortex knot filaments using Biot–Savart dynamics.
-$$
-
-![Topology Diagram](topology_concept.png)
-
----
-### `fourier_knot_eval`
-🛠️ *[Auto-Extracted from py_fourier_knot.cpp]*
-
-**Description:** NumPy-friendly Fourier evaluation returning (x,y,z)
-
-**Equation:**
-$$
-NumPy-friendly Fourier evaluation returning (x,y,z)
-$$
-
-![Topology Diagram](topology_concept.png)
-
----
-### `writhe_gauss_curve`
-🛠️ *[Auto-Extracted from py_heavy_knot.cpp]*
-
-**Description:** Compute writhe via Gauss integral
-
-**Equation:**
-$$
-Compute writhe via Gauss integral
-$$
-
-![Topology Diagram](topology_concept.png)
-
----
-
----
-
-## 🌀 Helicity
-
-**Function**: `compute_helicity(velocity, vorticity)`
-
-**Formula**:
-$${H} = \int_{\mathbb{R}^3} \mathbf{v} \cdot \omega \, d^3\mathbf{r}$$
-
----
-
-## ⚡ Kinetic Energy
-
-**Function**: `compute_kinetic_energy(velocity, rho_ae)`
-
-**Formula**:
-$$E = \frac{1}{2} \rho_æ \int |\mathbf{v}|^2 \, d^3\mathbf{r}$$
-
----
-
-## 🧩 Curvature
-
-**Function**: `compute_curvature_torsion(positions)`
-
-**Formula**:
-$$\kappa(s) = \left\| \frac{d^2 \mathbf{X}}{ds^2} \right\|$$
-
----
-
-## 🔁 Torsion
-
-**Function**: `compute_curvature_torsion(positions)`
-
-**Formula**:
-$$\tau(s) = \frac{ \left( \frac{d \mathbf{X}}{ds} \times \frac{d^2 \mathbf{X}}{ds^2} \right) \cdot \frac{d^3 \mathbf{X}}{ds^3} }{ \left\| \frac{d \mathbf{X}}{ds} \times \frac{d^2 \mathbf{X}}{ds^2} \right\|^2 }$$
-
----
-
-## 🌌 Gravitational Acceleration (Bernoulli Gradient)
-
-**Function**: `pressure_gradient` and `compute_bernoulli_pressure`
-
-**Formula**:
-$$\mathbf{g}(\mathbf{r}) = -\frac{1}{\rho_æ} \nabla P(\mathbf{r}) = \nabla \left( \frac{1}{2} |\mathbf{v}|^2 \right)$$
-
----
-
-## ⏳ Time Dilation from Tangential Velocity
-
-**Function**: `compute_time_dilation_map(tangential_velocities, ce)`
-
-**Formula**:
-$$\text{Time Dilation} = 1 - \frac{v^2}{C_e^2}$$
-
----
-
-## 🌀 Gravitational Potential from Vorticity
-
-**Function**: `compute_gravitational_potential(positions, vorticity, aether_density)`
-
-**Formula**:
-$$\Phi(\mathbf{r}) = \text{scalar potential derived from vorticity field}$$
-
----
-
-Generated by SST Core — Swirl-String Theory Simulation Toolkit
+```bash
+# 1. Verwijder de gecorrumpeerde en verouderde installatie
+pip uninstall -y torch torchvision torchaudio intel-extension-for-pytorch
+
+# 2. Installeer de vereiste C-bibliotheek voor asynchrone I/O
+conda install libuv -c conda-forge -y
+
+# 3. Installeer de nieuwe PyTorch 2.5.1 XPU stack, geoptimaliseerd voor Intel Arc
+python -m pip install torch==2.5.1+cxx11.abi torchvision==0.20.1+cxx11.abi torchaudio==2.5.1+cxx11.abi intel-extension-for-pytorch==2.5.10+xpu --index-url https://pytorch-extension.intel.com/release-whl/stable/xpu/us/
+```
+
+ 1. Isoleer de Intel GPU hardwarematig voor de SYCL/UR runtime
+ 1. Installeer de Intel-geoptimaliseerde PyTorch stack voor Python 3.12
+ 2. Activeer Level Zero optimalisaties voor PyTorch XPU
+ 2. Isoleer de Intel Arc A770 van de NVIDIA GTX 1060 voor de SYCL runtime
+ 3. Activeer Level Zero optimalisaties voor asynchrone executie
+```bash
+python -m pip install torch==2.5.1+cxx11.abi torchvision==0.20.1+cxx11.abi torchaudio==2.5.1+cxx11.abi intel-extension-for-pytorch==2.5.10+xpu --extra-index-url https://pytorch-extension.intel.com/release-whl/stable/xpu/us/
+conda install libuv -c conda-forge -y
+
+set ONEAPI_DEVICE_SELECTOR=level_zero:gpu
+set SYCL_PI_LEVEL_ZERO_USE_IMMEDIATE_COMMANDLISTS=1
+set ZES_ENABLE_SYSMAN=1
+set ONEAPI_DEVICE_SELECTOR=level_zero:gpu
+set SYCL_PI_LEVEL_ZERO_USE_IMMEDIATE_COMMANDLISTS=1
+set ZES_ENABLE_SYSMAN=1
+
+python verify_sst_hardware.py
+```

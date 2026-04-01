@@ -1,0 +1,319 @@
+--- /mnt/data/sst_knot_candidate_robustness_sweep_v10_2.py	2026-03-25 14:47:47.897752466 +0000
++++ /mnt/data/sst_knot_candidate_robustness_sweep_v10_3.py	2026-03-25 14:55:08.893032139 +0000
+@@ -69,7 +69,7 @@
+     torch = None  # type: ignore[assignment]
+     _TORCH_AVAILABLE = False
+ 
+-SCRIPT_VERSION = "v10.2"
++SCRIPT_VERSION = "v10.3"
+ 
+ # -----------------------------------------------------------------------------
+ # Paths and defaults (overridable by CLI)
+@@ -84,7 +84,7 @@
+ BS_BACKEND_ALLOWED = ("auto", "local_cpp_scan", "torch", "numpy")
+ 
+ # Parallel execution controls (CLI can override)
+-PARALLEL_SCOPE = "auto"   # auto | none | geom
++PARALLEL_SCOPE = "auto"   # auto | none | geom | global
+ MAX_WORKERS = 0            # 0 => auto
+ AUTO_PARALLEL_MIN_TASKS = 2
+ 
+@@ -207,7 +207,7 @@
+ RUN_V6_SHIFT_FREE_POSTCHECK = True
+ SHIFTFREE_POSTCHECK_CONTACT_MODEL = "barrier_flat_at_rc"
+ 
+-OUTPUT_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "sst_knot_candidate_robustness_outputs_v10_2"))
++OUTPUT_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "sst_knot_candidate_robustness_outputs_v10_3"))
+ KNOT_ID = "3:1:1"
+ MAX_FOURIER_MODE: Optional[int] = None
+ 
+@@ -354,8 +354,8 @@
+     preferred = ["knot_id", "preset_name", "category", "generation", "k", "g", "G", "pdg_mass_mev", "mode", "fit_method", "N_geom", "N_int_actual", "A_K", "A_ratio", "a_nc_over_rc", "closure_x_from_A", "a_star_over_rc", "status", "closure_score", "output_dir"]
+     cols = [c for c in preferred if c in df.columns] + [c for c in df.columns if c not in preferred]
+     df = df[cols]
+-    csv_path = os.path.join(outdir, "knot_candidate_comparison_v10_1.csv")
+-    txt_path = os.path.join(outdir, "knot_candidate_comparison_v10_1.txt")
++    csv_path = os.path.join(outdir, "knot_candidate_comparison_v10_3.csv")
++    txt_path = os.path.join(outdir, "knot_candidate_comparison_v10_3.txt")
+     df.to_csv(csv_path, index=False)
+     with open(txt_path, "w", encoding="utf-8") as f:
+         f.write(f"SST knot candidate comparison {SCRIPT_VERSION}\n")
+@@ -2681,7 +2681,7 @@
+         "run_start_iso": time.strftime("%Y-%m-%dT%H:%M:%S", time.localtime(run_start)),
+     }
+     meta["script_version"] = SCRIPT_VERSION
+-    path = os.path.join(outdir, "run_metadata_v10_2.json")
++    path = os.path.join(outdir, "run_metadata_v10_3.json")
+     with open(path, "w", encoding="utf-8") as f:
+         json.dump(meta, f, indent=2)
+ 
+@@ -2719,7 +2719,7 @@
+     preset = _prompt_choice("Preset", ["fast", "full"], "full")
+     sweep_layout = _prompt_choice("Sweep layout", ["matrix", "exact_pairs_only", "theorem_ladder"], "theorem_ladder")
+     backend = _prompt_choice("Backend", list(BS_BACKEND_ALLOWED), "auto")
+-    parallel_scope = _prompt_choice("Parallel scope", ["auto", "none", "geom"], "auto")
++    parallel_scope = _prompt_choice("Parallel scope", ["auto", "none", "geom", "global"], "auto")
+     max_workers = _prompt_text("Max workers (0 = auto)", "0")
+     contact_model = _prompt_choice("Main sweep contact model", ["legacy", "barrier_flat_at_rc"], "legacy")
+     root_mode = _prompt_choice("Root selection mode", ["continuation", "targeted_x_nc", "closest_to_a_nc", "lowest_energy"], "continuation")
+@@ -2823,6 +2823,40 @@
+     return False
+ 
+ 
++def _should_parallelize_global_batch(task_count: int, knot_count: int) -> bool:
++    scope = str(PARALLEL_SCOPE).lower()
++    if knot_count <= 1:
++        return False
++    if scope in ("none", "geom"):
++        return False
++    if task_count < AUTO_PARALLEL_MIN_TASKS:
++        return False
++    if scope in ("global", "auto"):
++        return _resolved_worker_count(task_count) > 1
++    return False
++
++
++def _build_parallel_settings(output_dir: str, knot_id: str) -> Dict[str, object]:
++    return {
++        "OUTPUT_DIR": output_dir,
++        "KNOT_ID": knot_id,
++        "MAX_FOURIER_MODE": MAX_FOURIER_MODE,
++        "CONTACT_MODEL": CONTACT_MODEL,
++        "ROOT_SELECTION_MODE": ROOT_SELECTION_MODE,
++        "BRANCH_MODE": BRANCH_MODE,
++        "USE_LOCAL_IDEAL_DB": USE_LOCAL_IDEAL_DB,
++        "USE_LOCAL_SST_CORE": USE_LOCAL_SST_CORE,
++        "AUTO_COMPILE_SST_CORE": AUTO_COMPILE_SST_CORE,
++        "ENABLE_TORCH_ACCEL": ENABLE_TORCH_ACCEL,
++        "BS_BACKEND_MODE": BS_BACKEND_MODE,
++        "SAVE_PER_RUN_DIAGNOSTICS": SAVE_PER_RUN_DIAGNOSTICS,
++        "SAVE_LOCAL_A_CURVES": SAVE_LOCAL_A_CURVES,
++        "EMIT_V5_LOGS": False,
++        "LAMBDA_LIST": list(LAMBDA_LIST),
++        "PLATEAU_FRACS": list(PLATEAU_FRACS),
++    }
++
++
+ def _apply_parallel_worker_settings(settings: Dict[str, object]) -> None:
+     global OUTPUT_DIR, KNOT_ID, MAX_FOURIER_MODE, CONTACT_MODEL, ROOT_SELECTION_MODE
+     global BRANCH_MODE, USE_LOCAL_IDEAL_DB, USE_LOCAL_SST_CORE, AUTO_COMPILE_SST_CORE
+@@ -2984,24 +3018,7 @@
+ 
+ 
+ def _execute_geom_configs(mode: str, knot_id: str, output_dir: str, geom_configs: List[Tuple[int, int, Optional[float]]], backend_used: str) -> Tuple[List[dict], List[dict]]:
+-    settings: Dict[str, object] = {
+-        "OUTPUT_DIR": output_dir,
+-        "KNOT_ID": knot_id,
+-        "MAX_FOURIER_MODE": MAX_FOURIER_MODE,
+-        "CONTACT_MODEL": CONTACT_MODEL,
+-        "ROOT_SELECTION_MODE": ROOT_SELECTION_MODE,
+-        "BRANCH_MODE": BRANCH_MODE,
+-        "USE_LOCAL_IDEAL_DB": USE_LOCAL_IDEAL_DB,
+-        "USE_LOCAL_SST_CORE": USE_LOCAL_SST_CORE,
+-        "AUTO_COMPILE_SST_CORE": AUTO_COMPILE_SST_CORE,
+-        "ENABLE_TORCH_ACCEL": ENABLE_TORCH_ACCEL,
+-        "BS_BACKEND_MODE": BS_BACKEND_MODE,
+-        "SAVE_PER_RUN_DIAGNOSTICS": SAVE_PER_RUN_DIAGNOSTICS,
+-        "SAVE_LOCAL_A_CURVES": SAVE_LOCAL_A_CURVES,
+-        "EMIT_V5_LOGS": False,
+-        "LAMBDA_LIST": list(LAMBDA_LIST),
+-        "PLATEAU_FRACS": list(PLATEAU_FRACS),
+-    }
++    settings: Dict[str, object] = _build_parallel_settings(output_dir, knot_id)
+ 
+     rows: List[dict] = []
+     plateau_diag_rows: List[dict] = []
+@@ -3166,7 +3183,7 @@
+                 print("[PAR] done {}/{} Ng={} Ni={} scan={:.3f}s fit={:.3f}s best_A_ratio={:.6f} best_a_nc_over_rc={:.6f}".format(done, len(payloads), N_geom, int(summ.get("N_int_actual", N_int_target)), float(summ.get("t_scan_s", float('nan'))), float(summ.get("t_fit_s", float('nan'))), float(summ.get("best_A_ratio", float('nan'))), float(summ.get("best_a_nc_over_rc", float('nan')))))
+     return rows, plateau_diag_rows
+ 
+-def run_single_knot_sweep(args: argparse.Namespace, mode: str, knot_id: str, output_dir: str, run_start_wall: float, base_output_dir: str) -> Dict[str, object]:
++def finalize_single_knot_sweep(args: argparse.Namespace, mode: str, knot_id: str, output_dir: str, run_start_wall: float, base_output_dir: str, rows: List[dict], plateau_diag_rows: List[dict]) -> Dict[str, object]:
+     global OUTPUT_DIR, KNOT_ID, MAX_FOURIER_MODE, CONTACT_MODEL, ROOT_SELECTION_MODE
+ 
+     OUTPUT_DIR = output_dir
+@@ -3195,15 +3212,10 @@
+         print("[THEOREM] v9 tail check: need quasi-monotone contracting high-resolution tail before theorem-style OK")
+         print("[THEOREM] v10 batch knot comparison enabled at base_output_dir={}".format(base_output_dir))
+         print("[THEOREM] v10 parallel theorem candidate fits={}".format(THEOREM_CANDIDATE_FIT_METHODS))
+-        print("[THEOREM] v10.2 parallel_scope={} max_workers={}".format(PARALLEL_SCOPE, MAX_WORKERS if MAX_WORKERS else "auto"))
++        print("[THEOREM] v10.3 parallel_scope={} max_workers={}".format(PARALLEL_SCOPE, MAX_WORKERS if MAX_WORKERS else "auto"))
+     write_run_metadata(OUTPUT_DIR, mode, BS_BACKEND_MODE, backend_used, KNOT_ID, run_start_wall)
+ 
+-    rows: List[dict] = []
+     postcheck_rows: List[dict] = []
+-    plateau_diag_rows: List[dict] = []
+-    geom_configs = build_geom_configs_for_mode(mode)
+-    rows, plateau_diag_rows = _execute_geom_configs(mode, KNOT_ID, OUTPUT_DIR, geom_configs, backend_used)
+-
+     best = select_best_row(rows)
+     if best:
+         print("[BEST] practical N_geom={} N_int={} A_K={:.8f} A_ratio={:.6f} a_nc_over_rc={:.8f}".format(best["N_geom"], best["N_int_actual"], best["A_K"], best["A_ratio"], best["a_nc_over_rc"]))
+@@ -3222,14 +3234,14 @@
+             else:
+                 print("[BEST] theorem_full_model contact_model={} F_at_x1=nan a_star_over_rc=nan".format(CONTACT_MODEL))
+ 
+-    csv_path = os.path.join(OUTPUT_DIR, "robustness_summary_v10_2_{}.csv".format(mode))
++    csv_path = os.path.join(OUTPUT_DIR, "robustness_summary_v10_3_{}.csv".format(mode))
+     write_csv(rows, csv_path)
+     if SAVE_SUMMARY_PLOTS:
+         save_summary_plots(rows, OUTPUT_DIR)
+     if SAVE_PLATEAU_DIAGNOSTICS:
+-        plateau_csv = os.path.join(OUTPUT_DIR, "plateau_mask_diagnostics_v10_2.csv")
++        plateau_csv = os.path.join(OUTPUT_DIR, "plateau_mask_diagnostics_v10_3.csv")
+         write_plateau_diagnostics_csv(plateau_diag_rows, plateau_csv)
+-        save_plateau_diagnostics_summary_plot(plateau_diag_rows, os.path.join(OUTPUT_DIR, "plateau_mask_summary_v10_2.png"))
++        save_plateau_diagnostics_summary_plot(plateau_diag_rows, os.path.join(OUTPUT_DIR, "plateau_mask_summary_v10_3.png"))
+     write_best_estimate(rows, OUTPUT_DIR)
+ 
+     if RUN_V6_SHIFT_FREE_POSTCHECK:
+@@ -3242,7 +3254,7 @@
+         print("[META] Shift-free postcheck {} CSV/TXT/TeX : {}".format(SCRIPT_VERSION, OUTPUT_DIR))
+     if SAVE_PLATEAU_DIAGNOSTICS:
+         print("[META] Plateau diagnostics CSV/PNG : {}".format(OUTPUT_DIR))
+-    print("[META] run_metadata_v10_2.json : {}".format(os.path.join(OUTPUT_DIR, "run_metadata_v10_2.json")))
++    print("[META] run_metadata_v10_3.json : {}".format(os.path.join(OUTPUT_DIR, "run_metadata_v10_3.json")))
+ 
+     if WRITE_V8_EXTRAPOLATION:
+         if not postcheck_rows:
+@@ -3277,6 +3289,22 @@
+     return summary
+ 
+ 
++def run_single_knot_sweep(args: argparse.Namespace, mode: str, knot_id: str, output_dir: str, run_start_wall: float, base_output_dir: str) -> Dict[str, object]:
++    global OUTPUT_DIR, KNOT_ID
++
++    OUTPUT_DIR = output_dir
++    KNOT_ID = knot_id
++    os.makedirs(OUTPUT_DIR, exist_ok=True)
++
++    initialize_project_sources(KNOT_ID, MAX_FOURIER_MODE, USE_LOCAL_IDEAL_DB, USE_LOCAL_SST_CORE, AUTO_COMPILE_SST_CORE)
++    backend_used = detect_bs_backend(BS_BACKEND_MODE, ENABLE_TORCH_ACCEL)
++
++    geom_configs = build_geom_configs_for_mode(mode)
++    rows, plateau_diag_rows = _execute_geom_configs(mode, KNOT_ID, OUTPUT_DIR, geom_configs, backend_used)
++    return finalize_single_knot_sweep(args, mode, knot_id, output_dir, run_start_wall, base_output_dir, rows, plateau_diag_rows)
++
++
++
+ def main() -> None:
+     global OUTPUT_DIR, KNOT_ID, MAX_FOURIER_MODE, N_GEOM_LIST, N_INT_LIST, LAMBDA_LIST, PLATEAU_FRACS
+     global USE_LOCAL_SST_CORE, AUTO_COMPILE_SST_CORE, ENABLE_TORCH_ACCEL, BS_BACKEND_MODE
+@@ -3287,7 +3315,7 @@
+     parser = argparse.ArgumentParser(description=f"SST Robustness Sweep {SCRIPT_VERSION}")
+     parser.add_argument("--mode", choices=["ideal", "torus"], default="ideal")
+     parser.add_argument("--preset", choices=["fast", "full"], default="full", help="fast = smaller sweep for UI testing; full = full sweep")
+-    parser.add_argument("--output-dir", default="", help="Output directory (default: .../sst_knot_candidate_robustness_outputs_v10_2)")
++    parser.add_argument("--output-dir", default="", help="Output directory (default: .../sst_knot_candidate_robustness_outputs_v10_3)")
+     parser.add_argument("--backend", choices=BS_BACKEND_ALLOWED, default="auto")
+     parser.add_argument("--knot-id", default=DEFAULT_KNOT_LIST[0], help="Single knot id for the sweep, e.g. 3:1:1")
+     parser.add_argument("--knot-list", default="", help="Whitespace/comma-separated batch knot ids, e.g. 3:1:1,4:1:1,5:1:1,5:2:1; @group names allowed")
+@@ -3310,6 +3338,8 @@
+     parser.add_argument("--extrap-min-nint", type=int, default=8000, help="Minimum N_int_actual included in v8/v9 asymptotic extrapolation")
+     parser.add_argument("--no-v8-extrapolation", action="store_true", help="Disable asymptotic extrapolation writer")
+     parser.add_argument("--sweep-layout", choices=["matrix", "exact_pairs_only", "theorem_ladder"], default="matrix", help="matrix = original sweep grid; exact_pairs_only = only exact Ngeom:Nint pairs; theorem_ladder = exact-pair ladder geared to theorem runs")
++    parser.add_argument("--parallel-scope", choices=["auto", "none", "geom", "global"], default="auto", help="none = sequential; geom = parallel within each knot; global = one queue across all knot/geometry tasks; auto = prefer global for multi-knot batches")
++    parser.add_argument("--max-workers", type=int, default=0, help="Maximum worker processes (0 = auto)")
+ 
+     argv_in = None
+     if len(sys.argv) == 1 and sys.stdin.isatty():
+@@ -3373,21 +3403,90 @@
+     run_start_wall = time.time()
+     run_start = time.perf_counter()
+ 
+-    print("[META] v10.1 knot batch = {}".format(knot_ids))
++    print("[META] v10.3 knot batch = {}".format(knot_ids))
+     print("[META] external_knotlib={} spherogram_available={}".format(args.external_knotlib, _SPHEROGRAM_AVAILABLE))
+     knot_records: List[dict] = []
+     multi_knot = len(knot_ids) > 1
+ 
+-    for idx, knot_id in enumerate(knot_ids, start=1):
+-        if multi_knot:
+-            knot_outdir = os.path.join(base_output_dir, sanitize_knot_id_for_path(knot_id))
+-        else:
+-            knot_outdir = base_output_dir
++    geom_configs_by_knot: Dict[str, List[Tuple[int, int, Optional[float]]]] = {}
++    total_global_tasks = 0
++    for knot_id in knot_ids:
++        geom_configs = build_geom_configs_for_mode(args.mode)
++        geom_configs_by_knot[knot_id] = geom_configs
++        total_global_tasks += len(geom_configs)
++
++    if _should_parallelize_global_batch(total_global_tasks, len(knot_ids)):
++        worker_count = _resolved_worker_count(total_global_tasks)
+         print("\n" + "=" * 90)
+-        print("[META] Starting knot {}/{} : {}".format(idx, len(knot_ids), knot_id))
++        print("[PAR][GLOBAL] enabled: workers={} total_tasks={} knots={} scope={}".format(worker_count, total_global_tasks, len(knot_ids), PARALLEL_SCOPE))
+         print("=" * 90)
+-        rec = run_single_knot_sweep(args, args.mode, knot_id, knot_outdir, run_start_wall, base_output_dir)
+-        knot_records.append(rec)
++
++        task_buckets: Dict[str, Dict[str, object]] = {}
++        payloads: List[Dict[str, object]] = []
++        for idx, knot_id in enumerate(knot_ids, start=1):
++            knot_outdir = os.path.join(base_output_dir, sanitize_knot_id_for_path(knot_id)) if multi_knot else base_output_dir
++            os.makedirs(knot_outdir, exist_ok=True)
++            geom_configs = geom_configs_by_knot[knot_id]
++            task_buckets[knot_id] = {
++                "output_dir": knot_outdir,
++                "rows": [],
++                "plateau_diag_rows": [],
++                "task_count": len(geom_configs),
++                "done": 0,
++            }
++            print("[META] Queue knot {}/{} : {} -> {} tasks".format(idx, len(knot_ids), knot_id, len(geom_configs)))
++            settings = _build_parallel_settings(knot_outdir, knot_id)
++            for (N_geom, N_int_target, R_ratio) in geom_configs:
++                payloads.append({
++                    "settings": settings,
++                    "mode": args.mode,
++                    "N_geom": N_geom,
++                    "N_int_target": N_int_target,
++                    "R_ratio": R_ratio,
++                    "backend_used": BS_BACKEND_MODE,
++                })
++
++        done_total = 0
++        with cf.ProcessPoolExecutor(max_workers=worker_count) as ex:
++            fut_map = {}
++            for payload in payloads:
++                knot_id = str(payload["settings"]["KNOT_ID"])
++                fut = ex.submit(_compute_geom_config_result, payload)
++                fut_map[fut] = (knot_id, int(payload["N_geom"]), int(payload["N_int_target"]), payload.get("R_ratio"))
++
++            for fut in cf.as_completed(fut_map):
++                knot_id, N_geom, N_int_target, R_ratio = fut_map[fut]
++                res = fut.result()
++                bucket = task_buckets[knot_id]
++                bucket["rows"].extend(res.get("rows", []))
++                bucket["plateau_diag_rows"].extend(res.get("plateau_diag_rows", []))
++                bucket["done"] = int(bucket["done"]) + 1
++                done_total += 1
++                summ = res.get("summary", {})
++                if args.mode == "torus" and R_ratio is not None:
++                    print("[PAR][GLOBAL] done {}/{} knot={} {}/{} torus Ng={} Ni={} R={:.2f} scan={:.3f}s fit={:.3f}s best_A_ratio={:.6f} best_a_nc_over_rc={:.6f}".format(done_total, len(payloads), knot_id, int(bucket["done"]), int(bucket["task_count"]), N_geom, int(summ.get("N_int_actual", N_int_target)), float(R_ratio), float(summ.get("t_scan_s", float('nan'))), float(summ.get("t_fit_s", float('nan'))), float(summ.get("best_A_ratio", float('nan'))), float(summ.get("best_a_nc_over_rc", float('nan')))))
++                else:
++                    print("[PAR][GLOBAL] done {}/{} knot={} {}/{} Ng={} Ni={} scan={:.3f}s fit={:.3f}s best_A_ratio={:.6f} best_a_nc_over_rc={:.6f}".format(done_total, len(payloads), knot_id, int(bucket["done"]), int(bucket["task_count"]), N_geom, int(summ.get("N_int_actual", N_int_target)), float(summ.get("t_scan_s", float('nan'))), float(summ.get("t_fit_s", float('nan'))), float(summ.get("best_A_ratio", float('nan'))), float(summ.get("best_a_nc_over_rc", float('nan')))))
++
++        for idx, knot_id in enumerate(knot_ids, start=1):
++            bucket = task_buckets[knot_id]
++            knot_outdir = str(bucket["output_dir"])
++            print("\n" + "=" * 90)
++            print("[META] Finalizing knot {}/{} : {}".format(idx, len(knot_ids), knot_id))
++            print("=" * 90)
++            rec = finalize_single_knot_sweep(args, args.mode, knot_id, knot_outdir, run_start_wall, base_output_dir, list(bucket["rows"]), list(bucket["plateau_diag_rows"]))
++            knot_records.append(rec)
++    else:
++        for idx, knot_id in enumerate(knot_ids, start=1):
++            if multi_knot:
++                knot_outdir = os.path.join(base_output_dir, sanitize_knot_id_for_path(knot_id))
++            else:
++                knot_outdir = base_output_dir
++            print("\n" + "=" * 90)
++            print("[META] Starting knot {}/{} : {}".format(idx, len(knot_ids), knot_id))
++            print("=" * 90)
++            rec = run_single_knot_sweep(args, args.mode, knot_id, knot_outdir, run_start_wall, base_output_dir)
++            knot_records.append(rec)
+ 
+     write_knot_comparison_summary(knot_records, base_output_dir)
+ 

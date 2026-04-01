@@ -1,0 +1,36 @@
+[LOG_HEADER] SST robustness sweep console mirror
+[LOG_HEADER] script_version=v10.3_master started_wall=2026-03-27T07:32:13
+[LOG_HEADER] log_path=C:\workspace\projects\SSTcore\trefoil_closure\sst_knot_candidate_robustness_outputs_v10_3\console_log_20260327_073213.log
+[LOG_HEADER] cwd=C:\workspace\projects\SSTcore\trefoil_closure
+[LOG_HEADER] argv=['C:\\workspace\\projects\\SSTcore\\trefoil_closure\\sst_knot_candidate_robustness_sweep_v10_3_master_sweep.py']
+[LOG_HEADER] python=3.12.12 platform=win32
+[LOG_HEADER] numpy=2.3.5 pandas=2.3.3 scipy=1.16.3 torch=2.5.1+cxx11.abi cuda_available=False
+[LOG_HEADER] output_base_dir=C:\workspace\projects\SSTcore\trefoil_closure\sst_knot_candidate_robustness_outputs_v10_3
+[LOG_HEADER] knot_ids=['K11a367', 'K11a247', '0:1:1', '3:1:1', '4:1:1', '5:1:1', '5:1:2', '5:1:3', '6:1:1', '6:1:2', '6:1:3', '7:1:1', '7:1:2', '7:1:3', '7:1:4', '8:1:1', '9:1:1', '9:1:2', '10:1:1', '0:1:2', '2:2:1']
+---
+[META] console_log_path=C:\workspace\projects\SSTcore\trefoil_closure\sst_knot_candidate_robustness_outputs_v10_3\console_log_20260327_073213.log
+[META] v10.3 knot batch = ['K11a367', 'K11a247', '0:1:1', '3:1:1', '4:1:1', '5:1:1', '5:1:2', '5:1:3', '6:1:1', '6:1:2', '6:1:3', '7:1:1', '7:1:2', '7:1:3', '7:1:4', '8:1:1', '9:1:1', '9:1:2', '10:1:1', '0:1:2', '2:2:1']
+[META] external_knotlib=auto spherogram_available=True
+
+==========================================================================================
+[META] Starting knot 1/21 : K11a367
+==========================================================================================
+[PAR] geometry-parallel execution enabled: workers=10 tasks=10 scope=geom
+[PAR] done 1/10 Ng=24000 Ni=24000 scan=5.205s fit=0.005s best_A_ratio=0.991460 best_a_nc_over_rc=0.995721
+[PAR] done 2/10 Ng=32000 Ni=32000 scan=8.816s fit=0.004s best_A_ratio=0.998359 best_a_nc_over_rc=0.999179
+[PAR] done 3/10 Ng=40000 Ni=40000 scan=14.919s fit=0.006s best_A_ratio=0.997560 best_a_nc_over_rc=0.998779
+[PAR] done 4/10 Ng=48000 Ni=48000 scan=28.078s fit=0.008s best_A_ratio=1.002289 best_a_nc_over_rc=1.001144
+[PAR] done 5/10 Ng=56000 Ni=56000 scan=32.290s fit=0.004s best_A_ratio=1.002236 best_a_nc_over_rc=1.001118
+[PAR] done 6/10 Ng=64000 Ni=64000 scan=47.888s fit=0.012s best_A_ratio=1.000953 best_a_nc_over_rc=1.000476
+[PAR] done 7/10 Ng=72000 Ni=72000 scan=106.389s fit=0.007s best_A_ratio=1.000922 best_a_nc_over_rc=1.000461
+[PAR] done 8/10 Ng=80000 Ni=80000 scan=77.828s fit=0.007s best_A_ratio=0.999491 best_a_nc_over_rc=0.999745
+[PAR] done 9/10 Ng=88000 Ni=88000 scan=88.384s fit=0.006s best_A_ratio=0.999380 best_a_nc_over_rc=0.999690
+[PAR] done 10/10 Ng=96000 Ni=96000 scan=106.426s fit=0.013s best_A_ratio=1.003692 best_a_nc_over_rc=1.001845
+[META] Recompiling local sst_core.cpp ...
+running build_ext
+building 'sst_core' extension
+"C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\bin\HostX86\x64\cl.exe" /c /nologo /O2 /W3 /GL /DNDEBUG /MD -IC:\Users\mr\anaconda3\envs\SSTcore12\Lib\site-packages\pybind11\include -IC:\Users\mr\anaconda3\envs\SSTcore12\include -IC:\Users\mr\anaconda3\envs\SSTcore12\Include "-IC:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include" "-IC:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\ATLMFC\include" "-IC:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\VS\include" "-IC:\Program Files (x86)\Windows Kits\10\include\10.0.26100.0\ucrt" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\um" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\shared" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\winrt" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\cppwinrt" "-IC:\Program Files (x86)\Windows Kits\NETFXSDK\4.8\include\um" /EHsc /TpC:\workspace\projects\SSTcore\trefoil_closure\sst_core.cpp /Fobuild\temp.win-amd64-cpython-312\Release\workspace\projects\SSTcore\trefoil_closure\sst_core.obj /O2 /std:c++14
+"C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\bin\HostX86\x64\link.exe" /nologo /INCREMENTAL:NO /LTCG /DLL /MANIFEST:EMBED,ID=2 /MANIFESTUAC:NO /LIBPATH:C:\Users\mr\anaconda3\envs\SSTcore12\libs /LIBPATH:C:\Users\mr\anaconda3\envs\SSTcore12 /LIBPATH:C:\Users\mr\anaconda3\envs\SSTcore12\PCbuild\amd64 "/LIBPATH:C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\ATLMFC\lib\x64" "/LIBPATH:C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\lib\x64" "/LIBPATH:C:\Program Files (x86)\Windows Kits\NETFXSDK\4.8\lib\um\x64" "/LIBPATH:C:\Program Files (x86)\Windows Kits\10\lib\10.0.26100.0\ucrt\x64" "/LIBPATH:C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x64" /EXPORT:PyInit_sst_core build\temp.win-amd64-cpython-312\Release\workspace\projects\SSTcore\trefoil_closure\sst_core.obj /OUT:build\lib.win-amd64-cpython-312\sst_core.cp312-win_amd64.pyd /IMPLIB:build\temp.win-amd64-cpython-312\Release\workspace\projects\SSTcore\trefoil_closure\sst_core.cp312-win_amd64.lib
+copying build\lib.win-amd64-cpython-312\sst_core.cp312-win_amd64.pyd -> 
+
+[LOG_FOOTER] closed_wall=2026-03-27T07:49:20 total_script_s=1026.029

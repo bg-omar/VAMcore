@@ -1,0 +1,88 @@
+=================================================================
+IDEALE TREFOIL GEOMETRIE (Gilbert Id=3:1:1)
+=================================================================
+  N_pts           = 4000
+  L_K (dimless)   = 16.371498   (Gilbert: 16.371637)
+  d_min (dimless) = 0.997418   (tube diameter D=1 => d_min~1)
+  Ropelength L/D  = 16.3715   (literatuur: ~16.37)
+
+  Torus-trefoil L_K  ~ 31.9   (factor 1.95x langer)
+  => Ideale trefoil heeft hogere zelfinductie per lengte-eenheid
+
+Berekenen E_BS_norm(a)  [~1 minuut]...
+  a=1.22785e-02  E_BS=5.358824
+  a=1.44003e-02  E_BS=5.141430
+  a=1.68889e-02  E_BS=4.815775
+  a=1.98075e-02  E_BS=4.815775
+  a=2.32305e-02  E_BS=4.555271
+  a=2.72450e-02  E_BS=4.338206
+  a=3.19533e-02  E_BS=4.152171
+  a=3.74752e-02  E_BS=3.844759
+  a=4.39514e-02  E_BS=3.714592
+  a=5.15468e-02  E_BS=3.487851
+  a=6.04547e-02  E_BS=3.294885
+  a=7.09021e-02  E_BS=3.050516
+  a=8.31548e-02  E_BS=2.845076
+  a=9.75250e-02  E_BS=2.667924
+  a=1.14379e-01  E_BS=2.447731
+  a=1.34145e-01  E_BS=2.248394
+  a=1.57327e-01  E_BS=2.030081
+  a=1.84515e-01  E_BS=1.819659
+  a=2.16401e-01  E_BS=1.621914
+  a=2.53798e-01  E_BS=1.414496
+  a=2.97657e-01  E_BS=1.216970
+  a=3.49096e-01  E_BS=1.021047
+
+A_K extractie:
+  methode          = lokale helling (plateau)
+  A_K (plateau)    = 0.08330250  ± 0.01927712
+  A_K (globaal)    = 0.07933308
+  A_K vereist 1/4π = 0.07957747
+  A_K / A_req      = 1.046810
+
+Fysische schaling:
+  L_natural  = 8.852821e-15 m  (= Gamma_0/v_swirl)
+  L_K_phys   = 1.449339e-13 m
+  d_min_phys = 8.829959e-15 m
+
+=================================================================
+RESULTATEN — IDEALE TREFOIL
+=================================================================
+
+  A_K_use          = 0.08330250
+  A_K_req (1/4π)   = 0.07957747
+  A_K / A_req      = 1.046810
+
+  a0 (geen contact)= 1.44157002e-15 m
+  a* (vol model)   = 1.38718788e-15 m
+  r_c_canon        = 1.40897017e-15 m
+  a*/r_c           = 0.98454028
+  is minimum       = True
+
+  chi_eff          = 0.1566944520
+  chi_req = 1/(2π) = 0.1591549431
+  chi_eff/chi_req  = 0.98454028
+
+  Gamma_req (voor a*=r_c) = 9.83567602e-09 m²/s
+  Gamma_0_input           = 9.68361918e-09 m²/s
+  Gamma_req/Gamma_0       = 1.01570248
+
+  alpha_SST^-1     = 137.035999312
+  NIST doelwaarde  = 137.035999177
+
+  log10(a*/r_c)    = -0.00677
+  VERDICT: ✓✓ SLUITING  a* = r_c binnen 5%
+
+-----------------------------------------------------------------
+VERGELIJKING: Ideale trefoil vs Torus-trefoil
+-----------------------------------------------------------------
+  L_K ideaal    = 16.3715
+  L_K torus     ~ 31.90  (factor 1.949x)
+  A_K ideaal    = 0.083302
+  A_K req       = 0.079577
+  a*/r_c ideaal = 0.984540
+  a*/r_c torus  ~ 0.993  (uit vorige run)
+
+Plots opgeslagen in ./
+
+Script klaar.

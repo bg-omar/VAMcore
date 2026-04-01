@@ -1,0 +1,68 @@
+# Build artifacts
+build/
+dist/
+*.node
+*.pyd
+*.so
+*.dylib
+*.dll
+*.wasm
+*.js.map
+
+# CMake files
+CMakeCache.txt
+cmake_install.cmake
+CMakeFiles/
+*.vcxproj
+*.vcxproj.filters
+*.sln
+*.slnx
+
+# Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+*.egg
+*.whl
+
+# IDE files
+.vscode/
+.idea/
+*.iml
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test files
+tests/
+examples/
+*.test.js
+*.spec.js
+
+# Documentation (keep README.md)
+docs/
+*.md
+!README.md
+
+# Source files (optional - uncomment if you want to exclude source)
+# src/
+# src_bindings/
+# extern/
+
+# Git
+.git/
+.gitignore
+
+# Node
+node_modules/
+.npm/
+
+# Logs
+*.log
+npm-debug.log*
+

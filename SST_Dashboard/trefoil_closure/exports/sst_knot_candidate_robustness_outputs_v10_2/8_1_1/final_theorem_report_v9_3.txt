@@ -1,0 +1,45 @@
+SST ideal-trefoil theorem-style extrapolation report v10.2
+========================================================================
+Preferred fit method                 : plateau_0.12
+Extrapolation minimum N_int_actual   : 8000
+Sweep layout                         : exact_pairs_only
+Exact target pairs appended          : []
+
+[No-contact asymptotic closure]
+A_inf                       = 0.0792712608
+1/(4*pi)                    = 0.0795774715
+A_inf - 1/(4*pi)            = -3.0621075823e-04
+a_nc/r_c (inf)              = 0.9980681813
+a_nc/r_c (inf) - 1          = -1.9318187410e-03
+alpha_A                     = 2.160000
+alpha_a_nc                  = 2.170000
+last2 half-range A          = 5.0789398070e-05
+last2 half-range a_nc/r_c   = 3.2007614362e-04
+tail(A) quasi-monotone      = yes
+tail(a_nc/r_c) quasi-monotone = yes
+theorem_no_contact_ok       = no
+
+[Shift-free postcheck asymptotic closure at lambda_K=0]
+root_choice_summary         = targeted_x_nc:3
+a_star/r_c (inf)            = 0.9980681813
+a_star/r_c (inf) - 1        = -1.9318187410e-03
+F(1) (inf)                  = 3.8479578740e-03
+alpha_a_star                = 2.170000
+alpha_F1                    = 2.160000
+last2 half-range a_star/r_c = 3.2007614362e-04
+last2 half-range F(1)       = 6.3823839943e-04
+tail(a_star/r_c) quasi-monotone = yes
+tail(F(1)) quasi-monotone   = yes
+theorem_shiftfree_ok        = no
+
+[Shift-free lambda-dependence, asymptotic in N_int]
+lambda_K=0           choices=targeted_x_nc:3               a_star/r_c(inf)=0.9980681813  minus_1=-1.9318187410e-03  tail_ok=yes
+lambda_K=0.001       choices=targeted_x_nc:3               a_star/r_c(inf)=0.9980866628  minus_1=-1.9133371620e-03  tail_ok=yes
+lambda_K=0.003       choices=targeted_x_nc:3               a_star/r_c(inf)=0.9981225856  minus_1=-1.8774144048e-03  tail_ok=yes
+lambda_K=0.01        choices=targeted_x_nc:3               a_star/r_c(inf)=0.9982383523  minus_1=-1.7616477173e-03  tail_ok=yes
+
+Interpretation:
+v9 keeps the asymptotic fit y(N)=y_inf + c N^{-alpha}, but now refuses a theorem-style
+conclusion unless the high-resolution tail is also quasi-monotone/contracting toward the
+target. The shift-free postcheck includes both targeted_x_nc and targeted_x_nc_fallback rows,
+and reports which branch labels were actually used in the asymptotic tail.

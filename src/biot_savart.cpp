@@ -1,4 +1,5 @@
 #include "biot_savart.h"
+#include <algorithm>
 #include <cmath>
 #include <numeric>
 
@@ -8,9 +9,23 @@ namespace sst {
         const std::vector<Vec3>& curve,
         const std::vector<Vec3>& grid_points
     ) {
+      // Preserve historical behavior exactly: Gamma = 1.0
+      return computeVelocity(curve, grid_points, 1.0);
+    }
+
+    std::vector<Vec3> BiotSavart::computeVelocity(
+        const std::vector<Vec3>& curve,
+        const std::vector<Vec3>& grid_points,
+        double Gamma
+    ) {
       std::vector<Vec3> vel(grid_points.size(), {0.0, 0.0, 0.0});
+
+      if (curve.size() < 2 || grid_points.empty()) {
+        return vel;
+      }
+
       const size_t N = curve.size();
-      const double factor = 1.0 / (4.0 * M_PI);
+      const double factor = Gamma / (4.0 * M_PI);
 
       for (size_t i = 0; i < N; ++i) {
         const Vec3& r0 = curve[i];
@@ -143,6 +158,71 @@ namespace sst {
         }
 
         return v;
+    }
+
+    std::vector<double> bs_cutoff_energy_scan(
+        const double* p,
+        const double* t,
+        const double* ds,
+        std::size_t n,
+        const double* a_values,
+        std::size_t m)
+    {
+        std::vector<double> cutoffs(m);
+        for (std::size_t k = 0; k < m; ++k) {
+            cutoffs[k] = a_values[k];
+        }
+
+        std::vector<double> diff(m + 1, 0.0);
+
+        for (std::size_t i = 0; i < n; ++i) {
+            const double pix = p[i * 3 + 0];
+            const double piy = p[i * 3 + 1];
+            const double piz = p[i * 3 + 2];
+
+            const double tix = t[i * 3 + 0];
+            const double tiy = t[i * 3 + 1];
+            const double tiz = t[i * 3 + 2];
+
+            const double dsi = ds[i];
+
+            for (std::size_t j = 0; j < n; ++j) {
+                if (i == j) {
+                    continue;
+                }
+
+                const double rx = p[j * 3 + 0] - pix;
+                const double ry = p[j * 3 + 1] - piy;
+                const double rz = p[j * 3 + 2] - piz;
+
+                const double dist2 = rx * rx + ry * ry + rz * rz;
+                if (dist2 <= 0.0) {
+                    continue;
+                }
+
+                const double dist = std::sqrt(dist2);
+                const auto it = std::lower_bound(cutoffs.begin(), cutoffs.end(), dist);
+                const std::size_t k = static_cast<std::size_t>(it - cutoffs.begin());
+
+                if (k == 0) {
+                    continue;
+                }
+
+                const double dot_tt = tix * t[j * 3 + 0] + tiy * t[j * 3 + 1] + tiz * t[j * 3 + 2];
+                const double q = (dot_tt / dist) * dsi * ds[j];
+
+                diff[0] += q;
+                diff[k] -= q;
+            }
+        }
+
+        std::vector<double> out(m);
+        double running = 0.0;
+        for (std::size_t k = 0; k < m; ++k) {
+            running += diff[k];
+            out[k] = running / (8.0 * M_PI);
+        }
+        return out;
     }
 
 }

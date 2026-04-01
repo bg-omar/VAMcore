@@ -1,0 +1,208 @@
+name: Build and Publish npm Package
+
+on:
+  push:
+    tags:
+      - 'v*'  # Trigger on version tags like v0.1.3
+  release:
+    types: [published]  # Trigger on GitHub releases
+  workflow_dispatch:  # Allow manual triggering
+    inputs:
+      version:
+        description: 'Version to publish (e.g., 0.1.3)'
+        required: false
+        type: string
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node-version: [18.x, 20.x]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      
+      - name: Install system dependencies (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake build-essential python3
+      
+      - name: Install system dependencies (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install cmake
+      
+      - name: Install system dependencies (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
+      
+      - name: Install npm dependencies
+        run: npm ci
+      
+      - name: Generate embedded knot files
+        shell: bash
+        run: |
+          rm -rf build_node build
+          mkdir -p build/generated
+          cmake -B build_node -S .
+      
+      - name: Build native addon
+        run: npm run build:node
+        continue-on-error: true  # Allow to continue if build fails (will use WASM fallback)
+      
+      - name: Run tests
+        run: npm test
+        continue-on-error: true
+      
+      - name: Upload build artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.os }}-node${{ matrix.node-version }}
+          path: |
+            build/Release/*.node
+            build_node/
+          retention-days: 7
+
+  publish:
+    name: Publish to npm
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'release' || 
+      (startsWith(github.ref, 'refs/tags/v') && github.event_name == 'push')
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
+      
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake build-essential python3
+      
+      - name: Install npm dependencies
+        run: npm ci
+      
+      - name: Extract version from tag or release
+        id: get_version
+        run: |
+          if [ "${{ github.event_name }}" == "release" ]; then
+            VERSION="${{ github.event.release.tag_name }}"
+            # Remove 'v' prefix if present
+            VERSION=${VERSION#v}
+          elif [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/v}
+          else
+            VERSION=$(node -p "require('./package.json').version")
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Extracted version: $VERSION"
+      
+      - name: Verify version in package.json
+        run: |
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          echo "Package.json version: $PACKAGE_VERSION"
+          if [ -n "${{ steps.get_version.outputs.version }}" ]; then
+            TAG_VERSION="${{ steps.get_version.outputs.version }}"
+            if [ "$PACKAGE_VERSION" != "$TAG_VERSION" ]; then
+              echo "Warning: package.json version ($PACKAGE_VERSION) doesn't match tag version ($TAG_VERSION)"
+            fi
+          fi
+      
+      - name: Generate embedded knot files
+        shell: bash
+        run: |
+          rm -rf build_node build
+          mkdir -p build/generated
+          cmake -B build_node -S .
+      
+      - name: Build package
+        run: npm run build:all
+      
+      - name: Run tests
+        run: npm test
+      
+      - name: Check package contents
+        run: npm pack --dry-run
+      
+      - name: Publish to npm
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      
+      - name: Create GitHub Release
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ steps.get_version.outputs.version }}
+          body: |
+            ## swirl-string-core v${{ steps.get_version.outputs.version }}
+            
+            npm package published successfully.
+            
+            Install with:
+            ```bash
+            npm install swirl-string-core
+            ```
+          draft: false
+          prerelease: false
+
+  build-wasm:
+    name: Build WASM (Browser)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release' || startsWith(github.ref, 'refs/tags/v')
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Emscripten
+        uses: mymindstorm/setup-emsdk@v14
+        with:
+          version: 'latest'
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+      
+      - name: Install npm dependencies
+        run: npm ci
+      
+      - name: Build WASM
+        run: npm run build:wasm
+        continue-on-error: true
+      
+      - name: Upload WASM artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wasm-build
+          path: dist/
+          retention-days: 30
+

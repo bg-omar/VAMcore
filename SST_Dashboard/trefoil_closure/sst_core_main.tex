@@ -1,0 +1,266 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{amsmath, amssymb, amsthm, geometry, hyperref, mathrsfs}
+\geometry{margin=1in}
+\setlength{\parskip}{0.4em}
+
+\title{\textbf{Fundamentele Dynamica in Swirl-String Theory}\\
+\large Van Wervelknopen tot de Massa Functionaal}
+\author{Omar Iskandarani\\
+\small Independent Researcher, Groningen, The Netherlands\\
+\small \texttt{info@omariskandarani.com} \quad ORCID: 0009-0006-1686-3961}
+\date{}
+
+\begin{document}
+    \maketitle
+    
+    \section{De Swirl-String als Gestructureerde Vorticiteit}
+        
+        In tegenstelling tot de Polyakov-formulering die een $1$-dimensionale inbedding in een $\mathbb{R}^{1,D-1}$ doelruimtetijd vereist, wordt een deeltje in Swirl-String Theory (SST) gemodelleerd als een geknoopte wervellus $K$ in een $3$D onsamendrukbaar, niet-viskeus flu\"idum. De ruimtetijd zelf is een emergente foliatie waarbij tijd ontstaat uit vertraagde zelfconsistentie, gekwantificeerd door de Swirl-Clock voor materie ($S_t^{\boldsymbol{\circlearrowleft}}$) en antimaterie ($S_t^{\boldsymbol{\circlearrowright}}$).
+        
+        De macroscopische effectieve flu\"idumdichtheid $\rho_{\!f}$ volgt uit de ruimtelijke coarse-graining van de fundamentele vorticiteit $\Omega$:
+        \begin{equation}
+            \rho_{\!f} = K\,\Omega \quad \text{met} \quad K = \frac{\rho_{\text{core}}\,r_c}{\mathbf{v}_{\!\boldsymbol{\circlearrowleft}}}
+        \end{equation}
+        waarbij de canonieke SST-constanten zijn gegeven door de karakteristieke swirl-snelheid $\mathbf{v}_{\!\boldsymbol{\circlearrowleft}} \approx 1.0938 \times 10^6 \text{ m s}^{-1}$, de kernstraal $r_c \approx 1.4089 \times 10^{-15} \text{ m}$, en de kerndichtheid $\rho_{\text{core}} \approx 3.8934 \times 10^{18} \text{ kg m}^{-3}$.
+    
+    \section{De Effectieve Energie-Functionaal}
+        
+        Waar de orthodoxe snaartheorie het spectrum afleidt uit de Virasoro-restricties en getal-operatoren, dicteert SST dat stabiele deeltjestoestanden overeenkomen met de topologische minima van de effectieve energie-functionaal voor een knoop $K$:
+        \begin{equation}
+            \mathcal{E}_{\rm eff}[K] = \alpha C(K) + \beta L(K) + \gamma \mathcal{H}(K)
+        \end{equation}
+        De termen in deze massa-functionaal vertegenwoordigen:
+        \begin{itemize}
+            \item $\beta L(K)$: De klassieke lijntensie van de slanke wervelbuis, direct analoog aan de Nambu-Goto snaarspanning $T$.
+            \item $\alpha C(K)$: De interactie-energie afkomstig van Biot-Savart nabij-contacten (near-contacts) tussen wervelsegmenten.
+            \item $\gamma \mathcal{H}(K)$: De Hopf-invariante stabiliteitsterm, gerelateerd aan de heliciteit van de stroming.
+        \end{itemize}
+    
+    \section{Massa-equivalentie en Diskrete Schaalinvariantie}
+        
+        De dynamische massa van de wervelknoop wordt bepaald door de totale swirl-energiedichtheid $\rho_{\!E}$, zodanig dat de massa-equivalente dichtheid luidt:
+        \begin{equation}
+            \rho_{\!m} = \frac{\rho_{\!E}}{c^2}
+        \end{equation}
+        Massa-hi\"erarchie\"en en smaak-generaties (flavor generations) in het standaardmodel ontstaan niet door het exciteren van Virasoro-operatoren ($N=0,1,2\dots$), maar door discrete schaalinvariantie van de wervelstructuren, gekarakteriseerd door de Golden-layer factor:
+        \begin{equation}
+            M_k \propto M_0\,\varphi^{-2k}
+        \end{equation}
+        waarbij $\varphi$ de gulden snede is en $k$ de generatie-index. De ijkgroep-structuur $\mathfrak{su}(3)\oplus\mathfrak{su}(2)\oplus\mathfrak{u}(1)$ is minimaal en emergent uit de multi-director swirl-topologie, specifiek via de homomorfie gefixeerd door $t(K) = (L \bmod 3,\, S \bmod 2,\, \chi)$.
+        
+
+
+        
+
+            \section*{Topologische Parametrisatie van de Swirl-String}
+                
+                De massa-equivalente energie van een deeltje in Swirl-String Theory wordt gedomineerd door de topologie van de wervelbuis. Een brede klasse van oplossingen wordt beschreven door $(p,q)$-torusknopen, waarbij de curven op het oppervlak van een torus met grote straal $R$ en kleine straal $r$ liggen.
+                
+                \subsection*{Knoopco\"ordinaten}
+                    De inbeddingsfunctie $\mathbf{r}(\sigma)$ voor een parameter $\sigma \in [0, 2\pi)$ is gedefinieerd als:
+                    \begin{align}
+                        x(\sigma) &= \left( R + r \cos(q\sigma) \right) \cos(p\sigma) \\
+                        y(\sigma) &= \left( R + r \cos(q\sigma) \right) \sin(p\sigma) \\
+                        z(\sigma) &= -r \sin(q\sigma)
+                    \end{align}
+                    waarbij de constanten in verhouding staan tot de canonieke kernstraal $r_c \approx 1.4089 \times 10^{-15} \text{ m}$. Voor $p$ poloidale windingen en $q$ toroidale windingen worden deeltjesfamilies (generaties) topologisch onderscheiden.
+                
+                \subsection*{Energie Schaling en Diskrete Generaties}
+                    De Biot-Savart interactie-integraal $C(K)$ schaalt met de wervelcomplexiteit. Voor hogere-orde knopen, passend bij opeenvolgende deeltjesgeneraties in het Standaardmodel (bijv. elektron $\to$ muon $\to$ tau), stelt de SST-canon dat stabiele configuraties schalen via een discrete schaalinvariantie, gedicteerd door de Golden-layer factor $\varphi^{-2k}$:
+                    \begin{equation}
+                        \mathcal{E}_{\rm eff}[K_k] \approx \left( \alpha C(K_0) + \beta L(K_0) \right) \varphi^{-2k}
+                    \end{equation}
+                    waarbij $\alpha = F_{\!\boldsymbol{\circlearrowleft}}^{\max} \approx 29.0535 \text{ N}$ de fundamentele krachtsconstante van het medium is, voortvloeiend uit de coarse-graining $\rho_{\!f} = K \Omega$.
+            
+
+  
+
+                
+                \section{Componenten van de Effectieve Energie}
+                    
+                    De effectieve energie-functionaal voor een geknoopte wervellus $K$ bepaalt de rustmassa van een deeltje in het Swirl-String Theory raamwerk. Deze functionaal minimaliseert de opgeslagen energie in de vloeistofdynamische foliatie en bestaat uit drie topologische invarianten:
+                    \begin{equation}
+                        \mathcal{E}_{\rm eff}[K] = \alpha C(K) + \beta L(K) + \gamma \mathcal{H}(K)
+                    \end{equation}
+                    
+                    De canonieke interactiekracht $\alpha$ wordt direct afgeleid uit de kerndichtheid $\rho_{\text{core}}$ en de universele swirl-snelheid $\mathbf{v}_{\!\boldsymbol{\circlearrowleft}}$:
+                    \begin{equation}
+                        \alpha = \frac{\rho_{\text{core}} \Gamma^2}{4\pi} \equiv F_{\!\boldsymbol{\circlearrowleft}}^{\max} \approx 29.0535 \text{ N}
+                    \end{equation}
+                    
+                    \subsection{Lijntensie $\beta L(K)$}
+                        De neiging van de wervelbuis om de curvelengte te minimaliseren wordt gedreven door de hydrodynamische lijntensie $\beta$. Voor een slanke buis wordt dit klassiek benaderd door de vortex-ring dynamica:
+                        \begin{equation}
+                            \beta \approx \alpha \ln\left(\frac{R}{r_c}\right)
+                        \end{equation}
+                        waarbij de lengte exact wordt berekend via $L(K) = \oint_K |d\mathbf{r}|$.
+                    
+                    \subsection{Structurele Heliciteit $\gamma \mathcal{H}(K)$}
+                        De macroscopische heliciteit correleert met de structurele \textit{Writhe} ($Wr$) van de kernlijn. Dit kwantificeert de topologische chiraliteit (links- of rechtsdraaiend) van de knoop, wat in het Standaardmodel de pariteit en het spin-gedrag initieert. De Writhe-integraal, geregulariseerd door de kernstraal $r_c$, is:
+                        \begin{equation}
+                            Wr(K) = \frac{1}{4\pi} \oint_K \oint_K \frac{(\mathbf{r}_1 - \mathbf{r}_2) \cdot (d\mathbf{r}_1 \times d\mathbf{r}_2)}{\left(|\mathbf{r}_1 - \mathbf{r}_2|^2 + r_c^2\right)^{3/2}}
+                        \end{equation}
+                        De energieterm is dan $\gamma \mathcal{H}(K) = \gamma |Wr(K)|$, waarbij dimensie-consistentie oplevert dat $\gamma = \alpha r_c$ (met eenheid Joule).
+                    
+                    \subsection{Diskrete Minimatisatie}
+                        Voor een vaste topologie (bijv. de $(2,3)$-torusknoop) reduceert het vinden van de fundamentele deeltjestoestand tot het vari\"eren van de metrische parameters $R$ en $r$ zodanig dat $\delta \mathcal{E}_{\rm eff}[K] = 0$. Deze competitie tussen contractie ($\beta L$) en zelf-afstoting ($\alpha C$) resulteert in kwantisatie uit collectieve stijfheid, in tegenstelling tot abstracte getal-operatoren op een 1D wereldblad.
+            
+
+                
+                \section{De Variatie van de Energie-Functionaal}
+                    
+                    In de Swirl-String Theory (SST) ontstaat kwantisatie primair uit de collectieve stijfheid van het medium, waarbij holografie zonder zwaartekracht (boundary-determined bulk) dicteert dat stabiele toestanden oppervlaktetopologie\"en zijn die voldoen aan extremale werkingsprincipes. Tijd $\tau$ is hierin geen fundamentele co\"ordinaat, maar is emergent uit vertraagde zelfconsistentie, gemodelleerd via de materie-swirl-clock $S_t^{\boldsymbol{\circlearrowleft}}$.
+                    
+                    De rustmassa $m_0$ van een deeltjesgeneratie gekarakteriseerd door een topologische invariant $K_{p,q}$ (een $(p,q)$-torusknoop) is gebonden aan het absolute minimum van de effectieve energie-functionaal:
+                    \begin{equation}
+                        m_0 c^2 = \min_{R, r} \mathcal{E}_{\rm eff}[K_{p,q}](R, r)
+                    \end{equation}
+                    
+                    De energie-functionaal in termen van de inbeddingsparameters is:
+                    \begin{equation}
+                        \mathcal{E}_{\rm eff}(R, r) = \alpha C(R, r) + \beta(R) L(R, r) + \gamma \mathcal{H}(R, r)
+                    \end{equation}
+                    waarbij de canonieke parameters zijn gedefinieerd als $\alpha = F_{\!\boldsymbol{\circlearrowleft}}^{\max} \approx 29.0535 \text{ N}$, $\beta(R) = \alpha \ln(R/r_c)$, en $\gamma = \alpha r_c$.
+                
+                \section{Stabiliteitsvoorwaarden (Stationaire Punten)}
+                    
+                    Een deeltje (knoop) is enkel stabiel als de parti\"ele afgeleiden van de functionaal naar de metrische vrijheidsgraden verdwijnen. Voor een torusknoop met grote straal $R$ en kleine straal $r$ levert dit het volgende stelsel van gekoppelde niet-lineaire vergelijkingen op:
+                    \begin{align}
+                        \frac{\partial \mathcal{E}_{\rm eff}}{\partial R} &= \alpha \frac{\partial C}{\partial R} + \left( \frac{\alpha}{R} L + \beta \frac{\partial L}{\partial R} \right) + \gamma \frac{\partial \mathcal{H}}{\partial R} = 0 \label{eq:opt_R} \\
+                        \frac{\partial \mathcal{E}_{\rm eff}}{\partial r} &= \alpha \frac{\partial C}{\partial r} + \beta \frac{\partial L}{\partial r} + \gamma \frac{\partial \mathcal{H}}{\partial r} = 0 \label{eq:opt_r}
+                    \end{align}
+                    
+                    De Biot-Savart interactieterm $C(R, r)$ schaalt asymmetrisch: expansie van $R$ vergroot de inter-segment afstand wat de afstoting verlaagt ($\frac{\partial C}{\partial R} < 0$), terwijl contractie de lijntensieterm verlaagt ($\frac{\partial L}{\partial R} > 0$). De term $\frac{\alpha}{R} L$ ontstaat uit de afhankelijkheid van de hydrodynamische kerngrootte ten opzichte van de lokale kromming.
+                    
+                    Door het L-BFGS-B algoritme toe te passen met de harde limiet $R > r > r_c$, garanderen we de numerieke resolutie van \eqref{eq:opt_R} en \eqref{eq:opt_r}. De unificatie van tijd, zwaartekracht en massa vloeit voort uit dit enkele medium: de resulterende traagheidsmassa is puur de traagheid van deze gelokaliseerde, gestabiliseerde wervel-knoop ten opzichte van achtergrondfoliatie-verplaatsing.
+        
+
+            
+            \section{Topologische Complexiteit en Massa}
+                
+                In de orthodoxe snaartheorie resulteert het massaspectrum uit de getal-operatoren van Virasoro-modes ($M^2 \propto N-1$). In de Swirl-String Theory (SST) ontstaat kwantisatie uitsluitend uit de collectieve stijfheid van de continue foliatie, waarbij deeltjes stabiele wervelknopen $K$ zijn.
+                
+                Voor een deeltjesfamilie (zoals de leptonen) wordt de basistopologie vastgelegd door de poloidale index $p$. Opeenvolgende generaties (elektron, muon, tau) corresponderen met sequenti\"ele toroidale excitatie-indices $q_k$. De topologische complexiteit wordt gekwantificeerd door het minimale aantal kruisingen (crossing number) $c(K) = p(q-1)$ voor $p < q$.
+                
+                De effectieve rustmassa voor een deeltje in de $k$-de generatie wordt gegeven door het absolute minimum van de effectieve energie-functionaal:
+                \begin{equation}
+                    M(p, q_k) = \frac{1}{c^2} \min_{R, r} \left[ \alpha C(K_{p,q_k}) + \beta(R) L(K_{p,q_k}) + \gamma \mathcal{H}(K_{p,q_k}) \right]
+                \end{equation}
+                waarbij de constanten intrinsiek verbonden zijn aan de dynamiek van het medium: $\alpha = F_{\!\boldsymbol{\circlearrowleft}}^{\max}$, $\beta = \alpha \ln(R/r_c)$, en $\gamma = \alpha r_c$.
+            
+            \section{Diskrete Schaalinvariantie (Golden-layer)}
+                
+                De minimalisatie van de zelf-doorsnijdende Biot-Savart afstoting tegen de curvelengte leidt tot een massahi\"erarchie die numeriek een patroon van diskrete schaalinvariantie (DSI) volgt. De SST canon stelt dat voor stabiele excitatietoestanden, de massaverhoudingen benaderd worden door de Golden-layer factor:
+                \begin{equation}
+                    \frac{M_{k+1}}{M_k} \propto \varphi^{-2\Delta k}
+                \end{equation}
+                waarbij $\varphi = \frac{1 + \sqrt{5}}{2}$ de gulden snede is.
+                
+                De unificatie van deze topologische knopen met de emergente ijksymmetrie verloopt via de homomorphismeregel $t(K) = (L \bmod 3, S \bmod 2, \chi)$, waarbij de modulaire topologie de minimale algebra $\mathfrak{su}(3)\oplus\mathfrak{su}(2)\oplus\mathfrak{u}(1)$ genereert als een directe representatie van de multi-director swirl in de grensruimte (holografie zonder zwaartekracht).
+                
+        
+        
+\section*{Generatie-Hi\"erarchie\"en en Diskrete Schaalinvariantie}
+
+Een zuiver geometrische evaluatie van de effectieve energie-functionaal $\mathcal{E}_{\rm eff}[K_{p,q}]$ op een vaste fluidum-kernstraal $r_c$ levert een polynomiale massatoename als functie van het aantal toroidale windingen $q$. Voor een vaste poloidale index $p=2$ kwantificeert dit slechts de overtollige interactie-energie van de winding, maar faalt dit de exponenti\"ele massakloven van de Standaardmodel-generaties (leptonen) te verklaren.
+
+Binnen de Swirl-String Theory (SST) zijn deeltjesgeneraties het gevolg van Diskrete Schaalinvariantie (DSI) van de onderliggende foliatie. De wervelstructuren voor hogere generaties ($k=0, 1, 2$ voor respectievelijk e, $\mu$, $\tau$) stabiliseren op fundamenteel kleinere effectieve kernstralen. Deze fractionele schaling wordt geregeerd door de Golden-layer factor $\varphi \approx 1.618034$.
+
+Zij $m_0$ de geometrisch berekende rustmassa op de basisschaal. De dynamische rustmassa van de $k$-de generatie $M_k$ wordt dan gegeven door:
+\begin{equation}
+    M_k = m_{0,k} \left( \Phi_{\rm DSI} \right)^k
+\end{equation}
+waarbij $m_{0,k}$ de geometrische massa-bijdrage is van de specifieke topologie $K_{p,q_k}$ via $\mathcal{E}_{\rm eff}[K] / c^2$, en $\Phi_{\rm DSI} \propto \varphi^{-2\Delta k}$ de structurele schalingsfactor is van het medium.
+
+De waargenomen massa is zodoende het product van de \textit{topologische vormfactor} (bepaald door $p$ en $q$) en de \textit{DSI-laag} (bepaald door generatie-index $k$). De waargenomen "ineenstorting" van de optimalisatie (waarbij $R \to 2r_c$) impliceert dat we het deeltje modelleren nabij de hydrodynamische cutoff-limiet, waar de klassieke logaritmische benadering van de lijntensie $\beta = \alpha \ln(R/r_c)$ niet langer dominant repulsief is.
+
+
+\section*{Correctie van de Effectieve Energie-Functionaal}
+
+Gebaseerd op de fysische vereisten van wervel-stabiliteit in de Swirl-String Theory (SST), herdefini\"eren we de energie-functionaal. De foutief genaamde Biot-Savart term wordt gecorrigeerd naar de Neumann zelf-energie integraal $C_N(K)$. Om topologische collaps ($R \to r_c$) te voorkomen, introduceren we de noodzakelijke onsamendrukbaarheids-potentiaal $U_{\text{rep}}(K)$.
+
+De ge\"updatete functionaal luidt:
+\begin{equation}
+    \mathcal{E}_{\rm eff}[K] = \alpha C_N(K) + \beta L(K) + \gamma \mathcal{H}(K) + U_{\text{rep}}(K)
+\end{equation}
+
+\subsection*{Neumann Zelf-Energie}
+De kinetische wervel-energie volgt uit de Neumann-integraal, geregulariseerd door de kernstraal $r_c$:
+\begin{equation}
+    C_N(K) = \oint_K \oint_K \frac{d\mathbf{r}_1 \cdot d\mathbf{r}_2}{\sqrt{|\mathbf{r}_1 - \mathbf{r}_2|^2 + r_c^2}}
+\end{equation}
+
+\subsection*{Torsie-Energie en Hard-Core Repulsie}
+De motivatie voor $\gamma = \alpha r_c$ volgt uit de torsie-mechanica van de vloeistofbuis: de energie vereist om de doorsnede $\pi r_c^2$ te wringen over een volledige rotatie wordt opgespannen door de maximale dwarskracht $\alpha \equiv F_{\!\boldsymbol{\circlearrowleft}}^{\max}$ werkend op arm $r_c$.
+
+De repulsieve potentiaal modelleert de incompressibiliteit van de foliatie-kernen via een effectieve Lennard-Jones-achtige barri\`ere over de dwarsafstanden $D_{ij} = |\mathbf{r}_i - \mathbf{r}_j|$:
+\begin{equation}
+    U_{\text{rep}}(K) = \epsilon \sum_{i < j} \left( \frac{2r_c}{D_{ij}} \right)^{12}
+\end{equation}
+waarbij $\epsilon$ de energieschaal is die dicteert dat wervelkernen (met diameter $2r_c$) niet ruimtelijk kunnen fuseren zonder oneindige energie-inzet, hetgeen wiskundige ineenstorting tijdens L-BFGS-B minimalisatie verhindert en ware lokale topologische minima onthult.
+
+
+\section*{Numerieke Integratie van de Elastische Buigingsstijfheid}
+
+Om de kunstmatige topologische ineenstorting van massaspectra voor hoge toroidale indices $q$ te voorkomen, vereist de Swirl-String Theory (SST) de introductie van buigingsstijfheid op het niveau van de effectieve energie-functionaal. Dit verhindert dat de optimizer padlengte $\beta L(K)$ vermindert ten koste van onfysische, divergente curvatuur.
+
+\subsection*{Discrete Menger-kromming}
+Voor de getesselateerde array van positievectoren $\mathbf{r}_i$, wordt de lokale kromming benaderd via de inverse van de straal van de omgeschreven cirkel door drie opeenvolgende punten (Menger-kromming). Met segmentvectoren $\mathbf{v}_1 = \mathbf{r}_i - \mathbf{r}_{i-1}$, $\mathbf{v}_2 = \mathbf{r}_{i+1} - \mathbf{r}_i$, en basisvector $\mathbf{v}_3 = \mathbf{r}_{i+1} - \mathbf{r}_{i-1}$, volgt de discrete kromming:
+\begin{equation}
+    \kappa_i = \frac{2|\mathbf{v}_1 \times \mathbf{v}_2|}{|\mathbf{v}_1| |\mathbf{v}_2| |\mathbf{v}_3|}
+\end{equation}
+
+De totale buigingsenergie in de wervel wordt gedefinieerd als een integraal over de booglengte $ds$:
+\begin{equation}
+    E_{\kappa} = \delta \oint_K \kappa^2 ds \approx \delta \sum_{i=0}^{N-1} \kappa_i^2 \left( \frac{|\mathbf{v}_1| + |\mathbf{v}_2|}{2} \right)
+\end{equation}
+waarbij de mechanische koppelingsconstante $\delta$ voor het onsamendrukbare flu\"idum wordt afgeleid uit de kerndoorsnede en de maximale medium-kracht $\alpha$:
+\begin{equation}
+    \delta = \alpha r_c^2 \approx 5.767 \times 10^{-29} \text{ J m}
+\end{equation}
+
+\subsection*{Herstel van de Massahi\"erarchie}
+Door toevoeging van $E_{\kappa}$ aan $\mathcal{E}_{\rm eff}[K]$ verschuift het energetisch minimum. Hoge-$q$ configuraties (zoals hadronische $p=3$ baryonkandidaten) kunnen niet langer straffeloos hun straal $R^*$ reduceren, omdat de afgeleide dwingt tot een grotere kromtestraal $\kappa^{-1}$. Dit herstelt de positieve correlatie tussen topologische complexiteit en dynamische traagheidsmassa, hetgeen cruciaal is voor de identificatie van de $\sim 1836$ Proton/Elektron verhouding.
+
+\begin{thebibliography}{99}
+\bibitem{Menger1928}
+K. Menger, \textit{Untersuchungen über allgemeine Metrik}, Mathematische Annalen \textbf{100}, 75-163 (1928).
+\bibitem{Helfrich1973}
+W. Helfrich, \textit{Elastic Properties of Lipid Bilayers: Theory and Possible Experiments}, Zeitschrift für Naturforschung C \textbf{28}, 693-703 (1973).
+
+\bibitem{Neumann1845}
+F. E. Neumann, \textit{Allgemeine Gesetze der inducirten elektrischen Ströme}, Annalen der Physik, 143(1), 31-44 (1845).
+\bibitem{Sonin1987}
+E. B. Sonin, \textit{Vortex oscillations and hydrodynamics of rotating superfluids}, Rev. Mod. Phys. \textbf{59}, 87 (1987).
+
+                        \bibitem{Kelvin1867}
+                        W. Thomson (Lord Kelvin), \textit{On Vortex Atoms}, Proceedings of the Royal Society of Edinburgh, Vol. VI, 94-105 (1867).
+                        \bibitem{Faddeev1997}
+                        L. Faddeev, A. J. Niemi, \textit{Stable knot-like structures in classical field theory}, Nature \textbf{387}, 58-61 (1997).
+  
+                            \bibitem{Calugareanu1961}
+                            G. C\u{a}lug\u{a}reanu, \textit{Sur les classes d'isotopie des n{\oe}uds tridimensionnels et leurs invariants}, Czechoslovak Mathematical Journal \textbf{11}, 588--625 (1961).
+                            \bibitem{Fuller1971}
+                            F. B. Fuller, \textit{The writhing number of a space curve}, Proc. Natl. Acad. Sci. USA \textbf{68}, 815--819 (1971).
+                            \bibitem{SSTCore2026}
+                            O. Iskandarani, \textit{SSTcore: Numerical Topologies in Swirl-String Theory}, GitHub Repository, 2026.
+                        
+ 
+                        \bibitem{Moffatt1969}
+                        H. K. Moffatt, \textit{The degree of knottedness of tangled vortex lines}, Journal of Fluid Mechanics, 35(1), 117-129 (1969). DOI: 10.1017/S002211206900099X.
+                        \bibitem{Rolfsen1976}
+                        D. Rolfsen, \textit{Knots and Links}, Publish or Perish (1976).
+   
+                        
+
+            \bibitem{EinsteinAether}
+            T. Jacobson, D. Mattingly, \textit{Gravity with a dynamical preferred frame}, Phys. Rev. D \textbf{64}, 024028 (2001).
+            \bibitem{WenFradkin}
+            X.-G. Wen, A. Zee, \textit{Quantum Statistics and Superconductivity in Two Spatial Dimensions}, Phys. Rev. B \textbf{44}, 274 (1991).
+            \bibitem{Hopf1931}
+            H. Hopf, \textit{Über die Abbildungen der dreidimensionalen Sphäre auf die Kugelfläche}, Math. Ann. \textbf{104}, 637--665 (1931).
+            \bibitem{Sornette1998}
+            D. Sornette, \textit{Discrete Scale Invariance and Complex Dimensions}, Phys. Rep. \textbf{297}, 239--270 (1998).
+        \end{thebibliography}
+
+\end{document}

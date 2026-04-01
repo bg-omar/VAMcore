@@ -24,9 +24,14 @@
 /build/CMakeFiles/
 /sphSimulator_output/
 /build/
+/build_node/
+/build_wasm/
 /cmake-build-debug-mingw/
 /cmake-build-relwithdebinfo-mingw/
 /extern/
+
+# Example output files
+/examples/output/
 
 # Python packaging artifacts
 /dist/

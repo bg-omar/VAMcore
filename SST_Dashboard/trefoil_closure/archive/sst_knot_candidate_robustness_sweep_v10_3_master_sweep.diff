@@ -1,0 +1,390 @@
+--- /mnt/data/sst_knot_candidate_robustness_sweep_v10_3_auto_heavy.py	2026-03-27 05:39:55.999822954 +0000
++++ /mnt/data/sst_knot_candidate_robustness_sweep_v10_3_master_sweep.py	2026-03-27 05:44:14.968257823 +0000
+@@ -76,7 +76,7 @@
+ except Exception:
+     _SPHEROGRAM_AVAILABLE = False
+ 
+-SCRIPT_VERSION = "v10.3"
++SCRIPT_VERSION = "v10.3_master"
+ 
+ # -----------------------------------------------------------------------------
+ # Paths and defaults (overridable by CLI)
+@@ -174,6 +174,9 @@
+ SAVE_SUMMARY_PLOTS = True
+ SAVE_PLATEAU_DIAGNOSTICS = True
+ SAVE_LOCAL_A_CURVES = True
++SAVE_RAW_SCAN_ARCHIVE = True
++SAVE_ROOT_CANDIDATE_ARCHIVE = True
++WRITE_MASTER_BATCH_ARCHIVE = True
+ BRANCH_MODE = "closest_to_a_nc"
+ CONTACT_MODEL = "legacy"  # "legacy" or "barrier_flat_at_rc"
+ ROOT_SELECTION_MODE = "continuation"  # "continuation", "closest_to_a_nc", "lowest_energy", "targeted_x_nc"
+@@ -280,6 +283,9 @@
+ LAUNCHER_DEFAULT_RUN_POSTCHECK = "1"
+ LAUNCHER_DEFAULT_EXTRAP_MIN_NINT = str(EXTRAP_MIN_NINT)
+ LAUNCHER_DEFAULT_CONSOLE_LOG_ENABLED = "1"
++LAUNCHER_DEFAULT_RAW_SCAN_ARCHIVE = "1"
++LAUNCHER_DEFAULT_ROOT_CANDIDATE_ARCHIVE = "1"
++LAUNCHER_DEFAULT_MASTER_BATCH_ARCHIVE = "1"
+ 
+ phi0 = (1.0 + math.sqrt(5.0)) / 2.0
+ 
+@@ -2813,6 +2819,9 @@
+     plateau_fracs = _prompt_text("Override plateau fracs (blank = default)", "")
+     output_dir = _prompt_text("Output directory (blank = version default)", "")
+     console_log_enabled = _prompt_choice("Console mirror log", ["1", "0"], LAUNCHER_DEFAULT_CONSOLE_LOG_ENABLED)
++    raw_scan_archive = _prompt_choice("Write raw scan archive", ["1", "0"], LAUNCHER_DEFAULT_RAW_SCAN_ARCHIVE)
++    root_candidate_archive = _prompt_choice("Write root candidate archive", ["1", "0"], LAUNCHER_DEFAULT_ROOT_CANDIDATE_ARCHIVE)
++    master_batch_archive = _prompt_choice("Write master batch archive", ["1", "0"], LAUNCHER_DEFAULT_MASTER_BATCH_ARCHIVE)
+     console_log_path = _prompt_text("Console log path (blank = auto under output dir)", "") if console_log_enabled == "1" else ""
+ 
+     argv: List[str] = [
+@@ -2848,12 +2857,108 @@
+         argv += ["--no-console-log"]
+     elif console_log_path:
+         argv += ["--console-log", console_log_path]
++    if raw_scan_archive == "0":
++        argv += ["--no-raw-scan-archive"]
++    if root_candidate_archive == "0":
++        argv += ["--no-root-candidate-archive"]
++    if master_batch_archive == "0":
++        argv += ["--no-master-batch-archive"]
+ 
+     print("\n[MENU] Resolved argv:", " ".join(argv), "\n")
+     return argv
+ 
+ 
+ 
++def build_scan_curve_rows(knot_id: str, mode: str, N_geom: int, N_int_target: int, geom: GeometryData, R_ratio: Optional[float],
++                          ideal_source_str: str, backend_this: str, a_scan: np.ndarray, E_vals: np.ndarray) -> List[dict]:
++    rows: List[dict] = []
++    for idx, (a_val, e_val) in enumerate(zip(a_scan, E_vals)):
++        rows.append({
++            "knot_id": knot_id, "mode": mode,
++            "N_geom": N_geom, "N_int_target": N_int_target, "N_int_actual": int(geom.N_int_actual),
++            "R_t_over_r_t": R_ratio if R_ratio is not None else np.nan,
++            "L_dimless": float(geom.L_dimless_full), "d_min_dimless": float(geom.d_min_full),
++            "scan_idx": idx,
++            "a_scan_m": float(a_val), "a_scan_over_rc": float(a_val / r_c_canon),
++            "E_scan_J": float(e_val),
++            "ideal_source": ideal_source_str, "bs_backend": backend_this,
++        })
++    return rows
++
++
++
++def build_root_candidate_rows(knot_id: str, mode: str, N_geom: int, N_int_target: int, geom: GeometryData, R_ratio: Optional[float],
++                              ideal_source_str: str, backend_this: str, fr: FitResult, lam_K: float, p_exp: int,
++                              candidates: List[RootCandidate], selected_a_star: float, selected_root_choice: str,
++                              x_closure: float) -> List[dict]:
++    rows: List[dict] = []
++    selected_idx = -1
++    if np.isfinite(selected_a_star):
++        for cand_idx, cand in enumerate(candidates):
++            if np.isfinite(cand.a_star) and abs(cand.a_star - selected_a_star) <= max(1e-30, 1e-12 * max(abs(selected_a_star), 1.0)):
++                selected_idx = cand_idx
++                break
++    for cand_idx, cand in enumerate(candidates):
++        a_over_rc = cand.a_star / r_c_canon if np.isfinite(cand.a_star) else np.nan
++        rows.append({
++            "knot_id": knot_id, "mode": mode,
++            "N_geom": N_geom, "N_int_target": N_int_target, "N_int_actual": int(geom.N_int_actual),
++            "R_t_over_r_t": R_ratio if R_ratio is not None else np.nan,
++            "L_dimless": float(geom.L_dimless_full), "d_min_dimless": float(geom.d_min_full),
++            "fit_method": fr.fit_method, "plateau_frac": fr.plateau_frac, "n_plateau": fr.n_plateau,
++            "A_K": float(fr.A_K), "A_ratio": float(fr.A_K / A_req) if np.isfinite(fr.A_K) else np.nan, "a_K": float(fr.a_K),
++            "closure_x_from_A": float(x_closure),
++            "lambda_K": float(lam_K), "p_exp": int(p_exp),
++            "candidate_index": cand_idx, "candidate_count": len(candidates),
++            "candidate_selected": bool(cand_idx == selected_idx), "selected_root_choice": selected_root_choice,
++            "candidate_is_min": bool(cand.is_min),
++            "a_candidate_m": float(cand.a_star), "a_candidate_over_rc": float(a_over_rc),
++            "E_candidate_J": float(cand.E_star),
++            "ideal_source": ideal_source_str, "bs_backend": backend_this,
++        })
++    return rows
++
++
++
++def write_master_batch_archives(knot_records: List[dict], base_output_dir: str) -> None:
++    if not WRITE_MASTER_BATCH_ARCHIVE or not knot_records:
++        return
++    archive_specs = [
++        ("robustness_summary_csv", os.path.join(base_output_dir, "master_robustness_archive_v10_3.csv")),
++        ("plateau_diagnostics_csv", os.path.join(base_output_dir, "master_plateau_archive_v10_3.csv")),
++        ("postcheck_csv", os.path.join(base_output_dir, "master_postcheck_archive_v10_3.csv")),
++        ("raw_scan_archive_csv", os.path.join(base_output_dir, "master_raw_scan_curve_archive_v10_3.csv")),
++        ("root_candidate_archive_csv", os.path.join(base_output_dir, "master_root_candidate_archive_v10_3.csv")),
++    ]
++    archive_counts: Dict[str, int] = {}
++    for key, outpath in archive_specs:
++        frames = []
++        for rec in knot_records:
++            path = rec.get(key)
++            if path and os.path.isfile(path):
++                try:
++                    frames.append(pd.read_csv(path))
++                except Exception as exc:
++                    print(f"[WARN] Could not read {path} for master archive {os.path.basename(outpath)}: {exc}")
++        if frames:
++            df = pd.concat(frames, ignore_index=True, sort=False)
++            df.to_csv(outpath, index=False)
++            archive_counts[os.path.basename(outpath)] = int(len(df))
++            print(f"[META] Master archive written: {outpath} ({len(df)} rows)")
++    manifest = {
++        "script_version": SCRIPT_VERSION,
++        "created_wall": time.strftime("%Y-%m-%dT%H:%M:%S", time.localtime(time.time())),
++        "base_output_dir": base_output_dir,
++        "knot_count": len(knot_records),
++        "knot_records": knot_records,
++        "archive_row_counts": archive_counts,
++    }
++    manifest_path = os.path.join(base_output_dir, "master_batch_manifest_v10_3.json")
++    with open(manifest_path, "w", encoding="utf-8") as f:
++        json.dump(manifest, f, indent=2, ensure_ascii=False)
++    print(f"[META] Master batch manifest: {manifest_path}")
++
++
+ 
+ def build_geom_configs_for_mode(mode: str) -> List[Tuple[int, int, Optional[float]]]:
+     if mode == "torus":
+@@ -2933,6 +3038,8 @@
+         "BS_BACKEND_MODE": BS_BACKEND_MODE,
+         "SAVE_PER_RUN_DIAGNOSTICS": SAVE_PER_RUN_DIAGNOSTICS,
+         "SAVE_LOCAL_A_CURVES": SAVE_LOCAL_A_CURVES,
++        "SAVE_RAW_SCAN_ARCHIVE": SAVE_RAW_SCAN_ARCHIVE,
++        "SAVE_ROOT_CANDIDATE_ARCHIVE": SAVE_ROOT_CANDIDATE_ARCHIVE,
+         "EMIT_V5_LOGS": False,
+         "LAMBDA_LIST": list(LAMBDA_LIST),
+         "PLATEAU_FRACS": list(PLATEAU_FRACS),
+@@ -2943,6 +3050,7 @@
+     global OUTPUT_DIR, KNOT_ID, MAX_FOURIER_MODE, CONTACT_MODEL, ROOT_SELECTION_MODE
+     global BRANCH_MODE, USE_LOCAL_IDEAL_DB, USE_LOCAL_SST_CORE, AUTO_COMPILE_SST_CORE
+     global ENABLE_TORCH_ACCEL, BS_BACKEND_MODE, SAVE_PER_RUN_DIAGNOSTICS, SAVE_LOCAL_A_CURVES
++    global SAVE_RAW_SCAN_ARCHIVE, SAVE_ROOT_CANDIDATE_ARCHIVE
+     global EMIT_V5_LOGS, LAMBDA_LIST, PLATEAU_FRACS
+ 
+     OUTPUT_DIR = str(settings["OUTPUT_DIR"])
+@@ -2958,6 +3066,8 @@
+     BS_BACKEND_MODE = str(settings["BS_BACKEND_MODE"])
+     SAVE_PER_RUN_DIAGNOSTICS = bool(settings["SAVE_PER_RUN_DIAGNOSTICS"])
+     SAVE_LOCAL_A_CURVES = bool(settings["SAVE_LOCAL_A_CURVES"])
++    SAVE_RAW_SCAN_ARCHIVE = bool(settings.get("SAVE_RAW_SCAN_ARCHIVE", False))
++    SAVE_ROOT_CANDIDATE_ARCHIVE = bool(settings.get("SAVE_ROOT_CANDIDATE_ARCHIVE", False))
+     EMIT_V5_LOGS = bool(settings.get("EMIT_V5_LOGS", False))
+     LAMBDA_LIST = [float(x) for x in settings["LAMBDA_LIST"]]
+     PLATEAU_FRACS = [float(x) for x in settings["PLATEAU_FRACS"]]
+@@ -3002,6 +3112,10 @@
+     if SAVE_LOCAL_A_CURVES:
+         save_local_A_curve_csv(diagnostics, geom.d_min_full, os.path.join(OUTPUT_DIR, "local_A_curve_Ng{}_Ni{}.csv".format(N_geom, geom.N_int_actual)))
+ 
++    scan_curve_rows: List[dict] = []
++    if SAVE_RAW_SCAN_ARCHIVE:
++        scan_curve_rows = build_scan_curve_rows(KNOT_ID, mode, N_geom, N_int_target, geom, R_ratio, ideal_source_str, backend_this, a_scan, E_vals)
++
+     plateau_diag_rows: List[dict] = []
+     plateau_diag = diagnostics.get("plateau_diag", {})
+     for method_name, st in plateau_diag.items():
+@@ -3019,6 +3133,7 @@
+         })
+ 
+     rows: List[dict] = []
++    root_candidate_rows: List[dict] = []
+     for fr in fit_results:
+         if not np.isfinite(fr.A_K):
+             continue
+@@ -3039,6 +3154,9 @@
+                 else:
+                     a_star, is_min, E_star, root_count, min_root_count, root_choice = choose_root(candidates, a_nc, BRANCH_MODE)
+ 
++                if SAVE_ROOT_CANDIDATE_ARCHIVE:
++                    root_candidate_rows.extend(build_root_candidate_rows(KNOT_ID, mode, N_geom, N_int_target, geom, R_ratio, ideal_source_str, backend_this, fr, lam_K, p_exp, candidates, a_star, root_choice, x_closure))
++
+                 a_star_over_rc = a_star / r_c_canon if np.isfinite(a_star) else np.nan
+                 prev_val = prev_a_star / r_c_canon if (prev_a_star is not None and np.isfinite(prev_a_star)) else np.nan
+                 continuation_jump = abs(a_star_over_rc - prev_val) if (np.isfinite(a_star_over_rc) and np.isfinite(prev_val)) else np.nan
+@@ -3096,14 +3214,16 @@
+         "best_A_ratio": float(best["A_ratio"]) if best else np.nan,
+         "best_a_nc_over_rc": float(best["a_nc_over_rc"]) if best else np.nan,
+     }
+-    return {"rows": rows, "plateau_diag_rows": plateau_diag_rows, "summary": summary}
++    return {"rows": rows, "plateau_diag_rows": plateau_diag_rows, "scan_curve_rows": scan_curve_rows, "root_candidate_rows": root_candidate_rows, "summary": summary}
+ 
+ 
+-def _execute_geom_configs(mode: str, knot_id: str, output_dir: str, geom_configs: List[Tuple[int, int, Optional[float]]], backend_used: str) -> Tuple[List[dict], List[dict]]:
++def _execute_geom_configs(mode: str, knot_id: str, output_dir: str, geom_configs: List[Tuple[int, int, Optional[float]]], backend_used: str) -> Tuple[List[dict], List[dict], List[dict], List[dict]]:
+     settings: Dict[str, object] = _build_parallel_settings(output_dir, knot_id)
+ 
+     rows: List[dict] = []
+     plateau_diag_rows: List[dict] = []
++    scan_curve_rows: List[dict] = []
++    root_candidate_rows: List[dict] = []
+     if not _should_parallelize_geom(len(geom_configs)):
+         last_backend_printed = backend_used
+         for idx, (N_geom, N_int_target, R_ratio) in enumerate(geom_configs):
+@@ -3143,6 +3263,8 @@
+                 save_bs_diagnostics(a_scan, E_vals, fit_results, diagnostics, os.path.join(OUTPUT_DIR, "bs_diagnostics_Ng{}_Ni{}.png".format(N_geom, geom.N_int_actual)))
+             if SAVE_LOCAL_A_CURVES:
+                 save_local_A_curve_csv(diagnostics, geom.d_min_full, os.path.join(OUTPUT_DIR, "local_A_curve_Ng{}_Ni{}.csv".format(N_geom, geom.N_int_actual)))
++            if SAVE_RAW_SCAN_ARCHIVE:
++                scan_curve_rows.extend(build_scan_curve_rows(KNOT_ID, mode, N_geom, N_int_target, geom, R_ratio, ideal_source_str, backend_this, a_scan, E_vals))
+ 
+             plateau_diag = diagnostics.get("plateau_diag", {})
+             for method_name, st in plateau_diag.items():
+@@ -3188,6 +3310,9 @@
+                         else:
+                             a_star, is_min, E_star, root_count, min_root_count, root_choice = choose_root(candidates, a_nc, BRANCH_MODE)
+ 
++                        if SAVE_ROOT_CANDIDATE_ARCHIVE:
++                            root_candidate_rows.extend(build_root_candidate_rows(KNOT_ID, mode, N_geom, N_int_target, geom, R_ratio, ideal_source_str, backend_this, fr, lam_K, p_exp, candidates, a_star, root_choice, x_closure))
++
+                         a_star_over_rc = a_star / r_c_canon if np.isfinite(a_star) else np.nan
+                         prev_val = prev_a_star / r_c_canon if (prev_a_star is not None and np.isfinite(prev_a_star)) else np.nan
+                         continuation_jump = abs(a_star_over_rc - prev_val) if (np.isfinite(a_star_over_rc) and np.isfinite(prev_val)) else np.nan
+@@ -3234,7 +3359,7 @@
+                             "root_solver_space": ROOT_SOLVER_SPACE, "F_at_root": F_at_root, "root_xtol": ROOT_XTOL, "root_rtol": ROOT_RTOL,
+                         })
+                         print("[ROOT] lambda_K={} a_star_over_rc={} is_min={} status={}".format(lam_K, a_star_over_rc, is_min, status))
+-        return rows, plateau_diag_rows
++        return rows, plateau_diag_rows, scan_curve_rows, root_candidate_rows
+ 
+     worker_count = _resolved_worker_count(len(geom_configs))
+     print("[PAR] geometry-parallel execution enabled: workers={} tasks={} scope={}".format(worker_count, len(geom_configs), PARALLEL_SCOPE))
+@@ -3257,15 +3382,17 @@
+             res = fut.result()
+             rows.extend(res.get("rows", []))
+             plateau_diag_rows.extend(res.get("plateau_diag_rows", []))
++            scan_curve_rows.extend(res.get("scan_curve_rows", []))
++            root_candidate_rows.extend(res.get("root_candidate_rows", []))
+             done += 1
+             summ = res.get("summary", {})
+             if mode == "torus" and R_ratio is not None:
+                 print("[PAR] done {}/{} torus Ng={} Ni={} R={:.2f} scan={:.3f}s fit={:.3f}s best_A_ratio={:.6f} best_a_nc_over_rc={:.6f}".format(done, len(payloads), N_geom, N_int_target, float(R_ratio), float(summ.get("t_scan_s", float('nan'))), float(summ.get("t_fit_s", float('nan'))), float(summ.get("best_A_ratio", float('nan'))), float(summ.get("best_a_nc_over_rc", float('nan')))))
+             else:
+                 print("[PAR] done {}/{} Ng={} Ni={} scan={:.3f}s fit={:.3f}s best_A_ratio={:.6f} best_a_nc_over_rc={:.6f}".format(done, len(payloads), N_geom, int(summ.get("N_int_actual", N_int_target)), float(summ.get("t_scan_s", float('nan'))), float(summ.get("t_fit_s", float('nan'))), float(summ.get("best_A_ratio", float('nan'))), float(summ.get("best_a_nc_over_rc", float('nan')))))
+-    return rows, plateau_diag_rows
++    return rows, plateau_diag_rows, scan_curve_rows, root_candidate_rows
+ 
+-def finalize_single_knot_sweep(args: argparse.Namespace, mode: str, knot_id: str, output_dir: str, run_start_wall: float, base_output_dir: str, rows: List[dict], plateau_diag_rows: List[dict]) -> Dict[str, object]:
++def finalize_single_knot_sweep(args: argparse.Namespace, mode: str, knot_id: str, output_dir: str, run_start_wall: float, base_output_dir: str, rows: List[dict], plateau_diag_rows: List[dict], scan_curve_rows: List[dict], root_candidate_rows: List[dict]) -> Dict[str, object]:
+     global OUTPUT_DIR, KNOT_ID, MAX_FOURIER_MODE, CONTACT_MODEL, ROOT_SELECTION_MODE
+ 
+     OUTPUT_DIR = output_dir
+@@ -3318,6 +3445,12 @@
+ 
+     csv_path = os.path.join(OUTPUT_DIR, "robustness_summary_v10_3_{}.csv".format(mode))
+     write_csv(rows, csv_path)
++    raw_scan_csv = os.path.join(OUTPUT_DIR, "raw_scan_curve_archive_v10_3.csv") if SAVE_RAW_SCAN_ARCHIVE else ""
++    if SAVE_RAW_SCAN_ARCHIVE:
++        write_csv(scan_curve_rows, raw_scan_csv)
++    root_candidate_csv = os.path.join(OUTPUT_DIR, "root_candidate_archive_v10_3.csv") if SAVE_ROOT_CANDIDATE_ARCHIVE else ""
++    if SAVE_ROOT_CANDIDATE_ARCHIVE:
++        write_csv(root_candidate_rows, root_candidate_csv)
+     if SAVE_SUMMARY_PLOTS:
+         save_summary_plots(rows, OUTPUT_DIR)
+     if SAVE_PLATEAU_DIAGNOSTICS:
+@@ -3337,6 +3470,10 @@
+     if SAVE_PLATEAU_DIAGNOSTICS:
+         print("[META] Plateau diagnostics CSV/PNG : {}".format(OUTPUT_DIR))
+     print("[META] run_metadata_v10_3.json : {}".format(os.path.join(OUTPUT_DIR, "run_metadata_v10_3.json")))
++    if SAVE_RAW_SCAN_ARCHIVE:
++        print("[META] Raw scan archive CSV : {}".format(raw_scan_csv))
++    if SAVE_ROOT_CANDIDATE_ARCHIVE:
++        print("[META] Root candidate archive CSV : {}".format(root_candidate_csv))
+ 
+     if WRITE_V8_EXTRAPOLATION:
+         if not postcheck_rows:
+@@ -3352,11 +3489,19 @@
+         except Exception as exc:
+             print(f"[WARN] v8 extrapolation writer failed: {exc}")
+ 
++    plateau_csv_path = os.path.join(OUTPUT_DIR, "plateau_mask_diagnostics_v10_3.csv") if SAVE_PLATEAU_DIAGNOSTICS else ""
++    postcheck_csv_path = os.path.join(OUTPUT_DIR, "shiftfree_postcheck_v10_2.csv") if RUN_V6_SHIFT_FREE_POSTCHECK else ""
+     summary = {
+         "knot_id": KNOT_ID, "mode": mode, "output_dir": OUTPUT_DIR,
+         "backend_used": backend_used, "ideal_source": IDEAL_SOURCE_DESC,
+         "rows_written": len(rows), "postcheck_rows_written": len(postcheck_rows),
++        "scan_curve_rows_written": len(scan_curve_rows), "root_candidate_rows_written": len(root_candidate_rows),
+         "best_found": bool(best), "closure_score": closure_score_from_row(best),
++        "robustness_summary_csv": csv_path,
++        "plateau_diagnostics_csv": plateau_csv_path,
++        "postcheck_csv": postcheck_csv_path if (postcheck_rows and os.path.isfile(postcheck_csv_path)) else "",
++        "raw_scan_archive_csv": raw_scan_csv if (SAVE_RAW_SCAN_ARCHIVE and scan_curve_rows) else "",
++        "root_candidate_archive_csv": root_candidate_csv if (SAVE_ROOT_CANDIDATE_ARCHIVE and root_candidate_rows) else "",
+     }
+     if best:
+         preset_meta = get_knot_preset_metadata(KNOT_ID)
+@@ -3382,8 +3527,8 @@
+     backend_used = detect_bs_backend(BS_BACKEND_MODE, ENABLE_TORCH_ACCEL)
+ 
+     geom_configs = build_geom_configs_for_mode(mode)
+-    rows, plateau_diag_rows = _execute_geom_configs(mode, KNOT_ID, OUTPUT_DIR, geom_configs, backend_used)
+-    return finalize_single_knot_sweep(args, mode, knot_id, output_dir, run_start_wall, base_output_dir, rows, plateau_diag_rows)
++    rows, plateau_diag_rows, scan_curve_rows, root_candidate_rows = _execute_geom_configs(mode, KNOT_ID, OUTPUT_DIR, geom_configs, backend_used)
++    return finalize_single_knot_sweep(args, mode, knot_id, output_dir, run_start_wall, base_output_dir, rows, plateau_diag_rows, scan_curve_rows, root_candidate_rows)
+ 
+ 
+ 
+@@ -3393,6 +3538,7 @@
+     global CONTACT_MODEL, ROOT_SELECTION_MODE, EMIT_V5_LOGS, BRANCH_MODE
+     global RUN_V6_SHIFT_FREE_POSTCHECK, PARALLEL_SCOPE, MAX_WORKERS
+     global WRITE_V8_EXTRAPOLATION, EXTRAP_MIN_NINT, EXTRA_TARGET_PAIRS, SWEEP_LAYOUT
++    global SAVE_RAW_SCAN_ARCHIVE, SAVE_ROOT_CANDIDATE_ARCHIVE, WRITE_MASTER_BATCH_ARCHIVE
+     global _ACTIVE_CONSOLE_LOG_PATH
+ 
+     parser = argparse.ArgumentParser(description=f"SST Robustness Sweep {SCRIPT_VERSION}")
+@@ -3425,6 +3571,9 @@
+     parser.add_argument("--max-workers", type=int, default=0, help="Maximum worker processes (0 = auto)")
+     parser.add_argument("--no-console-log", action="store_true", help="Disable automatic UTF-8 console mirror log under the output directory")
+     parser.add_argument("--console-log", default="", metavar="PATH", help="Mirror stdout/stderr to PATH (default: <output-dir>/console_log_<timestamp>.log)")
++    parser.add_argument("--no-raw-scan-archive", action="store_true", help="Disable writing raw scan curve archive CSV per knot")
++    parser.add_argument("--no-root-candidate-archive", action="store_true", help="Disable writing all root candidates archive CSV per knot")
++    parser.add_argument("--no-master-batch-archive", action="store_true", help="Disable writing concatenated master batch archives at base output dir")
+ 
+     argv_in = None
+     if len(sys.argv) == 1 and sys.stdin.isatty():
+@@ -3447,6 +3596,9 @@
+     RUN_V6_SHIFT_FREE_POSTCHECK = bool(args.run_v6_shiftfree_postcheck)
+     PARALLEL_SCOPE = str(args.parallel_scope)
+     MAX_WORKERS = int(args.max_workers)
++    SAVE_RAW_SCAN_ARCHIVE = not bool(args.no_raw_scan_archive)
++    SAVE_ROOT_CANDIDATE_ARCHIVE = not bool(args.no_root_candidate_archive)
++    WRITE_MASTER_BATCH_ARCHIVE = not bool(args.no_master_batch_archive)
+ 
+     if args.no_local_sst_core:
+         USE_LOCAL_SST_CORE = False
+@@ -3583,6 +3735,8 @@
+                     "output_dir": knot_outdir,
+                     "rows": [],
+                     "plateau_diag_rows": [],
++                    "scan_curve_rows": [],
++                    "root_candidate_rows": [],
+                     "task_count": len(geom_configs),
+                     "done": 0,
+                 }
+@@ -3612,6 +3766,8 @@
+                     bucket = task_buckets[knot_id]
+                     bucket["rows"].extend(res.get("rows", []))
+                     bucket["plateau_diag_rows"].extend(res.get("plateau_diag_rows", []))
++                    bucket["scan_curve_rows"].extend(res.get("scan_curve_rows", []))
++                    bucket["root_candidate_rows"].extend(res.get("root_candidate_rows", []))
+                     bucket["done"] = int(bucket["done"]) + 1
+                     done_total += 1
+                     summ = res.get("summary", {})
+@@ -3626,7 +3782,7 @@
+                 print("\n" + "=" * 90)
+                 print("[META] Finalizing knot {}/{} : {}".format(idx, len(knot_ids), knot_id))
+                 print("=" * 90)
+-                rec = finalize_single_knot_sweep(args, args.mode, knot_id, knot_outdir, run_start_wall, base_output_dir, list(bucket["rows"]), list(bucket["plateau_diag_rows"]))
++                rec = finalize_single_knot_sweep(args, args.mode, knot_id, knot_outdir, run_start_wall, base_output_dir, list(bucket["rows"]), list(bucket["plateau_diag_rows"]), list(bucket["scan_curve_rows"]), list(bucket["root_candidate_rows"]))
+                 knot_records.append(rec)
+         else:
+             for idx, knot_id in enumerate(knot_ids, start=1):
+@@ -3641,6 +3797,7 @@
+                 knot_records.append(rec)
+ 
+         write_knot_comparison_summary(knot_records, base_output_dir)
++        write_master_batch_archives(knot_records, base_output_dir)
+ 
+         total_elapsed = time.perf_counter() - run_start
+         print("[TIME] total_script_s={:.3f}".format(total_elapsed))

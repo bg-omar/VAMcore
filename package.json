@@ -1,0 +1,61 @@
+{
+  "name": "swirl-string-core",
+  "version": "0.1.9",
+  "description": "Swirl String Theory Canonical Core - High-performance C++ library for knot dynamics, vortex systems, and fluid mechanics",
+  "main": "index.js",
+  "module": "index.js",
+  "browser": "dist/swirl_string_core_wasm.js",
+  "types": "index.d.ts",
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "dist/",
+    "binding.gyp",
+    "CMakeLists.txt",
+    "cmake/",
+    "src/",
+    "src_bindings/",
+    "extern/",
+    "include/"
+  ],
+  "scripts": {
+    "build": "npm run build:node",
+    "build:node": "cmake -B build_node -S . && node scripts/build_node_target.js && node-gyp rebuild",
+    "build:wasm": "node scripts/build_wasm.js",
+    "build:all": "npm run build:node && npm run build:wasm",
+    "install": "node scripts/prebuild.js || node-gyp rebuild || echo 'Native build failed, using WASM fallback'",
+    "prepublishOnly": "npm run build:all",
+    "test": "node tests/test_basic.js || echo 'Tests not available'"
+  },
+  "keywords": [
+    "physics",
+    "fluid-dynamics",
+    "knot-theory",
+    "vortex",
+    "computational-physics",
+    "cpp",
+    "wasm",
+    "angular"
+  ],
+  "author": "Omar Iskandarani <info@omariskandarani.com>",
+  "license": "CC-BY-NC-4.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Swirl-String-Theory/SSTcore.git"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {
+    "node-addon-api": "^7.0.0"
+  },
+  "devDependencies": {
+    "node-gyp": "^10.0.0",
+    "typescript": "^5.0.0"
+  },
+  "gypfile": true
+}

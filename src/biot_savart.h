@@ -20,10 +20,20 @@ namespace sst {
         class BiotSavart {
         public:
 
-          // Compute Biot–Savart velocity field from a closed curve (points) at given grid points
+          // Backward-compatible overload:
+          // Compute Biot–Savart velocity field from a closed curve (points)
+          // at given grid points using the historical default circulation Gamma = 1.
           static std::vector<Vec3> computeVelocity(
               const std::vector<Vec3>& curve,
               const std::vector<Vec3>& grid_points
+          );
+
+          // New overload:
+          // Same computation, but with explicit circulation Gamma.
+          static std::vector<Vec3> computeVelocity(
+              const std::vector<Vec3>& curve,
+              const std::vector<Vec3>& grid_points,
+              double Gamma
           );
 
           // Compute vorticity from velocity field on a regular grid
@@ -59,6 +69,17 @@ namespace sst {
               double Gamma = 1.0) {
       return BiotSavart::velocity(r, X, T, Gamma);
         }
+
+        // Cutoff-scanned Biot–Savart / Neumann-style filament energy (trefoil sweep kernel).
+        // points, tangents: row-major (n, 3); ds length n; a_values length m, sorted ascending.
+        // Returns E(a_k) for k = 0..m-1 with E_BS(a) = (1/8pi) * sum_{i!=j, dist>a} (t_i·t_j)/dist * ds_i ds_j.
+        std::vector<double> bs_cutoff_energy_scan(
+            const double* points,
+            const double* tangents,
+            const double* ds,
+            std::size_t n,
+            const double* a_values,
+            std::size_t m);
 }
 
 #endif //SWIRL_STRING_CORE_BIOT_SAVART_H

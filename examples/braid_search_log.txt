@@ -1,0 +1,245 @@
+=== SST AB INITIO FOUNDATION (ZERO-PARAMETER BOOT) ===
+
+[*] Loading CODATA 2018 Quantum Constants...
+    m_e   = 9.1093837015e-31 kg
+    c     = 299792458.0 m/s
+    h_bar = 1.054571817e-34 J s
+    alpha = 0.0072973525693
+
+[*] Deriving Fluid Continuum Parameters...
+    [+] Core Radius (r_c)    = 1.4089702e-15 m
+    [+] Swirl Speed (v_swirl)= 1093845.63 m/s
+    [+] Fluid Density (rho_f)= 6.8398588e-07 kg/m^3
+
+========================================================
+
+=== SST AB INITIO BRAID SEARCH ENGINE ===
+
+[*] Calibrating topological mass density (rho_0) via the exact Braid Trefoil [1, 1, 1]...
+[+] Calibration complete. rho_0 = 0.022706 MeV / L_tot
+
+[*] Commencing automated spectrum evaluation...
+
+[+] SnapPy generated Braid Word for Link 2^2_1 (Hopf Link): [-1, -1]
+[>] Simulating Link 2^2_1 (Hopf Link)
+    [+] Invariants -> b: 2.0, g: 0, n: 2, chi: 1.0
+    [+] Effective L_tot: 3.858
+        -> G=2:    6062.74 MeV | Match: Bottom Quark (b)     (Ratio: 1.450)
+
+[+] SnapPy generated Braid Word for Link 4^2_1 (Solomon's Knot): [-1, -1, -1, -1]
+[>] Simulating Link 4^2_1 (Solomon's Knot)
+    [+] Invariants -> b: 2.0, g: 1, n: 2, chi: 1.0
+    [+] Effective L_tot: 4.897
+        -> G=2:    4756.01 MeV | Match: Bottom Quark (b)     (Ratio: 1.138)
+
+[+] SnapPy generated Braid Word for Link 5^2_1 (Whitehead Link): [-1, -1, 2, -1, 2]
+[>] Simulating Link 5^2_1 (Whitehead Link)
+    [+] Invariants -> b: 3.0, g: 1, n: 2, chi: 1.0
+    [+] Effective L_tot: 8.083
+        -> G=2:    4273.74 MeV | Match: Bottom Quark (b)     (Ratio: 1.022)
+
+[+] SnapPy generated Braid Word for Link 6^2_1: [-1, 2, 3, 4, 3, -2, 1, 3, -4, -5, 4, 3, -2, 3, -4, 3, 5, 2]
+[>] Simulating Link 6^2_1
+    [+] Invariants -> b: 3.0, g: 1, n: 2, chi: 1.0
+    [+] Effective L_tot: 24.894
+
+[+] SnapPy generated Braid Word for Link 6^2_2: [-1, -2, -3, -2, -2, -2, 1, -2, 3, -2]
+[>] Simulating Link 6^2_2
+    [+] Invariants -> b: 3.0, g: 1, n: 2, chi: 1.0
+    [+] Effective L_tot: 13.193
+
+[+] SnapPy generated Braid Word for Link 8^2_1: [-1, 2, -3, 4, -5, 4, 6, 3, 7, -2, 1, 3, -2, 3, 4, 5, 4, -3, 2, 4, -5, -6, 5, 4, -3, 4, -5, 6, -7, -6, 5, 4]
+[>] Simulating Link 8^2_1
+    [+] Invariants -> b: 3.0, g: 2, n: 2, chi: 1.0
+    [+] Effective L_tot: 37.111
+
+[+] SnapPy generated Braid Word for Link 6^3_1: [-1, 2, 2, -1, 2, 2]
+[>] Simulating Link 6^3_1
+    [+] Invariants -> b: 3.0, g: 0, n: 3, chi: 2.0
+    [+] Effective L_tot: 87.308
+        -> G=0:       0.39 MeV | Match: Electron (e-)        (Ratio: 0.757)
+        -> G=1:     212.11 MeV | Match: Pion (pi0)           (Ratio: 1.572)
+        -> G=2:  116265.16 MeV | Match: Higgs Boson (H)      (Ratio: 0.929)
+
+[+] SnapPy generated Braid Word for Link 6^3_2 (Borromean Rings / Baryon): [-1, 2, -1, 2, -1, 2]
+[>] Simulating Link 6^3_2 (Borromean Rings / Baryon)
+    [+] Invariants -> b: 3.0, g: 1, n: 3, chi: 2.0
+    [+] Effective L_tot: 85.604
+        -> G=1:     128.53 MeV | Match: Pion (pi0)           (Ratio: 0.952)
+        -> G=2:   70453.80 MeV | Match: W Boson (W)          (Ratio: 0.877)
+
+[+] SnapPy generated Braid Word for Link 6^3_3: [-1, 2, 2, -1, -2, -2]
+[>] Simulating Link 6^3_3
+
+    [+] Invariants -> b: 3.0, g: 1, n: 3, chi: 2.0
+    [+] Effective L_tot: 82.754
+        -> G=1:     124.25 MeV | Match: Pion (pi0)           (Ratio: 0.921)
+        -> G=2:   68107.64 MeV | Match: W Boson (W)          (Ratio: 0.847)
+
+[>] Simulating Unknot (Boson)
+    [+] Invariants -> b: 1.0, g: 0, n: 1, chi: 2.0
+    [+] Effective L_tot: 25.932
+        -> G=1:     645.50 MeV | Match: Strange Quark (Constituent) (Ratio: 1.328)
+
+[>] Simulating Hopf Link (Neutrino/Boson)
+    [+] Invariants -> b: 2.0, g: 1, n: 2, chi: 1.0
+    [+] Effective L_tot: 3.865
+        -> G=2:    3754.08 MeV | Match: Bottom Quark (b)     (Ratio: 0.898)
+
+[>] Simulating Unknot (Boson)
+    [+] Invariants -> b: 1.0, g: 0, n: 1, chi: 2.0
+    [+] Effective L_tot: 25.932
+        -> G=1:     645.50 MeV | Match: Strange Quark (Constituent) (Ratio: 1.328)
+
+[>] Simulating Hopf Link (Neutrino/Boson)
+    [+] Invariants -> b: 2.0, g: 1, n: 2, chi: 1.0
+    [+] Effective L_tot: 3.865
+        -> G=2:    3754.08 MeV | Match: Bottom Quark (b)     (Ratio: 0.898)
+
+[+] SnapPy generated Braid Word for Trefoil (Electron / 3_1): [-1, -1, -1]
+
+[>] Simulating Trefoil (Electron / 3_1)
+    [+] Invariants -> b: 2.0, g: 1, n: 1, chi: 2.0
+    [+] Effective L_tot: 46.450
+        -> G=0:       0.46 MeV | Match: Electron (e-)        (Ratio: 0.902)
+        -> G=1:     252.65 MeV | Match: Up Quark (Constituent) (Ratio: 0.752)
+        -> G=2:  138488.28 MeV | Match: Higgs Boson (H)      (Ratio: 1.107)
+
+[+] SnapPy generated Braid Word for Torus 5_1 (Muon): [-1, -1, -1, -1, -1]
+
+[>] Simulating Torus 5_1 (Muon)
+    [+] Invariants -> b: 2.0, g: 2, n: 1, chi: 2.0
+    [+] Effective L_tot: 57.410
+        -> G=0:       0.35 MeV | Match: Electron (e-)        (Ratio: 0.689)
+        -> G=1:     192.99 MeV | Match: Pion (pi0)           (Ratio: 1.430)
+        -> G=2:  105784.51 MeV | Match: Z Boson (Z)          (Ratio: 1.160)
+
+[+] SnapPy generated Braid Word for Torus 7_1 (Tau): [-1, -1, -1, -1, -1, -1, -1]
+
+[>] Simulating Torus 7_1 (Tau)
+    [+] Invariants -> b: 2.0, g: 3, n: 1, chi: 2.0
+    [+] Effective L_tot: 58.059
+        -> G=1:     120.62 MeV | Match: Pion (pi0)           (Ratio: 0.894)
+        -> G=2:   66117.56 MeV | Match: W Boson (W)          (Ratio: 0.823)
+
+[+] SnapPy generated Braid Word for Torus 9_1: [-1, -1, -1, -1, -1, -1, -1, -1, -1]
+
+[>] Simulating Torus 9_1
+    [+] Invariants -> b: 2.0, g: 4, n: 1, chi: 2.0
+    [+] Effective L_tot: 61.380
+        -> G=1:      78.81 MeV | Match: Muon (mu)            (Ratio: 0.746)
+
+[+] SnapPy generated Braid Word for Twist 5_2: [-1, 2, -3, 2, 2, 1, 2, 3, 2]
+
+[>] Simulating Twist 5_2
+    [+] Invariants -> b: 3.0, g: 1, n: 1, chi: 2.0
+    [+] Effective L_tot: 120.469
+        -> G=0:       0.65 MeV | Match: Electron (e-)        (Ratio: 1.273)
+        -> G=1:     356.67 MeV | Match: Down Quark (Constituent) (Ratio: 1.049)
+        -> G=2:  195506.14 MeV | Match: Top Quark (t)        (Ratio: 1.142)
+
+[+] SnapPy generated Braid Word for Twist 6_1: [-1, 2, -3, 4, -3, 2, 1, -3, 2, -4, 3, 2]
+
+[>] Simulating Twist 6_1
+    [+] Invariants -> b: 3.0, g: 1, n: 1, chi: 2.0
+    [+] Effective L_tot: 165.381
+        -> G=1:     489.64 MeV | Match: Strange Quark (Constituent) (Ratio: 1.007)
+        -> G=2:  268393.46 MeV | Match: Top Quark (t)        (Ratio: 1.568)
+
+[+] SnapPy generated Braid Word for Knot 6_2: [1, -2, 1, 1, 1, -2]
+
+[>] Simulating Knot 6_2
+    [+] Invariants -> b: 3.0, g: 1, n: 1, chi: 2.0
+    [+] Effective L_tot: 82.002
+        -> G=0:       0.44 MeV | Match: Electron (e-)        (Ratio: 0.867)
+        -> G=1:     242.78 MeV | Match: Up Quark (Constituent) (Ratio: 0.723)
+        -> G=2:  133079.40 MeV | Match: Higgs Boson (H)      (Ratio: 1.064)
+
+[+] SnapPy generated Braid Word for Twist 7_2: [-1, -2, -3, -4, -3, 2, 1, -3, -3, 4, -5, 4, -3, -2, -3, -4, -3, 5, 2]
+
+[>] Simulating Twist 7_2
+    [+] Invariants -> b: 3.0, g: 1, n: 1, chi: 2.0
+    [+] Effective L_tot: 245.315
+        -> G=1:     726.30 MeV | Match: Proton (p+)          (Ratio: 0.774)
+
+[+] SnapPy generated Braid Word for Knot 8_2: [-1, 2, -1, -1, -1, -1, -1, 2]
+
+[>] Simulating Knot 8_2
+    [+] Invariants -> b: 3.0, g: 2, n: 1, chi: 2.0
+    [+] Effective L_tot: 89.482
+        -> G=1:     163.74 MeV | Match: Pion (pi0)           (Ratio: 1.213)
+        -> G=2:   89750.38 MeV | Match: Z Boson (Z)          (Ratio: 0.984)
+
+[+] SnapPy generated Braid Word for Figure-Eight (4_1 / Dark): [1, -2, 1, -2]
+
+[>] Simulating Figure-Eight (4_1 / Dark)
+    [+] Invariants -> b: 3.0, g: 1, n: 1, chi: 1.0
+    [+] Effective L_tot: 6.871
+        -> G=2:    5575.73 MeV | Match: Bottom Quark (b)     (Ratio: 1.334)
+
+[+] SnapPy generated Braid Word for Knot 6_3 (Dark): [1, -2, 1, -2, -2, 1]
+
+[>] Simulating Knot 6_3 (Dark)
+    [+] Invariants -> b: 3.0, g: 1, n: 1, chi: 1.0
+    [+] Effective L_tot: 8.431
+
+[+] SnapPy generated Braid Word for Knot 8_3 (Dark): [-1, -2, -3, -4, -5, -4, 3, 2, -4, 1, 3, 5, -2, -4, -6, 3, -5, 4, 3, 2, 3, -4, 5, 6]
+
+[>] Simulating Knot 8_3 (Dark)
+    [+] Invariants -> b: 3.0, g: 1, n: 1, chi: 1.0
+    [+] Effective L_tot: 29.715
+
+[+] SnapPy generated Braid Word for Knot 8_9 (Dark): [-1, 2, 2, 2, -1, -1, -1, 2]
+
+[>] Simulating Knot 8_9 (Dark)
+    [+] Invariants -> b: 3.0, g: 1, n: 1, chi: 1.0
+    [+] Effective L_tot: 9.071
+
+[+] SnapPy generated Braid Word for Knot 8_12 (Dark): [-1, 2, -3, 2, 1, 2, -3, 4, -3, 2, -3, -4]
+
+[>] Simulating Knot 8_12 (Dark)
+    [+] Invariants -> b: 3.0, g: 2, n: 1, chi: 1.0
+    [+] Effective L_tot: 15.330
+
+[+] SnapPy generated Braid Word for Knot 8_17 (Dark / I2): [-1, 2, -1, -1, 2, 2, -1, 2]
+
+[>] Simulating Knot 8_17 (Dark / I2)
+    [+] Invariants -> b: 3.0, g: 1, n: 1, chi: 1.0
+    [+] Effective L_tot: 8.913
+
+[+] SnapPy generated Braid Word for Torus 8_19 (T(3,4)): [1, 2, 1, 2, 1, 1, 2, 1]
+
+[>] Simulating Torus 8_19 (T(3,4))
+    [+] Invariants -> b: 3.0, g: 3, n: 1, chi: 2.0
+    [+] Effective L_tot: 90.131
+        -> G=1:     101.93 MeV | Match: Muon (mu)            (Ratio: 0.965)
+        -> G=2:   55870.72 MeV | Match: W Boson (W)          (Ratio: 0.695)
+
+[+] SnapPy generated Braid Word for Torus 10_124 (T(3,5)): [1, 2, 2, 2, 2, 2, 1, 2, 2, 2]
+
+[>] Simulating Torus 10_124 (T(3,5))
+    [+] Invariants -> b: 3.0, g: 4, n: 1, chi: 2.0
+    [+] Effective L_tot: 90.891
+
+[+] SnapPy generated Braid Word for Twist 8_1: [-1, -2, 3, -4, 3, 5, 2, -6, 1, 3, -4, 3, 5, -2, -4, 3, -4, -5, 4, 6, -5, 4, 3, 2]
+
+[>] Simulating Twist 8_1
+    [+] Invariants -> b: 3.0, g: 1, n: 1, chi: 2.0
+    [+] Effective L_tot: 305.015
+        -> G=1:     903.05 MeV | Match: Proton (p+)          (Ratio: 0.962)
+
+[+] SnapPy generated Braid Word for Twist 9_2: [-1, 2, -3, -4, -5, -4, 6, 3, 7, -2, 1, -3, -4, -5, -4, 6, 3, -2, -3, -4, -5, -4, 3, 2, -4, -4, 5, -6, 5, -7, -6, 5, -4]
+
+[>] Simulating Twist 9_2
+    [+] Invariants -> b: 3.0, g: 1, n: 1, chi: 2.0
+    [+] Effective L_tot: 298.354
+        -> G=1:     883.33 MeV | Match: Proton (p+)          (Ratio: 0.941)
+
+[+] SnapPy generated Braid Word for Twist 10_1: [-1, -2, 3, -4, 5, -4, -3, 2, -4, 1, -5, 6, -7, -6, 5, -4, -3, 2, -4, -5, 6, 7, -8, -7, -6, 5, -4, -3, -4, -5, 6, 5, 7, -4, 8, 3, 5, -2, -6, 3]
+
+[>] Simulating Twist 10_1
+    [+] Invariants -> b: 3.0, g: 1, n: 1, chi: 2.0
+    [+] Effective L_tot: 351.941
+        -> G=1:    1041.99 MeV | Match: Proton (p+)          (Ratio: 1.111)
+
+[+] Deep Braid sweep completed successfully.
